@@ -1,0 +1,28 @@
+{
+  "name": "opensearch",
+  "version": "0.0.1",
+  "description": "An OpenSearch client supporting the geo and time extensions.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "OpenSearch",
+    "Geo",
+    "Time"
+  ],
+  "author": "Fabian Schindler",
+  "license": "MIT",
+  "dependencies": {
+    "es6-promise": "^3.2.1",
+    "isomorphic-fetch": "^2.2.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^6.1.2",
+    "eslint": "^3.0.1",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.10.2",
+    "eslint-plugin-jsx-a11y": "^2.0.0",
+    "eslint-plugin-react": "^5.2.2"
+  }
+}

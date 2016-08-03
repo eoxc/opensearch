@@ -1,0 +1,54 @@
+export function parseURLQuery(url) {
+  const search = (url.indexOf('?') === -1) ? url : url.substring(url.indexOf('?'));
+  const vars = search.split('&');
+  const parsed = {};
+  for (let i = 0; i < vars.length; i++) {
+    const pair = vars[i].split('=');
+    parsed[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+  }
+  return parsed;
+}
+
+export function parseXml(xmlStr) {
+  if (typeof window.DOMParser !== 'undefined') {
+    return (new window.DOMParser()).parseFromString(xmlStr, 'text/xml');
+  } else if (typeof ActiveXObject !== 'undefined') {
+    const xmlDoc = new window.ActiveXObject('Microsoft.XMLDOM');
+    xmlDoc.async = 'false';
+    xmlDoc.loadXML(xmlStr);
+    return xmlDoc;
+  }
+  throw new Error('Could not parse XML document.');
+}
+
+export function xPath(node, xpath, nsResolver) {
+  const doc = node.ownerDocument;
+  const text = xpath.indexOf('text()') !== -1 || xpath.indexOf('@') !== -1;
+  if (text) {
+    return doc.evaluate(xpath, node, nsResolver, XPathResult.STRING_TYPE, null).stringValue;
+  }
+  const result = doc.evaluate(
+    xpath, node, nsResolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null
+  );
+  if (result.snapshotLength === 0) {
+    return null;
+  }
+  return result.snapshotItem(0);
+}
+
+export function xPathArray(node, xpath, nsResolver) {
+  const doc = node.ownerDocument;
+  const result = doc.evaluate(
+    xpath, node, nsResolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null
+  );
+  const text = xpath.indexOf('text()') !== -1 || xpath.indexOf('@') !== -1;
+  const array = new Array(result.snapshotLength);
+  for (let i = 0; i < result.snapshotLength; ++i) {
+    if (text) {
+      array[i] = result.snapshotItem(i).textContent;
+    } else {
+      array[i] = result.snapshotItem(i);
+    }
+  }
+  return array;
+}
