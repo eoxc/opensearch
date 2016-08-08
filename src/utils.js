@@ -24,14 +24,23 @@ export function parseXml(xmlStr) {
   throw new Error('Could not parse XML document.');
 }
 
-export function xPath(node, xpath, nsResolver) {
+export const namespaces = {
+  os: 'http://a9.com/-/spec/opensearch/1.1/',
+  parameters: 'http://a9.com/-/spec/opensearch/extensions/parameters/1.0/',
+};
+
+function resolver(prefix) {
+  return namespaces[prefix];
+}
+
+export function xPath(node, xpath) {
   const doc = node.ownerDocument;
   const text = xpath.indexOf('text()') !== -1 || xpath.indexOf('@') !== -1;
   if (text) {
-    return doc.evaluate(xpath, node, nsResolver, XPathResult.STRING_TYPE, null).stringValue;
+    return doc.evaluate(xpath, node, resolver, XPathResult.STRING_TYPE, null).stringValue;
   }
   const result = doc.evaluate(
-    xpath, node, nsResolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null
+    xpath, node, resolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null
   );
   if (result.snapshotLength === 0) {
     return null;
@@ -39,10 +48,10 @@ export function xPath(node, xpath, nsResolver) {
   return result.snapshotItem(0);
 }
 
-export function xPathArray(node, xpath, nsResolver) {
+export function xPathArray(node, xpath) {
   const doc = node.ownerDocument;
   const result = doc.evaluate(
-    xpath, node, nsResolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null
+    xpath, node, resolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null
   );
   const text = xpath.indexOf('text()') !== -1 || xpath.indexOf('@') !== -1;
   const array = new Array(result.snapshotLength);
@@ -54,6 +63,13 @@ export function xPathArray(node, xpath, nsResolver) {
     }
   }
   return array;
+}
+
+export function getAttributeNS(node, namespace, name, defaultValue) {
+  if (node.hasAttributeNS(namespace, name)) {
+    return node.getAttributeNS(namespaces.parameters, name);
+  }
+  return defaultValue;
 }
 
 export function fetchAndCheck(...args) {

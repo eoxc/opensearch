@@ -1,6 +1,6 @@
 import parse from 'url-parse';
 
-import { xPathArray } from './utils';
+import { xPathArray, resolver, namespaces, getAttributeNS } from './utils';
 
 
 const typeRE = /{([a-zA-Z:]+)([?]?)}/;
@@ -17,16 +17,9 @@ function isMandatory(value) {
   return typeRE.exec(value)[2] !== '?';
 }
 
-function resolver(prefix) {
-  if (prefix === 'parameters') {
-    return 'http://a9.com/-/spec/opensearch/extensions/parameters/1.0/';
-  }
-  return null;
-}
-
 export class OpenSearchUrl {
-  constructor(mimeType, url, parameters = [], method = 'GET', enctype = 'application/x-www-form-urlencoded') {
-    this.mimeType = mimeType;
+  constructor(type, url, parameters = [], method = 'GET', enctype = 'application/x-www-form-urlencoded') {
+    this.type = type;
     this.url = url;
     this.method = method;
     this.enctype = enctype;
@@ -76,8 +69,8 @@ export class OpenSearchUrl {
 
   static fromNode(node) {
     const parameterNodes = xPathArray(node, 'parameters:Parameter', resolver);
-    const method = node.getAttributeNS('http://a9.com/-/spec/opensearch/extensions/parameters/1.0/', 'method');
-    const enctype = node.getAttributeNS('http://a9.com/-/spec/opensearch/extensions/parameters/1.0/', 'enctype');
+    const method = getAttributeNS(node, namespaces.parameters, 'method');
+    const enctype = getAttributeNS(node, namespaces.parameters, 'enctype');
 
     if (parameterNodes.length) {
       const parameters = parameterNodes.map((parameterNode) => {
@@ -100,7 +93,7 @@ export class OpenSearchUrl {
     );
   }
 
-  static fromTemplateUrl(mimeType, templateUrl, method = 'GET', enctype = 'application/x-www-form-urlencoded') {
+  static fromTemplateUrl(type, templateUrl, method = 'GET', enctype = 'application/x-www-form-urlencoded') {
     const parameters = [];
     const parsed = parse(templateUrl, true);
 
@@ -117,7 +110,7 @@ export class OpenSearchUrl {
         });
       }
     }
-    return new OpenSearchUrl(mimeType, templateUrl, parameters, method, enctype);
+    return new OpenSearchUrl(type, templateUrl, parameters, method, enctype);
   }
 }
 
