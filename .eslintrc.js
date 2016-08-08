@@ -4,5 +4,8 @@ module.exports = {
   "parserOptions": {
     "sourceType": "module",
     "allowImportExportEverywhere": false
+  },
+  "env": {
+    "mocha": true
   }
 };
