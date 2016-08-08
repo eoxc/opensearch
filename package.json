@@ -4,11 +4,8 @@
   "description": "An OpenSearch client supporting the geo and time extensions.",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha --compilers js:babel-register test/setup/node.js test/unit/**/*.js",
-    "test:watch": "npm run test -- -w",
-
-    "test:browser": "mochify --transform babelify test/unit/*js",
-    "test:browser:watch": "npm run test:browser -- -w",
+    "test": "mochify --transform babelify test/unit/*js",
+    "test:watch": "npm run test:browser -- -w",
     "lint": "./node_modules/.bin/eslint src "
   },
   "repository": {
