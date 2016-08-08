@@ -27,6 +27,8 @@ export function parseXml(xmlStr) {
 export const namespaces = {
   os: 'http://a9.com/-/spec/opensearch/1.1/',
   parameters: 'http://a9.com/-/spec/opensearch/extensions/parameters/1.0/',
+  atom: 'http://www.w3.org/2005/Atom',
+  georss: 'http://www.georss.org/georss',
 };
 
 function resolver(prefix) {
