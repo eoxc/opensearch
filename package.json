@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "mochify --transform babelify test/unit/*js",
-    "test:watch": "npm run test:browser -- -w",
+    "test:watch": "npm run test -- -w",
     "lint": "./node_modules/.bin/eslint src "
   },
   "repository": {
