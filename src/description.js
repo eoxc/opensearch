@@ -13,8 +13,8 @@ export class OpenSearchDescription {
     this.urls = xPathArray(xmlDoc, '/os:Url').map((node) => OpenSearchUrl.fromNode(node));
   }
 
-  getURL(mimeType) {
+  getURL(mimeType, method = 'GET') {
     // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/find#Polyfill
-    return this.urls.find((url) => url.mimeType === mimeType);
+    return this.urls.find((url) => url.mimeType === mimeType && url.method === method);
   }
 }

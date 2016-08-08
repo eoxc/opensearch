@@ -1,3 +1,6 @@
+import 'isomorphic-fetch';
+
+
 export function parseURLQuery(url) {
   const search = (url.indexOf('?') === -1) ? url : url.substring(url.indexOf('?'));
   const vars = search.split('&');
@@ -51,4 +54,13 @@ export function xPathArray(node, xpath, nsResolver) {
     }
   }
   return array;
+}
+
+export function fetchAndCheck(...args) {
+  fetch(...args).then((response) => {
+    if (response.status >= 400) {
+      throw new Error('Bad response from server');
+    }
+    return response;
+  });
 }
