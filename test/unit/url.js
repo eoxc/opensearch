@@ -10,8 +10,8 @@ describe('OpenSearchUrl', () => {
       'http://example.com/?q={searchTerms}&start={startIndex?}&format=rss'
     );
 
-    it('should have the correct mimeType', () => {
-      expect(url.mimeType).to.equal('application/atom+xml');
+    it('should have the correct type', () => {
+      expect(url.type).to.equal('application/atom+xml');
     });
 
     it('should have the correct parameters', () => {
@@ -36,8 +36,8 @@ describe('OpenSearchUrl', () => {
 
     const url = OpenSearchUrl.fromNode(parseXml(xml).documentElement);
 
-    it('should have the correct mimeType', () => {
-      expect(url.mimeType).to.equal('text/html');
+    it('should have the correct type', () => {
+      expect(url.type).to.equal('text/html');
     });
 
     it('should have the correct method', () => {
