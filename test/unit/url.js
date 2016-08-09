@@ -75,6 +75,17 @@ describe('OpenSearchUrl', () => {
     `;
     const urlPost = OpenSearchUrl.fromNode(parseXml(xml).documentElement);
 
+    const urlGeo = OpenSearchUrl.fromTemplateUrl(
+      'application/rss+xml',
+      'http://example.com/?q={searchTerms}&pw={startPage?}&bbox={geo:box?}&geom={geo:geometry?}&format=rss'
+    );
+
+    const xmlTime = `<Url type="text/html"
+       template="http://example.com/?q={searchTerms}&amp;dtstart={time:start?}&amp;dtend={time:end?}&amp;pw={startPage?}"/>`;
+
+    const urlTime = OpenSearchUrl.fromNode(parseXml(xmlTime).documentElement);
+
+
     it('should work with referencing parameter name', () => {
       const request = urlGet.createRequest({ q: 'search terms', start: 1 });
       expect(request).to.deep.equal([
@@ -109,9 +120,42 @@ describe('OpenSearchUrl', () => {
       ]);
     });
 
+    it('should work with Geo parameters', () => {
+      const request = urlGeo.createRequest({
+        searchTerms: 'search terms',
+        pw: 1,
+        bbox: [-180, -90, 180, 90],
+        'geo:geometry': {
+          type: 'LineString',
+          coordinates: [
+            [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0],
+          ],
+        },
+      });
+      expect(request).to.deep.equal([
+        'http://example.com/?q=search terms&pw=1&bbox=-180,-90,180,90&geom=LINESTRING (102 0, 103 1, 104 0, 105 1)&format=rss',
+      ]);
+    });
+
+    it('should work with Time parameters', () => {
+      const request = urlTime.createRequest({
+        searchTerms: 'search terms',
+        dtstart: new Date('1996-12-19T16:39:57-08:00'),
+        'time:end': new Date('2007-03-11T02:28:00Z'),
+      });
+      expect(request).to.deep.equal([
+        'http://example.com/?q=search terms&dtstart=1996-12-20T00:39:57.000Z&dtend=2007-03-11T02:28:00.000Z&pw=',
+      ]);
+    });
+
     it('should fail on invalid parameters', () => {
       expect(() => urlGet.createRequest({ invalid: 123 }))
-      .to.throw('Invalid parameter \'invalid\'.');
+        .to.throw('Invalid parameter \'invalid\'.');
+    });
+
+    it('should fail on missing parameters', () => {
+      expect(() => urlGet.createRequest({}))
+        .to.throw('Missing mandatory parameters: searchTerms');
     });
   });
 });
