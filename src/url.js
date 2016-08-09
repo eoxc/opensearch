@@ -1,5 +1,5 @@
 import parse from 'url-parse';
-
+import { stringify } from 'wellknown';
 import { xPathArray, resolver, namespaces, getAttributeNS } from './utils';
 
 
@@ -36,25 +36,68 @@ export class OpenSearchUrl {
 
   }
 
+  serializeParameter(type, value) {
+    switch (type) {
+      case 'time:start':
+      case 'time:end':
+        if (value instanceof Date) {
+          return value.toISOString();
+        }
+      case 'geo:box':
+        if (Array.isArray(value)) {
+          return value.join(',');
+        }
+      case 'geo:geometry':
+        return stringify(value);
+      default:
+        break;
+    }
+    return value;
+  }
+
   createRequest(parameters) {
     // check parameters
     for (const key in parameters) {
       if (!this.parametersByType.hasOwnProperty(key)
           && !this.parametersByName.hasOwnProperty(key)) {
-        throw new Error(`Invalid parameter '${key}'.'`);
+        throw new Error(`Invalid parameter '${key}'.`);
       }
     }
 
+    const missingMandatoryParameters = this.parameters.filter(
+      (parameter) => parameter.mandatory
+        && !parameters.hasOwnProperty(parameter.name)
+        && !parameters.hasOwnProperty(parameter.type)
+    ).map((parameter) => parameter.type);
+
+    const missingOptionalParameters = this.parameters.filter(
+      (parameter) => !parameter.mandatory
+        && !parameters.hasOwnProperty(parameter.name)
+        && !parameters.hasOwnProperty(parameter.type)
+    ).map((parameter) => parameter.type);
+
+    if (missingMandatoryParameters.length) {
+      throw new Error(`Missing mandatory parameters: ${missingMandatoryParameters.join(', ')}`)
+    }
+
     if (this.method === 'GET') {
-      // TODO: insert parameters into URL template
+      // insert parameters into URL template
       let url = this.url;
       for (const key in parameters) {
         if (!parameters.hasOwnProperty(key)) {
           continue;
         }
         const type = (this.parametersByType[key] || this.parametersByName[key]).type;
-        url = url.replace(new RegExp(`{${type}[?]?}`), parameters[key]);
+        url = url.replace(
+          new RegExp(`{${type}[?]?}`),
+          this.serializeParameter(type, parameters[key])
+        );
       }
+
+      missingOptionalParameters.forEach(type => {
+        url = url.replace(new RegExp(`{${type}[?]?}`), '');
+      });
+
       return [url];
     }
     const formData = new FormData();
@@ -62,7 +105,8 @@ export class OpenSearchUrl {
       if (!parameters.hasOwnProperty(key)) {
         continue;
       }
-      formData.append(key, parameters[key]);
+      const type = (this.parametersByType[key] || this.parametersByName[key]).type;
+      formData.append(key, this.serializeParameter(type, parameters[key]));
     }
     return [this.url, { method: this.method, body: formData }];
   }
