@@ -1,5 +1,5 @@
 import { parseXml, xPath, xPathArray } from '../utils';
-import { parseGeometry } from './rss';
+import { parseGeometry, parseBox } from './rss';
 
 export class AtomFormat {
   static testType(type) {
@@ -11,30 +11,22 @@ export class AtomFormat {
     return xPathArray(xmlDoc, 'atom:entry').map((node) => {
       const entry = {
         id: xPath(node, 'atom:id/text()'),
-        title: xPath(node, 'atom:title/text()'),
-        updated: new Date(xPath(node, 'atom:updated/text()')),
-        content: xPath(node, 'atom:content/text()'),
-        // TODO: further fields
+        properties: {
+          title: xPath(node, 'atom:title/text()'),
+          updated: new Date(xPath(node, 'atom:updated/text()')),
+          content: xPath(node, 'atom:content/text()'),
+          // TODO: further fields
+        },
       };
-
-      const point = xPath(node, 'georss:point/text()');
-      if (point) {
-        entry.point = parseGeometry(point);
-      }
-
-      const line = xPath(node, 'georss:line/text()');
-      if (line) {
-        entry.line = parseGeometry(line);
-      }
 
       const box = xPath(node, 'georss:box/text()');
       if (box) {
-        entry.box = parseGeometry(box);
+        entry.bbox = parseBox(box);
       }
 
-      const polygon = xPath(node, 'georss:polygon/text()');
-      if (polygon) {
-        entry.polygon = parseGeometry(polygon);
+      const geometry = parseGeometry(node);
+      if (geometry) {
+        entry.geometry = geometry;
       }
 
       return entry;

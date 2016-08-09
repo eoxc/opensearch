@@ -57,7 +57,7 @@ const xmlGeo = `<feed xmlns:georss="http://www.georss.org/georss" xmlns:geo="htt
     <updated>2003-12-13T18:30:02Z</updated>
     <georss:box>0.000000 -135.000000 45.000000 -90.000000</georss:box>
   </entry>
-</feed>`
+</feed>`;
 
 describe('AtomFormat', () => {
   const format = new AtomFormat();
@@ -65,23 +65,27 @@ describe('AtomFormat', () => {
     it('should parse the entries of a simple example', () => {
       expect(format.parse(xmlSimple)).to.deep.equal([{
         id: 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a',
-        title: 'New York History',
-        updated: new Date('2003-12-13T18:30:02Z'),
-        content: `
+        properties: {
+          title: 'New York History',
+          updated: new Date('2003-12-13T18:30:02Z'),
+          content: `
       ... Harlem.NYC - A virtual tour and information on
       businesses ...  with historic photos of Columbia's own New York
       neighborhood ... Internet Resources for the City's History. ...
     `,
+        },
       }]);
     });
 
     it('should parse the entries of a geo example', () => {
       expect(format.parse(xmlGeo)).to.deep.equal([{
         id: 'dlr_fire_emission_dispersion_california_20160223_1',
-        title: 'dlr_fire_emission_dispersion_california_20160223_1',
-        updated: new Date('2003-12-13T18:30:02Z'),
-        box: [-135.0, 0.0, -90.0, 45.0],
-        content: '',
+        properties: {
+          title: 'dlr_fire_emission_dispersion_california_20160223_1',
+          updated: new Date('2003-12-13T18:30:02Z'),
+          content: '',
+        },
+        bbox: [-135.0, 0.0, -90.0, 45.0],
       }]);
     });
   });
