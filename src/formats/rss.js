@@ -42,10 +42,6 @@ export function parseGeometry(node) {
 }
 
 export class RSSFormat {
-  static testType(type) {
-    return type === 'application/atom+xml';
-  }
-
   parse(text) {
     const xmlDoc = parseXml(text).documentElement;
     return xPathArray(xmlDoc, 'channel/item').map((node) => {

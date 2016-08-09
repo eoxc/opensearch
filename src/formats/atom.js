@@ -2,10 +2,6 @@ import { parseXml, xPath, xPathArray } from '../utils';
 import { parseGeometry, parseBox } from './rss';
 
 export class AtomFormat {
-  static testType(type) {
-    return type === 'application/atom+xml';
-  }
-
   parse(text) {
     const xmlDoc = parseXml(text).documentElement;
     return xPathArray(xmlDoc, 'atom:entry').map((node) => {

@@ -32,8 +32,26 @@ export class OpenSearchUrl {
     });
   }
 
+  /**
+   * Checks whether this URL is compatible with the given parameters
+   */
   isCompatible(parameters) {
+    for (const key in parameters) {
+      if (!this.parametersByType.hasOwnProperty(key)
+          && !this.parametersByName.hasOwnProperty(key)) {
+        return false;
+      }
+    }
 
+    const missingMandatoryParameters = this.parameters.filter(
+      (parameter) => parameter.mandatory
+        && !parameters.hasOwnProperty(parameter.name)
+        && !parameters.hasOwnProperty(parameter.type)
+    );
+    if (missingMandatoryParameters.length) {
+      return false;
+    }
+    return true;
   }
 
   serializeParameter(type, value) {

@@ -2,19 +2,21 @@ import { AtomFormat } from './atom';
 import { RSSFormat } from './rss';
 import { GeoJSONFormat } from './geojson';
 
-const formatRegistry = [AtomFormat, RSSFormat, GeoJSONFormat];
+const formatRegistry = {
+  'application/atom+xml': AtomFormat,
+  'application/rss+xml': RSSFormat,
+  'application/json': GeoJSONFormat,
+  'application/vnd.geo+json': GeoJSONFormat,
+};
 
-export function getFormat(type) {
-  for (let i = 0; i < formatRegistry.length; ++i) {
-    if (formatRegistry[i].testType(type)) {
-      return new formatRegistry[i];
-    }
-  }
-  throw new Error(`Unsupported type '${type}'.`);
+export function getSupportedTypes() {
+  return Object.keys(formatRegistry);
 }
 
-export function registerFormat(format) {
-  if (formatRegistry.indexOf(format) !== -1) {
-    formatRegistry.push(format);
-  }
+export function getFormat(type) {
+  return formatRegistry[type];
+}
+
+export function registerFormat(type, format) {
+  formatRegistry[type] = format;
 }

@@ -23,8 +23,8 @@ export class OpenSearchDescription {
     this.longName = xPath(xmlDoc, 'os:LongName/text()', resolver);
     this.images = xPathArray(xmlDoc, 'os:Image', resolver).map((node) => {
       return {
-        height: parseInt(node.getAttribute('height')),
-        width: parseInt(node.getAttribute('width')),
+        height: parseInt(node.getAttribute('height'), 10),
+        width: parseInt(node.getAttribute('width'), 10),
         type: node.getAttribute('type'),
         url: node.textContent,
       };
@@ -32,7 +32,7 @@ export class OpenSearchDescription {
     this.queries = xPathArray(xmlDoc, 'os:Query', resolver).map((node) => {
       const query = { role: node.getAttribute('role') };
       for (let i = 0; i < node.attributes.length; ++i) {
-        let attribute = node.attributes[i];
+        const attribute = node.attributes[i];
         query[attribute.name] = attribute.value;
       }
       return query;
@@ -46,9 +46,13 @@ export class OpenSearchDescription {
     this.inputEncoding = xPath(xmlDoc, 'os:InputEncoding/text()', resolver);
   }
 
-  getUrl(type, method = 'GET') {
-    const urls = this.urls.filter((url) => url.type === type && url.method === method);
-    // TODO: filter according to parameters
+  getUrl(parameters, type, method = 'GET') {
+    const urls = this.urls.filter(
+      (url) => (type === null || url.type === type) && url.method === method
+    ).filter(
+      (url) => url.isCompatible(parameters)
+    );
+
     return urls[0];
   }
 }
