@@ -75,7 +75,7 @@ export function getAttributeNS(node, namespace, name, defaultValue) {
 }
 
 export function fetchAndCheck(...args) {
-  fetch(...args).then((response) => {
+  return fetch(...args).then((response) => {
     if (response.status >= 400) {
       throw new Error('Bad response from server');
     }

@@ -3,7 +3,6 @@ import { OpenSearchService } from '../../src/service.js';
 describe('OpenSearchService', () => {
   describe('constructor', () => {
 
-
   });
     // describe('Greet function', () => {
     //     beforeEach(() => {

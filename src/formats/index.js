@@ -14,7 +14,11 @@ export function getSupportedTypes() {
 }
 
 export function getFormat(type) {
-  return formatRegistry[type];
+  const Format = formatRegistry[type];
+  if (Format) {
+    return new Format();
+  }
+  return null;
 }
 
 export function registerFormat(type, format) {

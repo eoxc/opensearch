@@ -31,16 +31,18 @@ export class OpenSearchService {
     }
 
     // actually perform the search
-    fetchAndCheck(...url.createRequest(parameters)).then((response) => {
-      if (raw) {
-        return response;
-      }
+    return fetchAndCheck(...url.createRequest(parameters))
+      .then(response => response.text())
+      .then(response => {
+        if (raw) {
+          return response;
+        }
 
-      const format = getFormat(type);
-      if (!format) {
-        throw new Error(`Could not parse response of type '${type}'.`);
-      }
-      return format.parse(response);
-    });
+        const format = getFormat(type || url.type);
+        if (!format) {
+          throw new Error(`Could not parse response of type '${type}'.`);
+        }
+        return format.parse(response);
+      });
   }
 }
