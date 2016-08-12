@@ -4,11 +4,25 @@ import { OpenSearchDescription } from './description';
 import { fetchAndCheck } from './utils';
 import { getFormat, getSupportedTypes } from './formats/';
 
+/**
+ * Class to perform searches.
+ */
 export class OpenSearchService {
+  /**
+   * Create an OpenSearchDescription object
+   * @param {string} xml The string containing the desription XML
+   */
   constructor(osdd) {
     this.descriptionDocument = new OpenSearchDescription(osdd);
   }
 
+  /**
+   * Checks whether this URL is compatible with the given parameters
+   * @param {object} parameters An object mapping the name or type to the value
+   * @param {string} [type=null] The preferred transfer type.
+   * @param {boolean} [raw=false] Whether the response shall be parsed or returned raw.
+   * @returns {Promise<array>|Promise<Response>} The search result as a Promise
+   */
   search(parameters, type = null, raw = false) {
     let url = null;
     if (!type) {
@@ -31,7 +45,7 @@ export class OpenSearchService {
     }
 
     // actually perform the search
-    return fetchAndCheck(...url.createRequest(parameters))
+    return fetchAndCheck(url.createRequest(parameters))
       .then(response => response.text())
       .then(response => {
         if (raw) {

@@ -88,36 +88,36 @@ describe('OpenSearchUrl', () => {
 
     it('should work with referencing parameter name', () => {
       const request = urlGet.createRequest({ q: 'search terms', start: 1 });
-      expect(request).to.deep.equal([
-        'http://example.com/?q=search terms&start=1&format=rss',
-      ]);
+      expect(request).to.deep.equal(new Request(
+        'http://example.com/?q=search terms&start=1&format=rss'
+      ));
     });
 
     it('should work with referencing parameter type', () => {
       const request = urlGet.createRequest({ searchTerms: 'search terms', startIndex: 1 });
-      expect(request).to.deep.equal([
-        'http://example.com/?q=search terms&start=1&format=rss',
-      ]);
+      expect(request).to.deep.equal(new Request(
+        'http://example.com/?q=search terms&start=1&format=rss'
+      ));
     });
 
     it('should work with POST and referencing parameter name', () => {
       const request = urlPost.createRequest({ q: 'search terms', start: 1 });
-      expect(request).to.deep.equal([
+      expect(request).to.deep.equal(new Request(
         'http://example.com/search', {
           body: new FormData,
           method: 'POST',
-        },
-      ]);
+        }
+      ));
     });
 
     it('should work with POST and referencing parameter type', () => {
       const request = urlPost.createRequest({ searchTerms: 'search terms', startIndex: 1 });
-      expect(request).to.deep.equal([
+      expect(request).to.deep.equal(new Request(
         'http://example.com/search', {
           body: new FormData,
           method: 'POST',
-        },
-      ]);
+        }
+      ));
     });
 
     it('should work with Geo parameters', () => {
@@ -132,9 +132,9 @@ describe('OpenSearchUrl', () => {
           ],
         },
       });
-      expect(request).to.deep.equal([
-        'http://example.com/?q=search terms&pw=1&bbox=-180,-90,180,90&geom=LINESTRING (102 0, 103 1, 104 0, 105 1)&format=rss',
-      ]);
+      expect(request).to.deep.equal(new Request(
+        'http://example.com/?q=search terms&pw=1&bbox=-180,-90,180,90&geom=LINESTRING (102 0, 103 1, 104 0, 105 1)&format=rss'
+      ));
     });
 
     it('should work with Time parameters', () => {
@@ -143,9 +143,9 @@ describe('OpenSearchUrl', () => {
         dtstart: new Date('1996-12-19T16:39:57-08:00'),
         'time:end': new Date('2007-03-11T02:28:00Z'),
       });
-      expect(request).to.deep.equal([
-        'http://example.com/?q=search terms&dtstart=1996-12-20T00:39:57.000Z&dtend=2007-03-11T02:28:00.000Z&pw=',
-      ]);
+      expect(request).to.deep.equal(new Request(
+        'http://example.com/?q=search terms&dtstart=1996-12-20T00:39:57.000Z&dtend=2007-03-11T02:28:00.000Z&pw='
+      ));
     });
 
     it('should fail on invalid parameters', () => {

@@ -17,8 +17,26 @@ function isMandatory(value) {
   return typeRE.exec(value)[2] !== '?';
 }
 
+
+/**
+ * Class to parse a single URL of an OpenSearchDescription XML document and
+ * to create HTTP requests for searches.
+ */
 export class OpenSearchUrl {
-  constructor(type, url, parameters = [], method = 'GET', enctype = 'application/x-www-form-urlencoded') {
+  /**
+   * Create an OpenSearchUrl object
+   * @param {string} type The mime-type for the content the URL is referring to
+   * @param {string} url The URL template or base URL
+   * @param {array} parameters The template/request parameters of the URL
+   * @param {string} parameters[].name The parameters name
+   * @param {string} parameters[].type The parameters type
+   * @param {boolean} parameters[].type Whether the parameter is mandatory
+   * @param {string} [method='GET'] The HTTP method
+   * @param {string} [enctype='application/x-www-form-urlencoded'] The encoding type
+   * @returns {OpenSearchUrl} The constructed OpenSearchUrl object
+   */
+  constructor(type, url, parameters = [], method = 'GET',
+              enctype = 'application/x-www-form-urlencoded') {
     this.type = type;
     this.url = url;
     this.method = method;
@@ -34,6 +52,8 @@ export class OpenSearchUrl {
 
   /**
    * Checks whether this URL is compatible with the given parameters
+   * @param {object} parameters An object mapping the name or type to the value
+   * @returns {boolean} Whether or not the URL is compatible with the given parameters
    */
   isCompatible(parameters) {
     for (const key in parameters) {
@@ -61,10 +81,12 @@ export class OpenSearchUrl {
         if (value instanceof Date) {
           return value.toISOString();
         }
+        break;
       case 'geo:box':
         if (Array.isArray(value)) {
           return value.join(',');
         }
+        break;
       case 'geo:geometry':
         return stringify(value);
       default:
@@ -73,6 +95,11 @@ export class OpenSearchUrl {
     return value;
   }
 
+  /**
+   * Create a request for the given parameters
+   * @param {object} parameters An object mapping the name or type to the value
+   * @returns {Request} The request object for the fetch function
+   */
   createRequest(parameters) {
     // check parameters
     for (const key in parameters) {
@@ -95,7 +122,7 @@ export class OpenSearchUrl {
     ).map((parameter) => parameter.type);
 
     if (missingMandatoryParameters.length) {
-      throw new Error(`Missing mandatory parameters: ${missingMandatoryParameters.join(', ')}`)
+      throw new Error(`Missing mandatory parameters: ${missingMandatoryParameters.join(', ')}`);
     }
 
     if (this.method === 'GET') {
@@ -116,7 +143,7 @@ export class OpenSearchUrl {
         url = url.replace(new RegExp(`{${type}[?]?}`), '');
       });
 
-      return [url];
+      return new Request(url);
     }
     const formData = new FormData();
     for (const key in parameters) {
@@ -126,9 +153,14 @@ export class OpenSearchUrl {
       const type = (this.parametersByType[key] || this.parametersByName[key]).type;
       formData.append(key, this.serializeParameter(type, parameters[key]));
     }
-    return [this.url, { method: this.method, body: formData }];
+    return new Request(this.url, { method: this.method, body: formData });
   }
 
+  /**
+   * Construct a {@link OpenSearchUrl} from a DOMNode
+   * @param {DOMNode} node The DOM node from the OpenSearchDescription XML document
+   * @returns {OpenSearchUrl} The constructed OpenSearchUrl object
+   */
   static fromNode(node) {
     const parameterNodes = xPathArray(node, 'parameters:Parameter', resolver);
     const method = getAttributeNS(node, namespaces.parameters, 'method');
@@ -155,7 +187,16 @@ export class OpenSearchUrl {
     );
   }
 
-  static fromTemplateUrl(type, templateUrl, method = 'GET', enctype = 'application/x-www-form-urlencoded') {
+  /**
+   * Construct a {@link OpenSearchUrl} from a template URL
+   * @param {string} type The mime-type
+   * @param {string} templateUrl The template URL string.
+   * @param {string} [method='GET'] The HTTP method
+   * @param {string} [enctype='application/x-www-form-urlencoded'] The encoding type
+   * @returns {OpenSearchUrl} The constructed OpenSearchUrl object
+   */
+  static fromTemplateUrl(type, templateUrl, method = 'GET',
+                         enctype = 'application/x-www-form-urlencoded') {
     const parameters = [];
     const parsed = parse(templateUrl, true);
 
@@ -163,24 +204,15 @@ export class OpenSearchUrl {
       if (!parsed.query.hasOwnProperty(name)) {
         continue;
       }
-      const type = parseType(parsed.query[name]);
-      if (type) {
+      const parameterType = parseType(parsed.query[name]);
+      if (parameterType) {
         parameters.push({
           name,
-          type,
+          type: parameterType,
           mandatory: isMandatory(parsed.query[name]),
         });
       }
     }
     return new OpenSearchUrl(type, templateUrl, parameters, method, enctype);
-  }
-}
-
-export class OpenSearchUrlParameter {
-  constructor(name, type, optional = true, options = null) {
-    this.name = name;
-    this.type = type;
-    this.optional = optional;
-    this.options = options;
   }
 }

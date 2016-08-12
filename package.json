@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mochify --transform babelify --transform [ stringify --extensions [.xml] ] test/unit/*js test/unit/formats/*js",
     "test:watch": "npm run test -- -w",
-    "lint": "./node_modules/.bin/eslint src "
+    "lint": "eslint src",
+    "docs": "jsdoc -r src README.md -d docs"
   },
   "repository": {
     "type": "git",

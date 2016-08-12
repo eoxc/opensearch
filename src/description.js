@@ -1,27 +1,27 @@
 import { OpenSearchUrl } from './url';
 import { parseXml, xPath, xPathArray } from './utils';
 
-function resolver(prefix) {
-  if (prefix === 'os') {
-    return 'http://a9.com/-/spec/opensearch/1.1/';
-  }
-  return null;
-}
-
+/**
+ * Class to parse the OpenSearchDescription XML document and get the saerch URLs
+ */
 export class OpenSearchDescription {
+  /**
+   * Create an OpenSearchDescription object
+   * @param {string} xml The string containing the desription XML
+   */
   constructor(xml) {
     // parse XML and get metadata and list of URLs
     const xmlDoc = parseXml(xml).documentElement;
 
-    this.shortName = xPath(xmlDoc, 'os:ShortName/text()', resolver);
-    this.description = xPath(xmlDoc, 'os:Description/text()', resolver);
-    this.tags = xPath(xmlDoc, 'os:Tags/text()', resolver);
-    this.contact = xPath(xmlDoc, 'os:Contact/text()', resolver);
-    this.urls = xPathArray(xmlDoc, 'os:Url', resolver).map(
+    this.shortName = xPath(xmlDoc, 'os:ShortName/text()');
+    this.description = xPath(xmlDoc, 'os:Description/text()');
+    this.tags = xPath(xmlDoc, 'os:Tags/text()');
+    this.contact = xPath(xmlDoc, 'os:Contact/text()');
+    this.urls = xPathArray(xmlDoc, 'os:Url').map(
       (node) => OpenSearchUrl.fromNode(node)
     );
-    this.longName = xPath(xmlDoc, 'os:LongName/text()', resolver);
-    this.images = xPathArray(xmlDoc, 'os:Image', resolver).map((node) => {
+    this.longName = xPath(xmlDoc, 'os:LongName/text()');
+    this.images = xPathArray(xmlDoc, 'os:Image').map((node) => {
       return {
         height: parseInt(node.getAttribute('height'), 10),
         width: parseInt(node.getAttribute('width'), 10),
@@ -29,7 +29,7 @@ export class OpenSearchDescription {
         url: node.textContent,
       };
     });
-    this.queries = xPathArray(xmlDoc, 'os:Query', resolver).map((node) => {
+    this.queries = xPathArray(xmlDoc, 'os:Query').map((node) => {
       const query = { role: node.getAttribute('role') };
       for (let i = 0; i < node.attributes.length; ++i) {
         const attribute = node.attributes[i];
@@ -37,16 +37,23 @@ export class OpenSearchDescription {
       }
       return query;
     });
-    this.developer = xPath(xmlDoc, 'os:Developer/text()', resolver);
-    this.attribution = xPath(xmlDoc, 'os:Attribution/text()', resolver);
-    this.syndicationRight = xPath(xmlDoc, 'os:SyndicationRight/text()', resolver);
-    this.adultContent = xPath(xmlDoc, 'os:AdultContent/text()', resolver);
-    this.language = xPath(xmlDoc, 'os:Language/text()', resolver);
-    this.outputEncoding = xPath(xmlDoc, 'os:OutputEncoding/text()', resolver);
-    this.inputEncoding = xPath(xmlDoc, 'os:InputEncoding/text()', resolver);
+    this.developer = xPath(xmlDoc, 'os:Developer/text()');
+    this.attribution = xPath(xmlDoc, 'os:Attribution/text()');
+    this.syndicationRight = xPath(xmlDoc, 'os:SyndicationRight/text()');
+    this.adultContent = xPath(xmlDoc, 'os:AdultContent/text()');
+    this.language = xPath(xmlDoc, 'os:Language/text()');
+    this.outputEncoding = xPath(xmlDoc, 'os:OutputEncoding/text()');
+    this.inputEncoding = xPath(xmlDoc, 'os:InputEncoding/text()');
   }
 
-  getUrl(parameters, type, method = 'GET') {
+  /**
+   * Get the {@link OpenSearchUrl} for the given parameters, mime type and HTTP
+   * method.
+   * @param {object} parameters An object containing parameters for the URL
+   * @param {string} [type=null] The mime-type for the URL
+   * @param {string} [method='GET'] The preferred HTTP method of the URL
+   */
+  getUrl(parameters, type = null, method = 'GET') {
     const urls = this.urls.filter(
       (url) => (type === null || url.type === type) && url.method === method
     ).filter(
