@@ -45,6 +45,7 @@
     "fetch-mock": "^5.0.5",
     "mochify": "^2.18.1",
     "sinon": "^1.17.5",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "stringify": "^5.1.0"
   }
 }
