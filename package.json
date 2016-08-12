@@ -4,7 +4,7 @@
   "description": "An OpenSearch client supporting the geo and time extensions.",
   "main": "src/index.js",
   "scripts": {
-    "test": "mochify --transform babelify test/unit/*js test/unit/formats/*js",
+    "test": "mochify --transform babelify --transform [ stringify --extensions [.xml] ] test/unit/*js test/unit/formats/*js",
     "test:watch": "npm run test -- -w",
     "lint": "./node_modules/.bin/eslint src "
   },
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",
+    "babel-plugin-transform-object-assign": "^6.8.0",
     "babel-preset-es2015": "^6.13.1",
     "babel-register": "^6.11.6",
     "babelify": "^7.3.0",
@@ -40,6 +41,7 @@
     "eslint-plugin-import": "^1.10.2",
     "eslint-plugin-jsx-a11y": "^1.2.0",
     "eslint-plugin-react": "^5.2.2",
+    "fetch-mock": "^5.0.5",
     "mochify": "^2.18.1",
     "sinon": "^1.17.5",
     "sinon-chai": "^2.8.0"
