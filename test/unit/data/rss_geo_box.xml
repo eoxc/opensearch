@@ -1,0 +1,29 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:time="http://a9.com/-/opensearch/extensions/time/1.0/" xmlns:gml="http://www.opengis.net/gml" xmlns:geo="http://a9.com/-/opensearch/extensions/geo/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:georss="http://www.georss.org/georss" version="2.0">
+  <channel>
+    <title>dlr_fire_emission_dispersion_california_20160223 Search</title>
+    <link>http://ows.eox.at/testbed-12_staging/eoxserver/opensearch/collections/dlr_fire_emission_dispersion_california_20160223/rss/?q=&amp;count=1&amp;startIndex=&amp;bbox=&amp;geom=&amp;lon=&amp;lat=&amp;r=&amp;georel=&amp;uid=&amp;start=&amp;timerel=</link>
+    <description/>
+    <opensearch:totalResults>32</opensearch:totalResults>
+    <opensearch:startIndex>0</opensearch:startIndex>
+    <opensearch:itemsPerPage>1</opensearch:itemsPerPage>
+    <opensearch:Query time:relation="" geo:geometry="" time:start="" geo:radius="" role="request" geo:lat="" geo:relation="" geo:lon="" geo:uid="" geo:box=""/>
+    <atom:link href="http://ows.eox.at/testbed-12_staging/eoxserver/opensearch/" type="application/opensearchdescription+xml" rel="search"/>
+    <atom:link href="http://ows.eox.at/testbed-12_staging/eoxserver/opensearch/collections/dlr_fire_emission_dispersion_california_20160223/rss/?q=&amp;count=1&amp;startIndex=&amp;bbox=&amp;geom=&amp;lon=&amp;lat=&amp;r=&amp;georel=&amp;uid=&amp;start=&amp;timerel=" type="application/rss+xml" rel="self"/>
+    <atom:link href="http://ows.eox.at/testbed-12_staging/eoxserver/opensearch/collections/dlr_fire_emission_dispersion_california_20160223/rss/?count=1&amp;uid=&amp;timerel=&amp;lon=&amp;q=&amp;start=&amp;georel=&amp;r=&amp;geom=&amp;bbox=&amp;lat=" type="application/rss+xml" rel="first"/>
+    <atom:link href="http://ows.eox.at/testbed-12_staging/eoxserver/opensearch/collections/dlr_fire_emission_dispersion_california_20160223/rss/?count=1&amp;uid=&amp;timerel=&amp;lon=&amp;startIndex=32&amp;q=&amp;start=&amp;georel=&amp;r=&amp;geom=&amp;bbox=&amp;lat=" type="application/rss+xml" rel="last"/>
+    <atom:link href="http://ows.eox.at/testbed-12_staging/eoxserver/opensearch/collections/dlr_fire_emission_dispersion_california_20160223/rss/?count=1&amp;uid=&amp;timerel=&amp;lon=&amp;startIndex=1&amp;q=&amp;start=&amp;georel=&amp;r=&amp;geom=&amp;bbox=&amp;lat=" type="application/rss+xml" rel="next"/>
+    <item>
+      <title>dlr_fire_emission_dispersion_california_20160223_1</title>
+      <link>http://ows.eox.at/testbed-12_staging/eoxserver/ows?service=WCS&amp;version=2.0.1&amp;request=DescribeCoverage&amp;coverageId=dlr_fire_emission_dispersion_california_20160223_1</link>
+      <guid>http://ows.eox.at/testbed-12_staging/eoxserver/opensearch/collections/dlr_fire_emission_dispersion_california_20160223/rss/?q=&amp;count=1&amp;startIndex=&amp;bbox=&amp;geom=&amp;lon=&amp;lat=&amp;r=&amp;georel=&amp;uid=&amp;start=&amp;timerel=</guid>
+      <atom:link href="http://ows.eox.at/testbed-12_staging/eoxserver/ows?service=WCS&amp;version=2.0.1&amp;request=GetCoverage&amp;coverageId=dlr_fire_emission_dispersion_california_20160223_1" rel="enclosure"/>
+      <atom:link href="http://ows.eox.at/testbed-12_staging/eoxserver/ows?service=WCS&amp;version=2.0.1&amp;request=DescribeCoverage&amp;coverageId=dlr_fire_emission_dispersion_california_20160223_1" rel="via"/>
+      <gml:TimePeriod gml:id="dlr_fire_emission_dispersion_california_20160223_1">
+        <gml:beginPosition>2016-02-23T03:00:00Z</gml:beginPosition>
+        <gml:endPosition>2016-02-23T03:00:00Z</gml:endPosition>
+      </gml:TimePeriod>
+      <georss:box>0.000000 -135.000000 45.000000 -90.000000</georss:box>
+      <dc:date>2016-02-23T03:00:00Z</dc:date>
+    </item>
+  </channel>
+</rss>

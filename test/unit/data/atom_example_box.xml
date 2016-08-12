@@ -1,0 +1,22 @@
+<feed xmlns:georss="http://www.georss.org/georss" xmlns:geo="http://a9.com/-/opensearch/extensions/geo/1.0/" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:time="http://a9.com/-/opensearch/extensions/time/1.0/" xmlns="http://www.w3.org/2005/Atom">
+  <id>http://ows.eox.at/testbed-12/eoxserver/opensearch/collections/dlr_fire_emission_dispersion_california_20160223/atom/</id>
+  <title>dlr_fire_emission_dispersion_california_20160223 Search</title>
+  <link href="http://ows.eox.at/testbed-12/eoxserver/opensearch/collections/dlr_fire_emission_dispersion_california_20160223/atom/" rel="self"/>
+  <description/>
+  <opensearch:totalResults>32</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <opensearch:itemsPerPage>32</opensearch:itemsPerPage>
+  <opensearch:Query role="request"/>
+  <link href="http://ows.eox.at/testbed-12/eoxserver/opensearch/" type="application/opensearchdescription+xml" rel="search"/>
+  <link href="http://ows.eox.at/testbed-12/eoxserver/opensearch/collections/dlr_fire_emission_dispersion_california_20160223/atom/" type="application/atom+xml" rel="self"/>
+  <link href="http://ows.eox.at/testbed-12/eoxserver/opensearch/collections/dlr_fire_emission_dispersion_california_20160223/atom/?" type="application/atom+xml" rel="first"/>
+  <link href="http://ows.eox.at/testbed-12/eoxserver/opensearch/collections/dlr_fire_emission_dispersion_california_20160223/atom/?startIndex=32" type="application/atom+xml" rel="last"/>
+  <entry>
+    <title>dlr_fire_emission_dispersion_california_20160223_1</title>
+    <id>dlr_fire_emission_dispersion_california_20160223_1</id>
+    <link href="http://ows.eox.at/testbed-12/eoxserver/ows?service=WCS&amp;version=2.0.1&amp;request=GetCoverage&amp;coverageId=dlr_fire_emission_dispersion_california_20160223_1" rel="enclosure"/>
+    <link href="http://ows.eox.at/testbed-12/eoxserver/ows?service=WCS&amp;version=2.0.1&amp;request=DescribeCoverage&amp;coverageId=dlr_fire_emission_dispersion_california_20160223_1" rel="via"/>
+    <updated>2003-12-13T18:30:02Z</updated>
+    <georss:box>0.000000 -135.000000 45.000000 -90.000000</georss:box>
+  </entry>
+</feed>
