@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: url.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: url.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import parse from 'url-parse';
+import { stringify } from 'wellknown';
+import { xPathArray, resolver, namespaces, getAttributeNS } from './utils';
+
+
+const typeRE = /{([a-zA-Z:]+)([?]?)}/;
+
+function parseType(value) {
+  const match = typeRE.exec(value);
+  if (match) {
+    return match[1];
+  }
+  return null;
+}
+
+function isMandatory(value) {
+  return typeRE.exec(value)[2] !== '?';
+}
+
+
+/**
+ * Class to parse a single URL of an OpenSearchDescription XML document and
+ * to create HTTP requests for searches.
+ */
+export class OpenSearchUrl {
+  /**
+   * Create an OpenSearchUrl object
+   * @param {string} type The mime-type for the content the URL is referring to
+   * @param {string} url The URL template or base URL
+   * @param {array} parameters The template/request parameters of the URL
+   * @param {string} parameters[].name The parameters name
+   * @param {string} parameters[].type The parameters type
+   * @param {boolean} parameters[].type Whether the parameter is mandatory
+   * @param {string} [method='GET'] The HTTP method
+   * @param {string} [enctype='application/x-www-form-urlencoded'] The encoding type
+   * @returns {OpenSearchUrl} The constructed OpenSearchUrl object
+   */
+  constructor(type, url, parameters = [], method = 'GET',
+              enctype = 'application/x-www-form-urlencoded') {
+    this.type = type;
+    this.url = url;
+    this.method = method;
+    this.enctype = enctype;
+    this.parameters = parameters;
+    this.parametersByName = {};
+    this.parametersByType = {};
+    parameters.forEach(param => {
+      this.parametersByType[param.type] = param;
+      this.parametersByName[param.name] = param;
+    });
+  }
+
+  /**
+   * Checks whether this URL is compatible with the given parameters
+   * @param {object} parameters An object mapping the name or type to the value
+   * @returns {boolean} Whether or not the URL is compatible with the given parameters
+   */
+  isCompatible(parameters) {
+    for (const key in parameters) {
+      if (!this.parametersByType.hasOwnProperty(key)
+          &amp;&amp; !this.parametersByName.hasOwnProperty(key)) {
+        return false;
+      }
+    }
+
+    const missingMandatoryParameters = this.parameters.filter(
+      (parameter) => parameter.mandatory
+        &amp;&amp; !parameters.hasOwnProperty(parameter.name)
+        &amp;&amp; !parameters.hasOwnProperty(parameter.type)
+    );
+    if (missingMandatoryParameters.length) {
+      return false;
+    }
+    return true;
+  }
+
+  serializeParameter(type, value) {
+    switch (type) {
+      case 'time:start':
+      case 'time:end':
+        if (value instanceof Date) {
+          return value.toISOString();
+        }
+        break;
+      case 'geo:box':
+        if (Array.isArray(value)) {
+          return value.join(',');
+        }
+        break;
+      case 'geo:geometry':
+        return stringify(value);
+      default:
+        break;
+    }
+    return value;
+  }
+
+  /**
+   * Create a request for the given parameters
+   * @param {object} parameters An object mapping the name or type to the value
+   * @returns {Request} The request object for the fetch function
+   */
+  createRequest(parameters) {
+    // check parameters
+    for (const key in parameters) {
+      if (!this.parametersByType.hasOwnProperty(key)
+          &amp;&amp; !this.parametersByName.hasOwnProperty(key)) {
+        throw new Error(`Invalid parameter '${key}'.`);
+      }
+    }
+
+    const missingMandatoryParameters = this.parameters.filter(
+      (parameter) => parameter.mandatory
+        &amp;&amp; !parameters.hasOwnProperty(parameter.name)
+        &amp;&amp; !parameters.hasOwnProperty(parameter.type)
+    ).map((parameter) => parameter.type);
+
+    const missingOptionalParameters = this.parameters.filter(
+      (parameter) => !parameter.mandatory
+        &amp;&amp; !parameters.hasOwnProperty(parameter.name)
+        &amp;&amp; !parameters.hasOwnProperty(parameter.type)
+    ).map((parameter) => parameter.type);
+
+    if (missingMandatoryParameters.length) {
+      throw new Error(`Missing mandatory parameters: ${missingMandatoryParameters.join(', ')}`);
+    }
+
+    if (this.method === 'GET') {
+      // insert parameters into URL template
+      let url = this.url;
+      for (const key in parameters) {
+        if (!parameters.hasOwnProperty(key)) {
+          continue;
+        }
+        const type = (this.parametersByType[key] || this.parametersByName[key]).type;
+        url = url.replace(
+          new RegExp(`{${type}[?]?}`),
+          this.serializeParameter(type, parameters[key])
+        );
+      }
+
+      missingOptionalParameters.forEach(type => {
+        url = url.replace(new RegExp(`{${type}[?]?}`), '');
+      });
+
+      return new Request(url);
+    }
+    const formData = new FormData();
+    for (const key in parameters) {
+      if (!parameters.hasOwnProperty(key)) {
+        continue;
+      }
+      const type = (this.parametersByType[key] || this.parametersByName[key]).type;
+      formData.append(key, this.serializeParameter(type, parameters[key]));
+    }
+    return new Request(this.url, { method: this.method, body: formData });
+  }
+
+  /**
+   * Construct a {@link OpenSearchUrl} from a DOMNode
+   * @param {DOMNode} node The DOM node from the OpenSearchDescription XML document
+   * @returns {OpenSearchUrl} The constructed OpenSearchUrl object
+   */
+  static fromNode(node) {
+    const parameterNodes = xPathArray(node, 'parameters:Parameter', resolver);
+    const method = getAttributeNS(node, namespaces.parameters, 'method');
+    const enctype = getAttributeNS(node, namespaces.parameters, 'enctype');
+
+    if (parameterNodes.length) {
+      const parameters = parameterNodes.map((parameterNode) => {
+        const type = parseType(parameterNode.getAttribute('value'));
+        return {
+          name: parameterNode.getAttribute('name'),
+          type,
+          mandatory: parameterNode.getAttribute('minimum') !== '0',
+        };
+      });
+
+      return new OpenSearchUrl(
+        node.getAttribute('type'), node.getAttribute('template'), parameters,
+        method, enctype
+      );
+    }
+    return OpenSearchUrl.fromTemplateUrl(
+      node.getAttribute('type'), node.getAttribute('template'),
+      method, enctype
+    );
+  }
+
+  /**
+   * Construct a {@link OpenSearchUrl} from a template URL
+   * @param {string} type The mime-type
+   * @param {string} templateUrl The template URL string.
+   * @param {string} [method='GET'] The HTTP method
+   * @param {string} [enctype='application/x-www-form-urlencoded'] The encoding type
+   * @returns {OpenSearchUrl} The constructed OpenSearchUrl object
+   */
+  static fromTemplateUrl(type, templateUrl, method = 'GET',
+                         enctype = 'application/x-www-form-urlencoded') {
+    const parameters = [];
+    const parsed = parse(templateUrl, true);
+
+    for (const name in parsed.query) {
+      if (!parsed.query.hasOwnProperty(name)) {
+        continue;
+      }
+      const parameterType = parseType(parsed.query[name]);
+      if (parameterType) {
+        parameters.push({
+          name,
+          type: parameterType,
+          mandatory: isMandatory(parsed.query[name]),
+        });
+      }
+    }
+    return new OpenSearchUrl(type, templateUrl, parameters, method, enctype);
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="-_.html"></a></li><li><a href="OpenSearchDescription.html">OpenSearchDescription</a></li><li><a href="OpenSearchService.html">OpenSearchService</a></li><li><a href="OpenSearchUrl.html">OpenSearchUrl</a></li></ul><h3>Global</h3><ul><li><a href="global.html#discover">discover</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Aug 12 2016 22:19:31 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
