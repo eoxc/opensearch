@@ -29,6 +29,7 @@ export const namespaces = {
   parameters: 'http://a9.com/-/spec/opensearch/extensions/parameters/1.0/',
   atom: 'http://www.w3.org/2005/Atom',
   georss: 'http://www.georss.org/georss',
+  dc: 'http://purl.org/dc/elements/1.1/',
 };
 
 function resolver(prefix) {

@@ -1,7 +1,7 @@
 import { parseXml, xPath, xPathArray } from '../utils';
-import { parseGeometry, parseBox } from './rss';
+import { BaseFeedFormat } from './base';
 
-export class AtomFormat {
+export class AtomFormat extends BaseFeedFormat {
   parse(text) {
     const xmlDoc = parseXml(text).documentElement;
     return xPathArray(xmlDoc, 'atom:entry').map((node) => {
@@ -15,14 +15,21 @@ export class AtomFormat {
         },
       };
 
-      const box = xPath(node, 'georss:box/text()');
+      const box = this.parseBox(node);
       if (box) {
-        entry.bbox = parseBox(box);
+        entry.bbox = box;
       }
 
-      const geometry = parseGeometry(node);
+      const geometry = this.parseGeometry(node);
       if (geometry) {
         entry.geometry = geometry;
+
+        // TODO: calculate bbox as-well, if not already defined
+      }
+
+      const date = this.parseDate(node);
+      if (date) {
+        entry.properties.time = date;
       }
 
       return entry;
