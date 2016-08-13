@@ -12,20 +12,23 @@ function swapAndPair(values) {
 }
 
 function parseGeometryValues(value) {
-  const values = value.split(/\s+/).map(parseFloat);
+  const values = value.trim().split(/\s+/).map(parseFloat);
   return swapAndPair(values);
 }
 
 function parseGmlLine(node, resolver) {
   return swapAndPair(xPath(node, 'gml:posList/text()', resolver)
+    .trim()
     .split(/\s+/)
     .map(parseFloat));
 }
 
 function parseGmlPolygon(node, resolver) {
-  const exterior = parseGmlLine(xPath(node, 'gml:exterior/gml:LinearRing', resolver));
+  const exterior = parseGmlLine(
+    xPath(node, 'gml:exterior/gml:LinearRing', resolver), resolver
+  );
   const interiors = xPathArray(node, 'gml:interior/gml:LinearRing', resolver)
-    .map(parseGmlLine);
+    .map(interior => parseGmlLine(interior, resolver));
   return [exterior, ...interiors];
 }
 
@@ -40,6 +43,7 @@ function parseGml(node) {
   switch (node.localName) {
     case 'Point': {
       const coordinates = xPath(node, 'gml:pos/text()', resolver)
+        .trim()
         .split(/\s+/)
         .map(parseFloat);
       return {
@@ -55,7 +59,7 @@ function parseGml(node) {
       };
     }
     case 'Polygon': {
-      const coordinates = parseGmlPolygon(node);
+      const coordinates = parseGmlPolygon(node, resolver);
       return {
         type: 'Polygon',
         coordinates,
@@ -87,7 +91,7 @@ export class BaseFeedFormat {
     const polygon = xPath(node, 'georss:polygon/text()');
 
     if (where) {
-      return parseGml(where.firstChild);
+      return parseGml(xPath(where, '*'));
     } else if (point) {
       return {
         type: 'Point',
