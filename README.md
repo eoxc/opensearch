@@ -13,9 +13,12 @@ To install the client framework perform the following steps:
 
 ## Usage
 
-TODO!
+The easiest way to use the library is by using the `discover` function, which
+takes a single parameter, the URL of the OpenSearch service:
 
     import { discover } from 'opensearch';
+    // or: var discover = require('opensearch').discover;
+
     discover('http://example.com/search').then((service) => {
       service.search({ searchTerms: 'Test', startIndex: 1 }).then((results) => {
         // your results:
@@ -34,7 +37,7 @@ To run the unit tests do
 
     npm test
 
-To run the unit tests continuously do
+To run the unit tests continuously, run the following command:
 
     npm run test:watch
 
