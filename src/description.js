@@ -21,7 +21,7 @@ export class OpenSearchDescription {
       (node) => OpenSearchUrl.fromNode(node)
     );
     this.longName = xPath(xmlDoc, 'os:LongName/text()');
-    this.images = xPathArray(xmlDoc, 'os:Image').map((node) => {
+    this.images = xPathArray(xmlDoc, 'os:Image').map((node) => { // eslint-disable-line
       return {
         height: parseInt(node.getAttribute('height'), 10),
         width: parseInt(node.getAttribute('width'), 10),
