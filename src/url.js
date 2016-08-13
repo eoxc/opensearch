@@ -56,11 +56,15 @@ export class OpenSearchUrl {
    * @returns {boolean} Whether or not the URL is compatible with the given parameters
    */
   isCompatible(parameters) {
-    for (const key in parameters) {
+    let compatible = true;
+    Object.keys(parameters).forEach(key => {
       if (!this.parametersByType.hasOwnProperty(key)
           && !this.parametersByName.hasOwnProperty(key)) {
-        return false;
+        compatible = false;
       }
+    });
+    if (!compatible) {
+      return false;
     }
 
     const missingMandatoryParameters = this.parameters.filter(
@@ -102,12 +106,12 @@ export class OpenSearchUrl {
    */
   createRequest(parameters) {
     // check parameters
-    for (const key in parameters) {
+    Object.keys(parameters).forEach(key => {
       if (!this.parametersByType.hasOwnProperty(key)
           && !this.parametersByName.hasOwnProperty(key)) {
         throw new Error(`Invalid parameter '${key}'.`);
       }
-    }
+    });
 
     const missingMandatoryParameters = this.parameters.filter(
       (parameter) => parameter.mandatory
@@ -128,16 +132,14 @@ export class OpenSearchUrl {
     if (this.method === 'GET') {
       // insert parameters into URL template
       let url = this.url;
-      for (const key in parameters) {
-        if (!parameters.hasOwnProperty(key)) {
-          continue;
-        }
+
+      Object.keys(parameters).forEach(key => {
         const type = (this.parametersByType[key] || this.parametersByName[key]).type;
         url = url.replace(
           new RegExp(`{${type}[?]?}`),
           this.serializeParameter(type, parameters[key])
         );
-      }
+      });
 
       missingOptionalParameters.forEach(type => {
         url = url.replace(new RegExp(`{${type}[?]?}`), '');
@@ -145,14 +147,13 @@ export class OpenSearchUrl {
 
       return new Request(url);
     }
+
+    // for POST
     const formData = new FormData();
-    for (const key in parameters) {
-      if (!parameters.hasOwnProperty(key)) {
-        continue;
-      }
+    Object.keys(parameters).forEach(key => {
       const type = (this.parametersByType[key] || this.parametersByName[key]).type;
       formData.append(key, this.serializeParameter(type, parameters[key]));
-    }
+    });
     return new Request(this.url, { method: this.method, body: formData });
   }
 
@@ -200,10 +201,7 @@ export class OpenSearchUrl {
     const parameters = [];
     const parsed = parse(templateUrl, true);
 
-    for (const name in parsed.query) {
-      if (!parsed.query.hasOwnProperty(name)) {
-        continue;
-      }
+    Object.keys(parsed.query).forEach(name => {
       const parameterType = parseType(parsed.query[name]);
       if (parameterType) {
         parameters.push({
@@ -212,7 +210,7 @@ export class OpenSearchUrl {
           mandatory: isMandatory(parsed.query[name]),
         });
       }
-    }
+    });
     return new OpenSearchUrl(type, templateUrl, parameters, method, enctype);
   }
 }

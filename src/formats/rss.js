@@ -1,7 +1,15 @@
 import { parseXml, xPath, xPathArray } from '../utils';
-import { BaseFeedFormat } from './base';
+import { BaseFeedFormat } from './base';
 
+/**
+ * Class to parse RSS feeds
+ */
 export class RSSFormat extends BaseFeedFormat {
+  /**
+   * Parse the given XML.
+   * @param {string} text The text containing the XML to parse.
+   * @returns {object[]} The parsed records
+   */
   parse(text) {
     const xmlDoc = parseXml(text).documentElement;
     return xPathArray(xmlDoc, 'channel/item').map((node) => {
