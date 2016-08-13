@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: index.js</title>
+    <title>JSDoc: Source: formats/geojson.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: index.js</h1>
+    <h1 class="page-title">Source: formats/geojson.js</h1>
 
     
 
@@ -26,22 +26,22 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { OpenSearchService } from './service';
-import { fetchAndCheck } from './utils';
-
-/**
- * @module opensearch
- */
-
-/**
- * Accesses an OpenSearch service and discovers it.
- * @param {object} string The URL to find the OpenSearchDescription XML document
- * @returns {Promise&lt;OpenSearchService>} The {@link OpenSearchService} as a Promise
- */
-export function discover(url) {
-  return fetchAndCheck(url)
-    .then(response => response.text())
-    .then(response => new OpenSearchService(response));
+            <pre class="prettyprint source linenums"><code>export class GeoJSONFormat {
+  /**
+   * Parse the given JSON.
+   * @param {Response} response The response containing the JSON to parse.
+   * @returns {object[]} The parsed records
+   */
+  parse(response) {
+    response.json().then(result => result.features.map(item => {
+      if (!item.hasOwnProperty('id') &amp;&amp; item.properties.hasOwnProperty('id')) {
+        return Object.assign({
+          id: item.properties.id,
+        }, item);
+      }
+      return item;
+    }));
+  }
 }
 </code></pre>
         </article>
