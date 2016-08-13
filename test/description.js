@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { OpenSearchDescription } from '../../src/description.js';
+import { OpenSearchDescription } from '../src/description.js';
 
 const xml = require('./data/OSDD_example.xml');
 

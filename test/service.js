@@ -1,11 +1,9 @@
 import { expect } from 'chai';
-import { OpenSearchService } from '../../src/service.js';
+import { OpenSearchService } from '../src/service.js';
 import fetchMock from 'fetch-mock';
 
 const osddExample = require('./data/OSDD_example.xml');
 const atomExample = require('./data/atom_example.xml');
-
-require('es6-promise').polyfill();
 
 describe('OpenSearchService', () => {
   before(() => {

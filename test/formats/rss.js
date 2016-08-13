@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 
-import { RSSFormat } from '../../../src/formats/rss.js';
+import { RSSFormat } from '../../src/formats/rss.js';
 
-const rssSimple = require('./../data/rss_simple.xml');
-const rssBox = require('./../data/rss_geo_box.xml');
+const rssSimple = require('../data/rss_simple.xml');
+const rssBox = require('../data/rss_geo_box.xml');
 
 
 describe('RSSFormat', () => {

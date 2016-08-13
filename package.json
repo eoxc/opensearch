@@ -4,10 +4,10 @@
   "description": "An OpenSearch client supporting the geo and time extensions.",
   "main": "src/index.js",
   "scripts": {
-    "test": "mochify --transform babelify --transform [ stringify --extensions [.xml] ] test/unit/*js test/unit/formats/*js",
+    "test": "mochify --transform babelify --transform [ stringify --extensions [.xml] ] test/*js test/formats/*js",
     "test:watch": "npm run test -- -w",
     "lint": "eslint src",
-    "docs": "jsdoc -r src README.md -d docs"
+    "docs": "rm -rf docs/*; jsdoc -r src README.md -d docs"
   },
   "repository": {
     "type": "git",

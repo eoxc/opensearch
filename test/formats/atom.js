@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 
-import { AtomFormat } from '../../../src/formats/atom.js';
+import { AtomFormat } from '../../src/formats/atom.js';
 
-const atomExample = require('./../data/atom_example.xml');
-const xmlGeoBox = require('./../data/atom_example_box.xml');
+const atomExample = require('../data/atom_example.xml');
+const xmlGeoBox = require('../data/atom_example_box.xml');
 
 
 describe('AtomFormat', () => {

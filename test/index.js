@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import { discover } from '../../src/index.js';
-require('es6-promise').polyfill();
+import { discover } from '../src/index.js';
 
 import fetchMock from 'fetch-mock';
 

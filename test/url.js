@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { OpenSearchUrl } from '../../src/url.js';
-import { parseXml } from '../../src/utils.js';
+import { OpenSearchUrl } from '../src/url.js';
+import { parseXml } from '../src/utils.js';
 
 describe('OpenSearchUrl', () => {
 
