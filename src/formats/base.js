@@ -71,7 +71,7 @@ function parseGml(node) {
     }
     case 'MultiSurface': {
       const coordinates = xPathArray(node, 'gml:surfaceMembers/gml:Polygon', resolver)
-        .map(parseGmlPolygon);
+        .map(polygon => parseGmlPolygon(polygon, resolver));
       return {
         type: 'MultiPolygon',
         coordinates,

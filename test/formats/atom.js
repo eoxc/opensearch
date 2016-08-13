@@ -7,7 +7,7 @@ const xmlGeoBox = require('../data/atom_example_box.xml');
 const atomGmlPoint = require('../data/atom_gml_point.xml');
 const atomGmlLineString = require('../data/atom_gml_linestring.xml');
 const atomGmlPolygon = require('../data/atom_gml_polygon.xml');
-
+const atomGmlMultiSurface = require('../data/atom_gml_multisurface.xml');
 
 describe('AtomFormat', () => {
   const format = new AtomFormat();
@@ -90,6 +90,26 @@ describe('AtomFormat', () => {
           geometry: {
             type: 'Polygon',
             coordinates: [[[-110.45, 45.256], [-109.48, 46.46], [-109.86, 43.84], [-110.45, 45.256]]],
+          },
+        }]);
+      });
+    });
+
+    it('should parse the entries of a gml multisurface example', () => {
+      return format.parse(new Response(atomGmlMultiSurface)).then(result => {
+        expect(result).to.deep.equal([{
+          id: 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a',
+          properties: {
+            title: 'M 3.2, Mona Passage',
+            updated: new Date('2005-08-17T07:02:32Z'),
+            content: '',
+          },
+          geometry: {
+            type: 'MultiPolygon',
+            coordinates: [
+              [[[-110.45, 45.256], [-109.48, 46.46], [-109.86, 43.84], [-110.45, 45.256]]],
+              [[[-110.45, 45.256], [-109.48, 46.46], [-109.86, 43.84], [-110.45, 45.256]]],
+            ],
           },
         }]);
       });
