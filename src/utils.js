@@ -36,14 +36,16 @@ function resolver(prefix) {
   return namespaces[prefix];
 }
 
-export function xPath(node, xpath) {
+export function xPath(node, xpath, customResolver) {
   const doc = node.ownerDocument;
   const text = xpath.indexOf('text()') !== -1 || xpath.indexOf('@') !== -1;
   if (text) {
-    return doc.evaluate(xpath, node, resolver, XPathResult.STRING_TYPE, null).stringValue;
+    return doc.evaluate(
+      xpath, node, customResolver || resolver, XPathResult.STRING_TYPE, null
+    ).stringValue;
   }
   const result = doc.evaluate(
-    xpath, node, resolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null
+    xpath, node, customResolver || resolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null
   );
   if (result.snapshotLength === 0) {
     return null;
@@ -51,10 +53,10 @@ export function xPath(node, xpath) {
   return result.snapshotItem(0);
 }
 
-export function xPathArray(node, xpath) {
+export function xPathArray(node, xpath, customResolver) {
   const doc = node.ownerDocument;
   const result = doc.evaluate(
-    xpath, node, resolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null
+    xpath, node, customResolver || resolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null
   );
   const text = xpath.indexOf('text()') !== -1 || xpath.indexOf('@') !== -1;
   const array = new Array(result.snapshotLength);

@@ -1,26 +1,94 @@
-import { xPath } from '../utils';
+import { xPath, xPathArray } from '../utils';
 
-function parseGeometryValues(value) {
-  const values = value.split(/\s+/).map(parseFloat);
+function swapAndPair(values) {
   const out = [];
 
   for (let i = 0; i < values.length; i += 2) {
     const lat = values[i];
-    values[i] = values[i + 1];
-    values[i + 1] = lat;
-    out.push([values[i + 1], values[i]]);
+    const lon = values[i + 1];
+    out.push([lon, lat]);
   }
   return out;
 }
 
+function parseGeometryValues(value) {
+  const values = value.split(/\s+/).map(parseFloat);
+  return swapAndPair(values);
+}
+
+function parseGmlLine(node, resolver) {
+  return swapAndPair(xPath(node, 'gml:posList/text()', resolver)
+    .split(/\s+/)
+    .map(parseFloat));
+}
+
+function parseGmlPolygon(node, resolver) {
+  const exterior = parseGmlLine(xPath(node, 'gml:exterior/gml:LinearRing', resolver));
+  const interiors = xPathArray(node, 'gml:interior/gml:LinearRing', resolver)
+    .map(parseGmlLine);
+  return [exterior, ...interiors];
+}
+
+function parseGml(node) {
+  const resolver = (prefix) => {
+    if (prefix === 'gml') {
+      return node.namespaceURI;
+    }
+    return null;
+  };
+
+  switch (node.localName) {
+    case 'Point': {
+      const coordinates = xPath(node, 'gml:pos/text()', resolver)
+        .split(/\s+/)
+        .map(parseFloat);
+      return {
+        type: 'Point',
+        coordinates: [coordinates[1], coordinates[0]],
+      };
+    }
+    case 'LineString': {
+      const coordinates = parseGmlLine(node, resolver);
+      return {
+        type: 'LineString',
+        coordinates,
+      };
+    }
+    case 'Polygon': {
+      const coordinates = parseGmlPolygon(node);
+      return {
+        type: 'Polygon',
+        coordinates,
+      };
+    }
+    case 'Envelope': {
+      // TODO:
+      break;
+    }
+    case 'MultiSurface': {
+      const coordinates = xPathArray(node, 'gml:surfaceMembers/gml:Polygon', resolver)
+        .map(parseGmlPolygon);
+      return {
+        type: 'MultiPolygon',
+        coordinates,
+      };
+    }
+    default:
+      break;
+  }
+  return null;
+}
 
 export class BaseFeedFormat {
   parseGeometry(node) {
+    const where = xPath(node, 'georss:where');
     const point = xPath(node, 'georss:point/text()');
     const line = xPath(node, 'georss:line/text()');
     const polygon = xPath(node, 'georss:polygon/text()');
 
-    if (point) {
+    if (where) {
+      return parseGml(where.firstChild);
+    } else if (point) {
       return {
         type: 'Point',
         geometry: parseGeometryValues(point)[0],

@@ -46,7 +46,6 @@ export class OpenSearchService {
 
     // actually perform the search
     return fetchAndCheck(url.createRequest(parameters))
-      .then(response => response.text())
       .then(response => {
         if (raw) {
           return response;

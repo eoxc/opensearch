@@ -7,39 +7,41 @@ import { BaseFeedFormat } from './base';
 export class RSSFormat extends BaseFeedFormat {
   /**
    * Parse the given XML.
-   * @param {string} text The text containing the XML to parse.
+   * @param {Response} response The response containing the XML to parse.
    * @returns {object[]} The parsed records
    */
-  parse(text) {
-    const xmlDoc = parseXml(text).documentElement;
-    return xPathArray(xmlDoc, 'channel/item').map((node) => {
-      const item = {
-        id: xPath(node, 'guid/text()'),
-        properties: {
-          title: xPath(node, 'title/text()'),
-          content: xPath(node, 'description/text()'),
-          // TODO: further fields + geometry
-        },
-      };
+  parse(response) {
+    return response.text().then(text => {
+      const xmlDoc = parseXml(text).documentElement;
+      return xPathArray(xmlDoc, 'channel/item').map((node) => {
+        const item = {
+          id: xPath(node, 'guid/text()'),
+          properties: {
+            title: xPath(node, 'title/text()'),
+            content: xPath(node, 'description/text()'),
+            // TODO: further fields + geometry
+          },
+        };
 
-      const box = this.parseBox(node);
-      if (box) {
-        item.bbox = box;
-      }
+        const box = this.parseBox(node);
+        if (box) {
+          item.bbox = box;
+        }
 
-      const geometry = this.parseGeometry(node);
-      if (geometry) {
-        item.geometry = geometry;
+        const geometry = this.parseGeometry(node);
+        if (geometry) {
+          item.geometry = geometry;
 
-        // TODO: calculate bbox as-well, if not already defined
-      }
+          // TODO: calculate bbox as-well, if not already defined
+        }
 
-      const date = this.parseDate(node);
-      if (date) {
-        item.properties.time = date;
-      }
+        const date = this.parseDate(node);
+        if (date) {
+          item.properties.time = date;
+        }
 
-      return item;
+        return item;
+      });
     });
   }
 }
