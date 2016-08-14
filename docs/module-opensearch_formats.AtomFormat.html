@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: index.js</title>
+    <title>JSDoc: Class: .AtomFormat</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,35 +17,130 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: index.js</h1>
+    <h1 class="page-title">Class: .AtomFormat</h1>
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>import { OpenSearchService } from './service';
-import { fetchAndCheck } from './utils';
+        <h2>
+            <span class="ancestors"><a href="module-opensearch_formats.html">opensearch/formats</a>.</span>.AtomFormat</h2>
+        
+    
+</header>
 
-/**
- * @module opensearch
- */
+<article>
+    <div class="container-overview">
+    
+        
 
-/**
- * Accesses an OpenSearch service and discovers it.
- * @param {object} string The URL to find the OpenSearchDescription XML document
- * @returns {Promise&lt;OpenSearchService>} The {@link OpenSearchService} as a Promise
- */
-export function discover(url) {
-  return fetchAndCheck(url)
-    .then(response => response.text())
-    .then(response => new OpenSearchService(response));
-}
-</code></pre>
-        </article>
-    </section>
+    
+
+    <h4 class="name" id=".AtomFormat"><span class="type-signature"></span>new .AtomFormat<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Class to parse Atom feeds
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="formats_atom.js.html">formats/atom.js</a>, <a href="formats_atom.js.html#line4">line 4</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
