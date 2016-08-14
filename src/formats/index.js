@@ -2,9 +2,25 @@ import { AtomFormat } from './atom';
 import { RSSFormat } from './rss';
 import { GeoJSONFormat } from './geojson';
 
+
 /**
  * @module opensearch/formats
  */
+
+ /**
+  * @typedef SearchResult
+  * @type Object
+  * @property {int} [totalResults] The total amount of matched records
+  * @property {int} [startIndex] The start index of this response
+  * @property {int} [itemsPerPage] The number of items per page of results
+  * @property {object} [query] The query of this result
+  * @property {object[]} [links] Relevant links of this result
+  * @property {object[]} records The parsed records
+  * @property {string} records[].id The id of the record
+  * @property {object} records[].properties The parsed properties of the record
+  * @property {object} [records[].geometry] The parsed record geometry
+  * @property {float[]} [records[].bbox] The parsed record geometry
+  */
 
 const formatRegistry = {};
 

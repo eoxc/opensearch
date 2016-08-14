@@ -3,17 +3,18 @@ import { BaseFeedFormat } from './base';
 
 /**
  * Class to parse RSS feeds
+ * @constructor RSSFormat
  */
 export class RSSFormat extends BaseFeedFormat {
   /**
    * Parse the given XML.
-   * @param {Response} response The response containing the XML to parse.
-   * @returns {object[]} The parsed records
+   * @param {Response} response The {@link https://developer.mozilla.org/en-US/docs/Web/API/Response Response} object containing the XML to parse.
+   * @returns {SearchResult} The parsed search result
    */
   parse(response) {
     return response.text().then(text => {
       const xmlDoc = parseXml(text).documentElement;
-      return xPathArray(xmlDoc, 'channel/item').map((node) => {
+      const records = xPathArray(xmlDoc, 'channel/item').map((node) => {
         const item = {
           id: xPath(node, 'guid/text()'),
           properties: {
@@ -42,6 +43,15 @@ export class RSSFormat extends BaseFeedFormat {
 
         return item;
       });
+
+      return {
+        totalResults: parseInt(xPath(xmlDoc, 'channel/os:totalResults/text()'), 10),
+        startIndex: parseInt(xPath(xmlDoc, 'channel/os:startIndex/text()'), 10),
+        itemsPerPage: parseInt(xPath(xmlDoc, 'channel/os:itemsPerPage/text()'), 10),
+        query: {}, // TODO:
+        links: [],  // TODO:
+        records,
+      };
     });
   }
 }

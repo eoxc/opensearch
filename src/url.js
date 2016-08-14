@@ -17,7 +17,6 @@ function isMandatory(value) {
   return typeRE.exec(value)[2] !== '?';
 }
 
-
 /**
  * Class to parse a single URL of an OpenSearchDescription XML document and
  * to create HTTP requests for searches.
@@ -99,10 +98,14 @@ export class OpenSearchUrl {
     return value;
   }
 
+
+
   /**
    * Create a request for the given parameters
    * @param {object} parameters An object mapping the name or type to the value
-   * @returns {Request} The request object for the fetch function
+   * @returns {Request} The {@link https://developer.mozilla.org/en-US/docs/Web/API/Request Request}
+   *                    object for the
+   *                    {@link https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API Fetch API}
    */
   createRequest(parameters) {
     // check parameters

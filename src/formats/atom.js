@@ -3,17 +3,18 @@ import { BaseFeedFormat } from './base';
 
 /**
  * Class to parse Atom feeds
+ * @constructor AtomFormat
  */
 export class AtomFormat extends BaseFeedFormat {
   /**
    * Parse the given XML.
-   * @param {Response} response The Response object containing the XML to parse.
-   * @returns {object[]} The parsed records
+   * @param {Response} response The {@link https://developer.mozilla.org/en-US/docs/Web/API/Response Response} object containing the XML to parse.
+   * @returns {SearchResult} The parsed search result
    */
   parse(response) {
     return response.text().then(text => {
       const xmlDoc = parseXml(text).documentElement;
-      return xPathArray(xmlDoc, 'atom:entry').map((node) => {
+      const records =  xPathArray(xmlDoc, 'atom:entry').map((node) => {
         const entry = {
           id: xPath(node, 'atom:id/text()'),
           properties: {
@@ -43,6 +44,15 @@ export class AtomFormat extends BaseFeedFormat {
 
         return entry;
       });
+
+      return {
+        totalResults: parseInt(xPath(xmlDoc, 'os:totalResults/text()'), 10),
+        startIndex: parseInt(xPath(xmlDoc, 'os:startIndex/text()'), 10),
+        itemsPerPage: parseInt(xPath(xmlDoc, 'os:itemsPerPage/text()'), 10),
+        query: {}, // TODO:
+        links: [],  // TODO:
+        records,
+      };
     });
   }
 }
