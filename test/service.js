@@ -28,7 +28,7 @@ describe('OpenSearchService', () => {
     it('shall search', () => {
       return service.search({ searchTerms: 'terms' })
         .then((results) => {
-          expect(results).to.have.lengthOf(1);
+          expect(results.records).to.have.lengthOf(1);
         });
     });
   });
