@@ -17,6 +17,14 @@ export class OpenSearchService {
   }
 
   /**
+   * Get the underlying {@link OpenSearchDescription} object.
+   * @returns {OpenSearchDescription}
+   */
+  getDescription() {
+    return this.descriptionDocument;
+  }
+
+  /**
    * Checks whether this URL is compatible with the given parameters
    * @param {object} parameters An object mapping the name or type to the value
    * @param {string} [type=null] The preferred transfer type.

@@ -48,18 +48,37 @@ export class OpenSearchDescription {
 
   /**
    * Get the {@link OpenSearchUrl} for the given parameters, mime type and HTTP
-   * method.
-   * @param {object} parameters An object containing parameters for the URL
+   * method. Return the first matching URL or null.
+   * @param {object} [parameters=null] An object containing search parameters
    * @param {string} [type=null] The mime-type for the URL
    * @param {string} [method='GET'] The preferred HTTP method of the URL
+   * @returns {OpenSearchUrl|null}
    */
-  getUrl(parameters, type = null, method = 'GET') {
+  getUrl(...args) {
+    const urls = this.getUrls(...args);
+    if (urls.length) {
+      return urls[0];
+    }
+    return null;
+  }
+
+  /**
+   * Get an array of {@link OpenSearchUrl} for the given parameters, mime type and HTTP
+   * method.
+   * @param {object} [parameters=null] An object containing search parameters
+   * @param {string} [type=null] The mime-type for the URL
+   * @param {string} [method='GET'] The preferred HTTP method of the URL
+   * @returns {OpenSearchUrl[]}
+   */
+  getUrls(parameters = null, type = null, method = 'GET') {
     const urls = this.urls.filter(
       (url) => (type === null || url.type === type) && url.method === method
-    ).filter(
-      (url) => url.isCompatible(parameters)
     );
-
-    return urls[0];
+    if (parameters) {
+      return urls.filter(
+        (url) => url.isCompatible(parameters)
+      );
+    }
+    return urls;
   }
 }

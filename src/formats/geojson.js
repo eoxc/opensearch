@@ -7,7 +7,7 @@ export class GeoJSONFormat {
   /**
    * Parse the given JSON.
    * @param {Response} response The {@link https://developer.mozilla.org/en-US/docs/Web/API/Response Response} object containing the XML to parse.
-   * @returns {SearchResult} The parsed search result
+   * @returns {Promise<SearchResult>} The parsed search result as a promise
    */
   parse(response) {
     return response.json().then(result => {
