@@ -189,7 +189,7 @@
 
     
 
-    <h4 class="name" id="getUrl"><span class="type-signature"></span>getUrl<span class="signature">(parameters, type<span class="signature-attributes">opt</span>, method<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="getUrl"><span class="type-signature"></span>getUrl<span class="signature">(parameters<span class="signature-attributes">opt</span>, type<span class="signature-attributes">opt</span>, method<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="OpenSearchUrl.html">OpenSearchUrl</a>|null}</span></h4>
 
     
 
@@ -197,7 +197,7 @@
 
 <div class="description">
     Get the <a href="OpenSearchUrl.html">OpenSearchUrl</a> for the given parameters, mime type and HTTP
-method.
+method. Return the first matching URL or null;
 </div>
 
 
@@ -252,6 +252,8 @@ method.
             
                 <td class="attributes">
                 
+                    &lt;optional><br>
+                
 
                 
 
@@ -262,10 +264,12 @@ method.
             
                 <td class="default">
                 
+                    null
+                
                 </td>
             
 
-            <td class="description last">An object containing parameters for the URL</td>
+            <td class="description last">An object containing search parameters</td>
         </tr>
 
     
@@ -384,7 +388,7 @@ method.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="description.js.html">description.js</a>, <a href="description.js.html#line56">line 56</a>
+        <a href="description.js.html">description.js</a>, <a href="description.js.html#line57">line 57</a>
     </li></ul></dd>
     
 
@@ -407,6 +411,275 @@ method.
 
 
 
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="OpenSearchUrl.html">OpenSearchUrl</a></span>
+|
+
+<span class="param-type">null</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getUrls"><span class="type-signature"></span>getUrls<span class="signature">(parameters<span class="signature-attributes">opt</span>, type<span class="signature-attributes">opt</span>, method<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array:<a href="-_.html"></a>.&lt;<a href="OpenSearchUrl.html">OpenSearchUrl</a>:<a href="-_.html"></a>>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Get an array of <a href="OpenSearchUrl.html">OpenSearchUrl</a> for the given parameters, mime type and HTTP
+method.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>parameters</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">An object containing search parameters</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">The mime-type for the URL</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>method</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    'GET'
+                
+                </td>
+            
+
+            <td class="description last">The preferred HTTP method of the URL</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="description.js.html">description.js</a>, <a href="description.js.html#line73">line 73</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array:<a href="-_.html"></a>.&lt;<a href="OpenSearchUrl.html">OpenSearchUrl</a>:<a href="-_.html"></a>></span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -426,13 +699,13 @@ method.
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-opensearch.html">opensearch</a></li><li><a href="module-opensearch_formats.html">opensearch/formats</a></li></ul><h3>Classes</h3><ul><li><a href="-_.html"></a></li><li><a href="GeoJSONFormat.html">GeoJSONFormat</a></li><li><a href="module-opensearch_formats.AtomFormat.html">.AtomFormat</a></li><li><a href="OpenSearchDescription.html">OpenSearchDescription</a></li><li><a href="OpenSearchService.html">OpenSearchService</a></li><li><a href="OpenSearchUrl.html">OpenSearchUrl</a></li><li><a href="RSSFormat.html">RSSFormat</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-opensearch.html">opensearch</a></li><li><a href="module-opensearch_formats.html">opensearch/formats</a></li></ul><h3>Classes</h3><ul><li><a href="-_.html"></a></li><li><a href="AtomFormat.html">AtomFormat</a></li><li><a href="GeoJSONFormat.html">GeoJSONFormat</a></li><li><a href="OpenSearchDescription.html">OpenSearchDescription</a></li><li><a href="OpenSearchService.html">OpenSearchService</a></li><li><a href="OpenSearchUrl.html">OpenSearchUrl</a></li><li><a href="RSSFormat.html">RSSFormat</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sun Aug 14 2016 20:33:20 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon Aug 15 2016 22:28:38 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
