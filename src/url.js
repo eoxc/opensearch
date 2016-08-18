@@ -50,6 +50,15 @@ export class OpenSearchUrl {
   }
 
   /**
+   * Returns whether the URL has a template parameter of the given type
+   * @param {string} type The parameter type to check
+   * @returns {boolean} Whether the URL has a parameter of that type
+   */
+  hasParameter(type) {
+    return this.parametersByType.hasOwnProperty(type);
+  }
+
+  /**
    * Checks whether this URL is compatible with the given parameters
    * @param {object} parameters An object mapping the name or type to the value
    * @returns {boolean} Whether or not the URL is compatible with the given parameters
@@ -97,8 +106,6 @@ export class OpenSearchUrl {
     }
     return value;
   }
-
-
 
   /**
    * Create a request for the given parameters
