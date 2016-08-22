@@ -1,5 +1,5 @@
 {
-  "name": "opensearch",
+  "name": "opensearch-browser",
   "version": "0.0.1",
   "description": "An OpenSearch client supporting the geo and time extensions.",
   "main": "src/index.js",
