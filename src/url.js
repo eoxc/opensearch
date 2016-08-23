@@ -17,6 +17,47 @@ function isMandatory(value) {
   return typeRE.exec(value)[2] !== '?';
 }
 
+function eoValueToString(value, isDate = false) {
+  const convertDate = (dateValue) => {
+    if (dateValue instanceof Date) {
+      return dateValue.toISOString();
+    }
+    return value;
+  };
+
+  if (typeof value === 'number') {
+    return value.toString();
+  } else if (isDate && value instanceof Date) {
+    return convertDate(value);
+  } else if (Array.isArray(value)) {
+    if (isDate) {
+      return `{${value.map(convertDate).join(',')}}`;
+    }
+    return `{${value.join(',')}}`;
+  }
+
+  let left = null;
+  let right = null;
+  if (value.hasOwnProperty('min')) {
+    left = `[${isDate ? convertDate(value.min) : value.min}`;
+  } else if (value.hasOwnProperty('minExclusive')) {
+    left = `]${isDate ? convertDate(value.minExclusive) : value.minExclusive}`;
+  }
+
+  if (value.hasOwnProperty('max')) {
+    right = `${isDate ? convertDate(value.max) : value.max}]`;
+  } else if (value.hasOwnProperty('maxExclusive')) {
+    right = `${isDate ? convertDate(value.maxExclusive) : value.maxExclusive}[`;
+  }
+
+  if (left !== null && right !== null) {
+    return `${left},${right}`;
+  } else if (left !== null) {
+    return left;
+  }
+  return right;
+}
+
 /**
  * Class to parse a single URL of an OpenSearchDescription XML document and
  * to create HTTP requests for searches.
@@ -101,6 +142,26 @@ export class OpenSearchUrl {
         break;
       case 'geo:geometry':
         return stringify(value);
+      case 'eo:orbitNumber':
+      case 'eo:track':
+      case 'eo:frame':
+      case 'eo:cloudCover':
+      case 'eo:snowCover':
+      case 'eo:startTimeFromAscendingNode':
+      case 'eo:completionTimeFromAscendingNode':
+      case 'eo:illuminationAzimuthAngle':
+      case 'eo:illuminationZenithAngle':
+      case 'eo:illuminationElevationAngle':
+      case 'eo:minimumIncidenceAngle':
+      case 'eo:maximumIncidenceAngle':
+      case 'eo:dopplerFrequency':
+      case 'eo:incidenceAngleVariation':
+        return eoValueToString(value);
+      case 'eo:availabilityTime':
+      case 'eo:creationDate':
+      case 'eo:modificationDate':
+      case 'eo:processingDate':
+        return eoValueToString(value, true);
       default:
         break;
     }
