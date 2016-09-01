@@ -12,8 +12,8 @@ const atomGmlMultiSurface = require('../data/atom_gml_multisurface.xml');
 describe('AtomFormat', () => {
   const format = new AtomFormat();
   describe('parse', () => {
-    it('should parse the entries of a simple example', () => {
-      return format.parse(new Response(atomExample)).then(result => {
+    it('should parse the entries of a simple example', () => (
+      format.parse(new Response(atomExample)).then(result => {
         expect(result).to.deep.equal({
           totalResults: 4230000,
           startIndex: 21,
@@ -66,11 +66,11 @@ describe('AtomFormat', () => {
             },
           }],
         });
-      });
-    });
+      })
+    ));
 
-    it('should parse the entries of a geo example', () => {
-      return format.parse(new Response(xmlGeoBox)).then(result => {
+    it('should parse the entries of a geo example', () => (
+      format.parse(new Response(xmlGeoBox)).then(result => {
         expect(result).to.deep.equal({
           totalResults: 32,
           startIndex: 0,
@@ -113,11 +113,11 @@ describe('AtomFormat', () => {
             bbox: [-135.0, 0.0, -90.0, 45.0],
           }],
         });
-      });
-    });
+      })
+    ));
 
-    it('should parse the entries of a gml point example', () => {
-      return format.parse(new Response(atomGmlPoint)).then(result => {
+    it('should parse the entries of a gml point example', () => (
+      format.parse(new Response(atomGmlPoint)).then(result => {
         expect(result).to.deep.equal({
           totalResults: NaN,
           startIndex: NaN,
@@ -142,11 +142,11 @@ describe('AtomFormat', () => {
             },
           }],
         });
-      });
-    });
+      })
+    ));
 
-    it('should parse the entries of a gml linestring example', () => {
-      return format.parse(new Response(atomGmlLineString)).then(result => {
+    it('should parse the entries of a gml linestring example', () => (
+      format.parse(new Response(atomGmlLineString)).then(result => {
         expect(result).to.deep.equal({
           totalResults: NaN,
           startIndex: NaN,
@@ -171,11 +171,11 @@ describe('AtomFormat', () => {
             },
           }],
         });
-      });
-    });
+      })
+    ));
 
-    it('should parse the entries of a gml polygon example', () => {
-      return format.parse(new Response(atomGmlPolygon)).then(result => {
+    it('should parse the entries of a gml polygon example', () => (
+      format.parse(new Response(atomGmlPolygon)).then(result => {
         expect(result).to.deep.equal({
           totalResults: NaN,
           startIndex: NaN,
@@ -196,15 +196,17 @@ describe('AtomFormat', () => {
             },
             geometry: {
               type: 'Polygon',
-              coordinates: [[[-110.45, 45.256], [-109.48, 46.46], [-109.86, 43.84], [-110.45, 45.256]]],
+              coordinates: [
+                [[-110.45, 45.256], [-109.48, 46.46], [-109.86, 43.84], [-110.45, 45.256]],
+              ],
             },
           }],
         });
-      });
-    });
+      })
+    ));
 
-    it('should parse the entries of a gml multisurface example', () => {
-      return format.parse(new Response(atomGmlMultiSurface)).then(result => {
+    it('should parse the entries of a gml multisurface example', () => (
+      format.parse(new Response(atomGmlMultiSurface)).then(result => {
         expect(result).to.deep.equal({
           totalResults: NaN,
           startIndex: NaN,
@@ -232,7 +234,7 @@ describe('AtomFormat', () => {
             },
           }],
         });
-      });
-    });
+      })
+    ));
   });
 });

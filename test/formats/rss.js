@@ -5,12 +5,11 @@ import { RSSFormat } from '../../src/formats/rss.js';
 const rssSimple = require('../data/rss_simple.xml');
 const rssBox = require('../data/rss_geo_box.xml');
 
-
 describe('RSSFormat', () => {
   const format = new RSSFormat();
   describe('parse', () => {
-    it('should parse the entries of a simple example', () => {
-      return format.parse(new Response(rssSimple)).then(result => {
+    it('should parse the entries of a simple example', () => (
+      format.parse(new Response(rssSimple)).then(result => {
         expect(result).to.deep.equal({
           totalResults: 4230000,
           startIndex: 21,
@@ -30,11 +29,11 @@ describe('RSSFormat', () => {
             },
           }],
         });
-      });
-    });
+      })
+    ));
 
-    it('should parse the entries of a geo example', () => {
-      return format.parse(new Response(rssBox)).then(result => {
+    it('should parse the entries of a geo example', () => (
+      format.parse(new Response(rssBox)).then(result => {
         expect(result).to.deep.equal({
           totalResults: 32,
           startIndex: 0,
@@ -58,7 +57,7 @@ describe('RSSFormat', () => {
             bbox: [-135.0, 0.0, -90.0, 45.0],
           }],
         });
-      });
-    });
+      })
+    ));
   });
 });

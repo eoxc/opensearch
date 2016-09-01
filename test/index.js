@@ -1,3 +1,5 @@
+/* eslint no-unused-expressions: ["off"] */
+
 import { expect } from 'chai';
 import { discover } from '../src/index.js';
 

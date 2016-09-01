@@ -3,7 +3,6 @@ import { OpenSearchUrl } from '../src/url.js';
 import { parseXml } from '../src/utils.js';
 
 describe('OpenSearchUrl', () => {
-
   describe('fromTemplateUrl', () => {
     const url = OpenSearchUrl.fromTemplateUrl(
       'application/atom+xml',

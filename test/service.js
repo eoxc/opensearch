@@ -1,3 +1,5 @@
+/* eslint no-unused-expressions: ["off"] */
+
 import { expect } from 'chai';
 import { OpenSearchService } from '../src/service.js';
 import fetchMock from 'fetch-mock';
@@ -25,11 +27,11 @@ describe('OpenSearchService', () => {
 
   describe('#search()', () => {
     const service = new OpenSearchService(osddExample);
-    it('shall search', () => {
-      return service.search({ searchTerms: 'terms' })
+    it('shall search', () => (
+      service.search({ searchTerms: 'terms' })
         .then((results) => {
           expect(results.records).to.have.lengthOf(1);
-        });
-    });
+        })
+    ));
   });
 });
