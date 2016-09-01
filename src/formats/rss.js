@@ -20,6 +20,7 @@ export class RSSFormat extends BaseFeedFormat {
           properties: {
             title: xPath(node, 'title/text()'),
             content: xPath(node, 'description/text()'),
+            links: this.parseLinks(node),
             // TODO: further fields + geometry
           },
         };
@@ -49,7 +50,7 @@ export class RSSFormat extends BaseFeedFormat {
         startIndex: parseInt(xPath(xmlDoc, 'channel/os:startIndex/text()'), 10),
         itemsPerPage: parseInt(xPath(xmlDoc, 'channel/os:itemsPerPage/text()'), 10),
         query: {}, // TODO:
-        links: [],  // TODO:
+        links: this.parseLinks(xmlDoc),
         records,
       };
     });

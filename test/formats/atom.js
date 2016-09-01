@@ -18,13 +18,46 @@ describe('AtomFormat', () => {
           totalResults: 4230000,
           startIndex: 21,
           itemsPerPage: 10,
-          links: [],
+          links: [{
+            href: 'http://example.com/New+York+history',
+          }, {
+            href: 'http://example.com/New+York+History?pw=3',
+            rel: 'alternate',
+            type: 'text/html',
+          }, {
+            href: 'http://example.com/New+York+History?pw=3&format=atom',
+            rel: 'self',
+            type: 'application/atom+xml',
+          }, {
+            href: 'http://example.com/New+York+History?pw=1&format=atom',
+            rel: 'first',
+            type: 'application/atom+xml',
+          }, {
+            href: 'http://example.com/New+York+History?pw=2&format=atom',
+            rel: 'previous',
+            type: 'application/atom+xml',
+          }, {
+            href: 'http://example.com/New+York+History?pw=4&format=atom',
+            rel: 'next',
+            type: 'application/atom+xml',
+          }, {
+            href: 'http://example.com/New+York+History?pw=42299&format=atom',
+            rel: 'last',
+            type: 'application/atom+xml',
+          }, {
+            href: 'http://example.com/opensearchdescription.xml',
+            rel: 'search',
+            type: 'application/opensearchdescription+xml',
+          }],
           query: {},
           records: [{
             id: 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a',
             properties: {
               title: 'New York History',
               updated: new Date('2003-12-13T18:30:02Z'),
+              links: [{
+                href: 'http://www.columbia.edu/cu/lweb/eguids/amerihist/nyc.html',
+              }],
               content: `
       ... Harlem.NYC - A virtual tour and information on
       businesses ...  with historic photos of Columbia's own New York
@@ -34,7 +67,6 @@ describe('AtomFormat', () => {
           }],
         });
       });
-
     });
 
     it('should parse the entries of a geo example', () => {
@@ -43,7 +75,26 @@ describe('AtomFormat', () => {
           totalResults: 32,
           startIndex: 0,
           itemsPerPage: 32,
-          links: [],
+          links: [{
+            href: 'http://ows.eox.at/testbed-12/eoxserver/opensearch/collections/dlr_fire_emission_dispersion_california_20160223/atom/',
+            rel: 'self',
+          }, {
+            href: 'http://ows.eox.at/testbed-12/eoxserver/opensearch/',
+            rel: 'search',
+            type: 'application/opensearchdescription+xml',
+          }, {
+            href: 'http://ows.eox.at/testbed-12/eoxserver/opensearch/collections/dlr_fire_emission_dispersion_california_20160223/atom/',
+            rel: 'self',
+            type: 'application/atom+xml',
+          }, {
+            href: 'http://ows.eox.at/testbed-12/eoxserver/opensearch/collections/dlr_fire_emission_dispersion_california_20160223/atom/?',
+            rel: 'first',
+            type: 'application/atom+xml',
+          }, {
+            href: 'http://ows.eox.at/testbed-12/eoxserver/opensearch/collections/dlr_fire_emission_dispersion_california_20160223/atom/?startIndex=32',
+            rel: 'last',
+            type: 'application/atom+xml',
+          }],
           query: {},
           records: [{
             id: 'dlr_fire_emission_dispersion_california_20160223_1',
@@ -51,6 +102,13 @@ describe('AtomFormat', () => {
               title: 'dlr_fire_emission_dispersion_california_20160223_1',
               updated: new Date('2003-12-13T18:30:02Z'),
               content: '',
+              links: [{
+                href: 'http://ows.eox.at/testbed-12/eoxserver/ows?service=WCS&version=2.0.1&request=GetCoverage&coverageId=dlr_fire_emission_dispersion_california_20160223_1',
+                rel: 'enclosure',
+              }, {
+                href: 'http://ows.eox.at/testbed-12/eoxserver/ows?service=WCS&version=2.0.1&request=DescribeCoverage&coverageId=dlr_fire_emission_dispersion_california_20160223_1',
+                rel: 'via',
+              }],
             },
             bbox: [-135.0, 0.0, -90.0, 45.0],
           }],
@@ -64,7 +122,9 @@ describe('AtomFormat', () => {
           totalResults: NaN,
           startIndex: NaN,
           itemsPerPage: NaN,
-          links: [],
+          links: [{
+            href: 'http://example.org/',
+          }],
           query: {},
           records: [{
             id: 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a',
@@ -72,6 +132,9 @@ describe('AtomFormat', () => {
               title: 'M 3.2, Mona Passage',
               updated: new Date('2005-08-17T07:02:32Z'),
               content: '',
+              links: [{
+                href: 'http://example.org/2005/09/09/atom01',
+              }],
             },
             geometry: {
               type: 'Point',
@@ -88,7 +151,9 @@ describe('AtomFormat', () => {
           totalResults: NaN,
           startIndex: NaN,
           itemsPerPage: NaN,
-          links: [],
+          links: [{
+            href: 'http://example.org/',
+          }],
           query: {},
           records: [{
             id: 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a',
@@ -96,6 +161,9 @@ describe('AtomFormat', () => {
               title: 'M 3.2, Mona Passage',
               updated: new Date('2005-08-17T07:02:32Z'),
               content: '',
+              links: [{
+                href: 'http://example.org/2005/09/09/atom01',
+              }],
             },
             geometry: {
               type: 'LineString',
@@ -112,7 +180,9 @@ describe('AtomFormat', () => {
           totalResults: NaN,
           startIndex: NaN,
           itemsPerPage: NaN,
-          links: [],
+          links: [{
+            href: 'http://example.org/',
+          }],
           query: {},
           records: [{
             id: 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a',
@@ -120,6 +190,9 @@ describe('AtomFormat', () => {
               title: 'M 3.2, Mona Passage',
               updated: new Date('2005-08-17T07:02:32Z'),
               content: '',
+              links: [{
+                href: 'http://example.org/2005/09/09/atom01',
+              }],
             },
             geometry: {
               type: 'Polygon',
@@ -136,7 +209,9 @@ describe('AtomFormat', () => {
           totalResults: NaN,
           startIndex: NaN,
           itemsPerPage: NaN,
-          links: [],
+          links: [{
+            href: 'http://example.org/',
+          }],
           query: {},
           records: [{
             id: 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a',
@@ -144,6 +219,9 @@ describe('AtomFormat', () => {
               title: 'M 3.2, Mona Passage',
               updated: new Date('2005-08-17T07:02:32Z'),
               content: '',
+              links: [{
+                href: 'http://example.org/2005/09/09/atom01',
+              }],
             },
             geometry: {
               type: 'MultiPolygon',

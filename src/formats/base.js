@@ -132,4 +132,26 @@ export class BaseFeedFormat {
     }
     return null;
   }
+
+  parseLinks(node) {
+    return xPathArray(node, 'atom:link').map(linkNode => {
+      const link = {
+        href: linkNode.getAttribute('href'),
+      };
+      const rel = linkNode.getAttribute('rel');
+      const type = linkNode.getAttribute('type');
+      const title = linkNode.getAttribute('title');
+      if (rel) {
+        link.rel = rel;
+      }
+      if (type) {
+        link.type = type;
+      }
+      if (title) {
+        link.title = title;
+      }
+
+      return link;
+    });
+  }
 }

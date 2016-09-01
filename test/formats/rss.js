@@ -21,6 +21,7 @@ describe('RSSFormat', () => {
             id: '',
             properties: {
               title: 'New York History',
+              links: [],
               content: `
         ... Harlem.NYC - A virtual tour and information on
         businesses ...  with historic photos of Columbia's own New York
@@ -46,6 +47,13 @@ describe('RSSFormat', () => {
               title: 'dlr_fire_emission_dispersion_california_20160223_1',
               content: '',
               time: new Date('2016-02-23T03:00:00.000Z'),
+              links: [{
+                href: 'http://ows.eox.at/testbed-12_staging/eoxserver/ows?service=WCS&version=2.0.1&request=GetCoverage&coverageId=dlr_fire_emission_dispersion_california_20160223_1',
+                rel: 'enclosure',
+              }, {
+                href: 'http://ows.eox.at/testbed-12_staging/eoxserver/ows?service=WCS&version=2.0.1&request=DescribeCoverage&coverageId=dlr_fire_emission_dispersion_california_20160223_1',
+                rel: 'via',
+              }],
             },
             bbox: [-135.0, 0.0, -90.0, 45.0],
           }],

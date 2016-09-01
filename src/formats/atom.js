@@ -14,13 +14,14 @@ export class AtomFormat extends BaseFeedFormat {
   parse(response) {
     return response.text().then(text => {
       const xmlDoc = parseXml(text).documentElement;
-      const records =  xPathArray(xmlDoc, 'atom:entry').map((node) => {
+      const records = xPathArray(xmlDoc, 'atom:entry').map((node) => {
         const entry = {
           id: xPath(node, 'atom:id/text()'),
           properties: {
             title: xPath(node, 'atom:title/text()'),
             updated: new Date(xPath(node, 'atom:updated/text()')),
             content: xPath(node, 'atom:content/text()'),
+            links: this.parseLinks(node),
             // TODO: further fields
           },
         };
@@ -50,7 +51,7 @@ export class AtomFormat extends BaseFeedFormat {
         startIndex: parseInt(xPath(xmlDoc, 'os:startIndex/text()'), 10),
         itemsPerPage: parseInt(xPath(xmlDoc, 'os:itemsPerPage/text()'), 10),
         query: {}, // TODO:
-        links: [],  // TODO:
+        links: this.parseLinks(xmlDoc),
         records,
       };
     });
