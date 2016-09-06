@@ -22,6 +22,7 @@ export class AtomFormat extends BaseFeedFormat {
             updated: new Date(xPath(node, 'atom:updated/text()')),
             content: xPath(node, 'atom:content/text()'),
             links: this.parseLinks(node),
+            media: this.parseMedia(node),
             // TODO: further fields
           },
         };

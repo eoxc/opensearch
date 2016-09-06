@@ -154,4 +154,12 @@ export class BaseFeedFormat {
       return link;
     });
   }
+
+  parseMedia(node) {
+    return xPathArray(node, 'media:content').map(mediaNode => ({
+      url: mediaNode.getAttribute('url'),
+      category: xPath(mediaNode, 'media:category/text()'),
+      scheme: xPath(mediaNode, 'media:category/@scheme'),
+    }));
+  }
 }

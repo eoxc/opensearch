@@ -30,6 +30,7 @@ export const namespaces = {
   atom: 'http://www.w3.org/2005/Atom',
   georss: 'http://www.georss.org/georss',
   dc: 'http://purl.org/dc/elements/1.1/',
+  media: 'http://search.yahoo.com/mrss/',
 };
 
 function resolver(prefix) {
