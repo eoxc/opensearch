@@ -220,12 +220,30 @@ export class OpenSearchUrl {
     }
 
     // for POST
-    const formData = new FormData();
-    Object.keys(parameters).forEach(key => {
-      const type = (this.parametersByType[key] || this.parametersByName[key]).type;
-      formData.append(key, this.serializeParameter(type, parameters[key]));
+    const enctype = this.enctype || 'application/x-www-form-urlencoded';
+    let body = null;
+    if (enctype === 'application/x-www-form-urlencoded') {
+      body = Object.keys(parameters).map(key => {
+        const param = (this.parametersByType[key] || this.parametersByName[key]);
+        return `${encodeURIComponent(param.name)}=${encodeURIComponent(this.serializeParameter(param.type, parameters[key]))}`;
+      }).join('&');
+    } else if (enctype === 'multipart/form-data') {
+      body = new FormData();
+      Object.keys(parameters).forEach(key => {
+        const param = (this.parametersByType[key] || this.parametersByName[key]);
+        body.append(param.name, this.serializeParameter(param.type, parameters[key]));
+      });
+    } else {
+      throw new Error(`Unsupported enctype '${enctype}'.`);
+    }
+
+    return new Request(this.url, {
+      method: this.method,
+      headers: {
+        'Content-Type': enctype,
+      },
+      body,
     });
-    return new Request(this.url, { method: this.method, body: formData });
   }
 
   /**
