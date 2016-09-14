@@ -28,16 +28,17 @@ export class OpenSearchService {
    * Checks whether this URL is compatible with the given parameters
    * @param {object} parameters An object mapping the name or type to the value
    * @param {string} [type=null] The preferred transfer type.
+   * @param {string} [method=null] The preferred HTTP method type.
    * @param {boolean} [raw=false] Whether the response shall be parsed or returned raw.
    * @returns {Promise<array>|Promise<Response>} The search result as a Promise
    */
-  search(parameters, type = null, raw = false) {
+  search(parameters, type = null, method = null, raw = false) {
     let url = null;
     if (!type) {
       // try to find a suitable URL
       const supportedTypes = getSupportedTypes();
       for (let i = 0; i < supportedTypes.length; ++i) {
-        url = this.descriptionDocument.getUrl(parameters, supportedTypes[i]);
+        url = this.descriptionDocument.getUrl(parameters, supportedTypes[i], method);
         if (url && url.isCompatible(parameters)) {
           break;
         }
@@ -46,7 +47,7 @@ export class OpenSearchService {
         throw new Error('No compatible URL found.');
       }
     } else {
-      url = this.descriptionDocument.getUrl(parameters, type);
+      url = this.descriptionDocument.getUrl(parameters, type, method);
       if (!url) {
         throw new Error(`No URL found for type '${type}' and the given parameters.`);
       }

@@ -67,12 +67,12 @@ export class OpenSearchDescription {
    * method.
    * @param {object} [parameters=null] An object containing search parameters
    * @param {string} [type=null] The mime-type for the URL
-   * @param {string} [method='GET'] The preferred HTTP method of the URL
+   * @param {string} [method=null] The preferred HTTP method of the URL
    * @returns {OpenSearchUrl[]}
    */
-  getUrls(parameters = null, type = null, method = 'GET') {
+  getUrls(parameters = null, type = null, method = null) {
     const urls = this.urls.filter(
-      (url) => (type === null || url.type === type) && url.method === method
+      (url) => (type === null || url.type === type) && (method === null || url.method === method)
     );
     if (parameters) {
       return urls.filter(
