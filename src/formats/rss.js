@@ -20,6 +20,7 @@ export class RSSFormat extends BaseFeedFormat {
           properties: {
             title: xPath(node, 'title/text()'),
             content: xPath(node, 'description/text()'),
+            summary: xPath(node, 'description/text()'),
             links: this.parseLinks(node),
             media: this.parseMedia(node),
             // TODO: further fields + geometry
