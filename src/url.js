@@ -17,6 +17,23 @@ function isMandatory(value) {
   return typeRE.exec(value)[2] !== '?';
 }
 
+function parseTemplateParameters(templateUrl) {
+  const parameters = [];
+  const parsed = parse(templateUrl, true);
+
+  Object.keys(parsed.query).forEach(name => {
+    const parameterType = parseType(parsed.query[name]);
+    if (parameterType) {
+      parameters.push({
+        name,
+        type: parameterType,
+        mandatory: isMandatory(parsed.query[name]),
+      });
+    }
+  });
+  return parameters;
+}
+
 function eoValueToString(value, isDate = false) {
   const convertDate = (dateValue) => {
     if (dateValue instanceof Date) {
@@ -225,7 +242,9 @@ export class OpenSearchUrl {
     if (enctype === 'application/x-www-form-urlencoded') {
       body = Object.keys(parameters).map(key => {
         const param = (this.parametersByType[key] || this.parametersByName[key]);
-        return `${encodeURIComponent(param.name)}=${encodeURIComponent(this.serializeParameter(param.type, parameters[key]))}`;
+        const k = encodeURIComponent(param.name);
+        const v = encodeURIComponent(this.serializeParameter(param.type, parameters[key]));
+        return `${k}=${v}`;
       }).join('&');
     } else if (enctype === 'multipart/form-data') {
       body = new FormData();
@@ -256,24 +275,46 @@ export class OpenSearchUrl {
     const method = getAttributeNS(node, namespaces.parameters, 'method');
     const enctype = getAttributeNS(node, namespaces.parameters, 'enctype');
 
-    if (parameterNodes.length) {
-      const parameters = parameterNodes.map((parameterNode) => {
-        const type = parseType(parameterNode.getAttribute('value'));
-        return {
-          name: parameterNode.getAttribute('name'),
-          type,
-          mandatory: parameterNode.getAttribute('minimum') !== '0',
-        };
-      });
+    const parametersFromTemplate = parseTemplateParameters(node.getAttribute('template'));
+    const parametersFromNode = parameterNodes.map((parameterNode) => {
+      const type = parseType(parameterNode.getAttribute('value'));
+      const name = parameterNode.getAttribute('name');
+      const mandatory = parameterNode.hasAttribute('minimum')
+                          ? parameterNode.getAttribute('minimum') !== '0' : undefined;
+      const optionNodes = xPathArray(parameterNode, 'parameters:Option', resolver);
+      let options;
+      if (optionNodes.length) {
+        options = optionNodes.map(optionNode => ({
+          label: optionNode.getAttribute('label'),
+          value: optionNode.getAttribute('value'),
+        }));
+      }
+      return { name, type, mandatory, options };
+    });
 
-      return new OpenSearchUrl(
-        node.getAttribute('type'), node.getAttribute('template'), parameters,
-        method, enctype
-      );
-    }
-    return OpenSearchUrl.fromTemplateUrl(
+    const parametersNotInTemplate = parametersFromNode.filter(
+      p1 => parametersFromTemplate.find(p2 => p1.name === p2.name) !== null
+    ).map(param => Object.assign(param, {
+      mandatory: (typeof param.mandatory === 'undefined') ? true : param.mandatory,
+    }));
+
+    // merge parameters from node and template
+    const parameters = parametersFromTemplate.map(p1 => {
+      const p2 = parametersFromNode.find(p => p1.name === p.name);
+      if (p2) {
+        return {
+          name: p1.name,
+          type: p1.type,
+          mandatory: (typeof p2.mandatory !== 'undefined') ? p2.mandatory : p1.mandatory,
+          options: p2.options,
+        };
+      }
+      return p1;
+    }).concat(parametersNotInTemplate);
+
+    return new OpenSearchUrl(
       node.getAttribute('type'), node.getAttribute('template'),
-      method, enctype
+      parameters, method, enctype
     );
   }
 
@@ -287,19 +328,7 @@ export class OpenSearchUrl {
    */
   static fromTemplateUrl(type, templateUrl, method = 'GET',
                          enctype = 'application/x-www-form-urlencoded') {
-    const parameters = [];
-    const parsed = parse(templateUrl, true);
-
-    Object.keys(parsed.query).forEach(name => {
-      const parameterType = parseType(parsed.query[name]);
-      if (parameterType) {
-        parameters.push({
-          name,
-          type: parameterType,
-          mandatory: isMandatory(parsed.query[name]),
-        });
-      }
-    });
+    const parameters = parseTemplateParameters(templateUrl);
     return new OpenSearchUrl(type, templateUrl, parameters, method, enctype);
   }
 }
