@@ -49,9 +49,9 @@ describe('OpenSearchUrl', () => {
 
     it('should have the correct parameters', () => {
       expect(url.parameters).to.deep.equal([
-        { name: 'q', type: 'searchTerms', mandatory: true },
-        { name: 'count', type: 'itemsPerPage', mandatory: false },
-        { name: 'start', type: 'startIndex', mandatory: false },
+        { name: 'q', type: 'searchTerms', mandatory: true, options: undefined },
+        { name: 'count', type: 'itemsPerPage', mandatory: false, options: undefined },
+        { name: 'start', type: 'startIndex', mandatory: false, options: undefined },
       ]);
     });
   });
@@ -103,7 +103,10 @@ describe('OpenSearchUrl', () => {
       const request = urlPost.createRequest({ q: 'search terms', start: 1 });
       expect(request).to.deep.equal(new Request(
         'http://example.com/search', {
-          body: new FormData,
+          body: 'q=search%20terms&start=1',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
           method: 'POST',
         }
       ));
@@ -113,7 +116,10 @@ describe('OpenSearchUrl', () => {
       const request = urlPost.createRequest({ searchTerms: 'search terms', startIndex: 1 });
       expect(request).to.deep.equal(new Request(
         'http://example.com/search', {
-          body: new FormData,
+          body: 'q=search%20terms&start=1',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
           method: 'POST',
         }
       ));

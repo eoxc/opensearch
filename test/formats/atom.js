@@ -58,6 +58,8 @@ describe('AtomFormat', () => {
               links: [{
                 href: 'http://www.columbia.edu/cu/lweb/eguids/amerihist/nyc.html',
               }],
+              media: [],
+              summary: '',
               content: `
       ... Harlem.NYC - A virtual tour and information on
       businesses ...  with historic photos of Columbia's own New York
@@ -109,6 +111,8 @@ describe('AtomFormat', () => {
                 href: 'http://ows.eox.at/testbed-12/eoxserver/ows?service=WCS&version=2.0.1&request=DescribeCoverage&coverageId=dlr_fire_emission_dispersion_california_20160223_1',
                 rel: 'via',
               }],
+              media: [],
+              summary: '',
             },
             bbox: [-135.0, 0.0, -90.0, 45.0],
           }],
@@ -135,6 +139,8 @@ describe('AtomFormat', () => {
               links: [{
                 href: 'http://example.org/2005/09/09/atom01',
               }],
+              media: [],
+              summary: 'We just had a big one.',
             },
             geometry: {
               type: 'Point',
@@ -164,6 +170,8 @@ describe('AtomFormat', () => {
               links: [{
                 href: 'http://example.org/2005/09/09/atom01',
               }],
+              media: [],
+              summary: 'We just had a big one.',
             },
             geometry: {
               type: 'LineString',
@@ -193,6 +201,8 @@ describe('AtomFormat', () => {
               links: [{
                 href: 'http://example.org/2005/09/09/atom01',
               }],
+              media: [],
+              summary: 'We just had a big one.',
             },
             geometry: {
               type: 'Polygon',
@@ -224,6 +234,8 @@ describe('AtomFormat', () => {
               links: [{
                 href: 'http://example.org/2005/09/09/atom01',
               }],
+              media: [],
+              summary: 'We just had a big one.',
             },
             geometry: {
               type: 'MultiPolygon',
