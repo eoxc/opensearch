@@ -106,7 +106,7 @@ export class BaseFeedFormat {
     } else if (polygon) {
       return {
         type: 'Polygon',
-        geometry: parseGeometryValues(line),
+        geometry: parseGeometryValues(polygon),
       };
     }
     return null;
