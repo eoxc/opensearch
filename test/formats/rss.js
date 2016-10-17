@@ -17,7 +17,7 @@ describe('RSSFormat', () => {
           links: [],
           query: {},
           records: [{
-            id: '',
+            id: null,
             properties: {
               title: 'New York History',
               links: [],
@@ -50,7 +50,7 @@ describe('RSSFormat', () => {
             id: 'http://ows.eox.at/testbed-12_staging/eoxserver/opensearch/collections/dlr_fire_emission_dispersion_california_20160223/rss/?q=&count=1&startIndex=&bbox=&geom=&lon=&lat=&r=&georel=&uid=&start=&timerel=',
             properties: {
               title: 'dlr_fire_emission_dispersion_california_20160223_1',
-              content: '',
+              content: null,
               time: new Date('2016-02-23T03:00:00.000Z'),
               links: [{
                 href: 'http://ows.eox.at/testbed-12_staging/eoxserver/ows?service=WCS&version=2.0.1&request=GetCoverage&coverageId=dlr_fire_emission_dispersion_california_20160223_1',
@@ -60,7 +60,7 @@ describe('RSSFormat', () => {
                 rel: 'via',
               }],
               media: [],
-              summary: '',
+              summary: null,
             },
             bbox: [-135.0, 0.0, -90.0, 45.0],
           }],

@@ -1,5 +1,5 @@
 import 'isomorphic-fetch';
-
+import xpath from 'xpath';
 
 export function parseURLQuery(url) {
   const search = (url.indexOf('?') === -1) ? url : url.substring(url.indexOf('?'));
@@ -33,42 +33,40 @@ export const namespaces = {
   media: 'http://search.yahoo.com/mrss/',
 };
 
-function resolver(prefix) {
-  return namespaces[prefix];
-}
+const resolver = {
+  lookupNamespaceURI(prefix) {
+    return namespaces[prefix];
+  },
+};
 
-export function xPath(node, xpath, customResolver) {
-  const doc = node.ownerDocument;
-  const text = xpath.indexOf('text()') !== -1 || xpath.indexOf('@') !== -1;
-  if (text) {
-    return doc.evaluate(
-      xpath, node, customResolver || resolver, XPathResult.STRING_TYPE, null
-    ).stringValue;
-  }
-  const result = doc.evaluate(
-    xpath, node, customResolver || resolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null
+
+export function xPath(node, query, customResolver) {
+  const value = xpath.selectWithResolver(
+    query, node, customResolver ? { lookupNamespaceURI: customResolver } : resolver, true
   );
-  if (result.snapshotLength === 0) {
+
+  if (!value) {
     return null;
   }
-  return result.snapshotItem(0);
+
+  if (query.indexOf('text()') !== -1) {
+    return value.nodeValue;
+  } else if (query.indexOf('@') !== -1) {
+    return value.value;
+  }
+  return value;
 }
 
-export function xPathArray(node, xpath, customResolver) {
-  const doc = node.ownerDocument;
-  const result = doc.evaluate(
-    xpath, node, customResolver || resolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null
+export function xPathArray(node, query, customResolver) {
+  const values = xpath.selectWithResolver(
+    query, node, customResolver ? { lookupNamespaceURI: customResolver } : resolver, false
   );
-  const text = xpath.indexOf('text()') !== -1 || xpath.indexOf('@') !== -1;
-  const array = new Array(result.snapshotLength);
-  for (let i = 0; i < result.snapshotLength; ++i) {
-    if (text) {
-      array[i] = result.snapshotItem(i).textContent;
-    } else {
-      array[i] = result.snapshotItem(i);
-    }
+  if (query.indexOf('text()') !== -1) {
+    return values.map(value => value.nodeValue);
+  } else if (query.indexOf('@') !== -1) {
+    return values.map(value => value.value);
   }
-  return array;
+  return values;
 }
 
 export function getAttributeNS(node, namespace, name, defaultValue) {

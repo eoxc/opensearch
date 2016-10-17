@@ -59,7 +59,7 @@ describe('AtomFormat', () => {
                 href: 'http://www.columbia.edu/cu/lweb/eguids/amerihist/nyc.html',
               }],
               media: [],
-              summary: '',
+              summary: null,
               content: `
       ... Harlem.NYC - A virtual tour and information on
       businesses ...  with historic photos of Columbia's own New York
@@ -103,7 +103,7 @@ describe('AtomFormat', () => {
             properties: {
               title: 'dlr_fire_emission_dispersion_california_20160223_1',
               updated: new Date('2003-12-13T18:30:02Z'),
-              content: '',
+              content: null,
               links: [{
                 href: 'http://ows.eox.at/testbed-12/eoxserver/ows?service=WCS&version=2.0.1&request=GetCoverage&coverageId=dlr_fire_emission_dispersion_california_20160223_1',
                 rel: 'enclosure',
@@ -112,7 +112,7 @@ describe('AtomFormat', () => {
                 rel: 'via',
               }],
               media: [],
-              summary: '',
+              summary: null,
             },
             bbox: [-135.0, 0.0, -90.0, 45.0],
           }],
@@ -135,7 +135,7 @@ describe('AtomFormat', () => {
             properties: {
               title: 'M 3.2, Mona Passage',
               updated: new Date('2005-08-17T07:02:32Z'),
-              content: '',
+              content: null,
               links: [{
                 href: 'http://example.org/2005/09/09/atom01',
               }],
@@ -166,7 +166,7 @@ describe('AtomFormat', () => {
             properties: {
               title: 'M 3.2, Mona Passage',
               updated: new Date('2005-08-17T07:02:32Z'),
-              content: '',
+              content: null,
               links: [{
                 href: 'http://example.org/2005/09/09/atom01',
               }],
@@ -197,7 +197,7 @@ describe('AtomFormat', () => {
             properties: {
               title: 'M 3.2, Mona Passage',
               updated: new Date('2005-08-17T07:02:32Z'),
-              content: '',
+              content: null,
               links: [{
                 href: 'http://example.org/2005/09/09/atom01',
               }],
@@ -230,7 +230,7 @@ describe('AtomFormat', () => {
             properties: {
               title: 'M 3.2, Mona Passage',
               updated: new Date('2005-08-17T07:02:32Z'),
-              content: '',
+              content: null,
               links: [{
                 href: 'http://example.org/2005/09/09/atom01',
               }],
