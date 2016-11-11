@@ -96,17 +96,17 @@ export class BaseFeedFormat {
     } else if (point) {
       return {
         type: 'Point',
-        geometry: parseGeometryValues(point)[0],
+        coordinates: parseGeometryValues(point)[0],
       };
     } else if (line) {
       return {
         type: 'LineString',
-        geometry: parseGeometryValues(line),
+        coordinates: parseGeometryValues(line),
       };
     } else if (polygon) {
       return {
         type: 'Polygon',
-        geometry: parseGeometryValues(polygon),
+        coordinates: [parseGeometryValues(polygon)],
       };
     }
     return null;
