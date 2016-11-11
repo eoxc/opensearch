@@ -293,7 +293,7 @@ export class OpenSearchUrl {
     });
 
     const parametersNotInTemplate = parametersFromNode.filter(
-      p1 => parametersFromTemplate.find(p2 => p1.name === p2.name) !== null
+      p1 => !parametersFromTemplate.find(p2 => p1.name === p2.name)
     ).map(param => Object.assign(param, {
       mandatory: (typeof param.mandatory === 'undefined') ? true : param.mandatory,
     }));
