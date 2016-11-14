@@ -84,6 +84,22 @@ function parseGml(node) {
   return null;
 }
 
+function boxFromLineString(lineString) {
+  let minX = null;
+  let minY = null;
+  let maxX = null;
+  let maxY = null;
+
+  for (let i = 0; i < lineString.length; ++i) {
+    const [x, y] = lineString[i];
+    minX = (minX === null || x < minX) ? x : minX;
+    minY = (minY === null || y < minY) ? y : minY;
+    maxX = (maxX === null || x > maxX) ? x : maxX;
+    maxY = (maxY === null || y > maxY) ? y : maxY;
+  }
+  return [minX, minY, maxX, maxY];
+}
+
 export class BaseFeedFormat {
   parseGeometry(node) {
     const where = xPath(node, 'georss:where');
@@ -119,6 +135,20 @@ export class BaseFeedFormat {
       return [values[1], values[0], values[3], values[2]];
     }
     return null;
+  }
+
+  getBoxFromGeometry(geometry) {
+    const coords = geometry.coordinates;
+    switch (geometry.type) {
+      case 'Point':
+        return [coords[0], coords[1], coords[0], coords[1]];
+      case 'LineString':
+        return boxFromLineString(coords);
+      case 'Polygon':
+        return boxFromLineString(coords[0]);
+      default:
+        return null;
+    }
   }
 
   parseDate(node) {

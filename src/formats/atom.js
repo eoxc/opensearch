@@ -37,7 +37,9 @@ export class AtomFormat extends BaseFeedFormat {
         if (geometry) {
           entry.geometry = geometry;
 
-          // TODO: calculate bbox as-well, if not already defined
+          if (!entry.bbox) {
+            entry.bbox = this.getBoxFromGeometry(geometry);
+          }
         }
 
         const date = this.parseDate(node);
