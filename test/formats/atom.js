@@ -142,6 +142,12 @@ describe('AtomFormat', () => {
               media: [],
               summary: 'We just had a big one.',
             },
+            bbox: [
+              -71.92,
+              45.256,
+              -71.92,
+              45.256,
+            ],
             geometry: {
               type: 'Point',
               coordinates: [-71.92, 45.256],
@@ -173,6 +179,12 @@ describe('AtomFormat', () => {
               media: [],
               summary: 'We just had a big one.',
             },
+            bbox: [
+              -110.45,
+              43.84,
+              -109.48,
+              46.46,
+            ],
             geometry: {
               type: 'LineString',
               coordinates: [[-110.45, 45.256], [-109.48, 46.46], [-109.86, 43.84]],
@@ -204,6 +216,12 @@ describe('AtomFormat', () => {
               media: [],
               summary: 'We just had a big one.',
             },
+            bbox: [
+              -110.45,
+              43.84,
+              -109.48,
+              46.46,
+            ],
             geometry: {
               type: 'Polygon',
               coordinates: [
@@ -237,6 +255,12 @@ describe('AtomFormat', () => {
               media: [],
               summary: 'We just had a big one.',
             },
+            bbox: [
+              -110.45,
+              43.84,
+              -109.48,
+              46.46,
+            ],
             geometry: {
               type: 'MultiPolygon',
               coordinates: [
