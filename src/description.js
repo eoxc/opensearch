@@ -66,14 +66,24 @@ export class OpenSearchDescription {
    * Get an array of {@link OpenSearchUrl} for the given parameters, mime type and HTTP
    * method.
    * @param {object} [parameters=null] An object containing search parameters
-   * @param {string} [type=null] The mime-type for the URL
-   * @param {string} [method=null] The preferred HTTP method of the URL
+   * @param {string|Array} [type=null] The mime-type for the URL
+   * @param {string|Array} [method=null] The preferred HTTP method of the URL
    * @returns {OpenSearchUrl[]}
    */
   getUrls(parameters = null, type = null, method = null) {
-    const urls = this.urls.filter(
-      (url) => (type === null || url.type === type) && (method === null || url.method === method)
-    );
+    let urls = this.urls;
+
+    if (type) {
+      urls = urls.filter(
+        url => (Array.isArray(type) ? type.indexOf(url.type) > -1 : url.type === type)
+      );
+    }
+    if (method) {
+      urls = urls.filter(
+        url => (Array.isArray(method) ? method.indexOf(url.method) > -1 : url.method === method)
+      );
+    }
+
     if (parameters) {
       return urls.filter(
         (url) => url.isCompatible(parameters)
