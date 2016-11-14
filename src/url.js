@@ -93,11 +93,15 @@ export class OpenSearchUrl {
    * @returns {OpenSearchUrl} The constructed OpenSearchUrl object
    */
   constructor(type, url, parameters = [], method = 'GET',
-              enctype = 'application/x-www-form-urlencoded') {
+              enctype = 'application/x-www-form-urlencoded',
+              indexOffset = 1, pageOffset = 1) {
     this.type = type;
     this.url = url;
     this.method = method;
     this.enctype = enctype;
+    this.indexOffset = indexOffset;
+    this.pageOffset = pageOffset;
+
     this.parameters = parameters;
     this.parametersByName = {};
     this.parametersByType = {};
@@ -274,6 +278,10 @@ export class OpenSearchUrl {
     const parameterNodes = xPathArray(node, 'parameters:Parameter', resolver);
     const method = getAttributeNS(node, namespaces.parameters, 'method');
     const enctype = getAttributeNS(node, namespaces.parameters, 'enctype');
+    const indexOffset = node.hasAttribute('indexOffset') ?
+      parseInt(node.getAttribute('indexOffset'), 10) : 1;
+    const pageOffset = node.hasAttribute('pageOffset') ?
+      parseInt(node.getAttribute('pageOffset'), 10) : 1;
 
     const parametersFromTemplate = parseTemplateParameters(node.getAttribute('template'));
     const parametersFromNode = parameterNodes.map((parameterNode) => {
@@ -314,7 +322,7 @@ export class OpenSearchUrl {
 
     return new OpenSearchUrl(
       node.getAttribute('type'), node.getAttribute('template'),
-      parameters, method, enctype
+      parameters, method, enctype, indexOffset, pageOffset
     );
   }
 
