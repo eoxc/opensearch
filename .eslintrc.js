@@ -1,11 +1,13 @@
 module.exports = {
-  "extends": "airbnb",
+  "extends": "pedant",
   "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "module",
     "allowImportExportEverywhere": false
   },
   "env": {
-    "mocha": true
-  }
+    "mocha": true,
+    "browser": true,
+    "node": true
+  },
 };
