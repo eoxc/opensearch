@@ -146,6 +146,18 @@ export class BaseFeedFormat {
         return boxFromLineString(coords);
       case 'Polygon':
         return boxFromLineString(coords[0]);
+      case 'MultiPolygon': {
+        const bboxes = coords.map(polygon => boxFromLineString(polygon[0]));
+        const outBox = bboxes[0];
+        for (let i = 1; i < bboxes.length; ++i) {
+          const box = bboxes[i];
+          outBox[0] = Math.min(outBox[0], box[0]);
+          outBox[1] = Math.min(outBox[1], box[1]);
+          outBox[2] = Math.max(outBox[2], box[2]);
+          outBox[3] = Math.max(outBox[3], box[3]);
+        }
+        return outBox;
+      }
       default:
         return null;
     }

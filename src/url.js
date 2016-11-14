@@ -181,7 +181,7 @@ export class OpenSearchUrl {
    * @returns {boolean} Whether the URL has a parameter of that type
    */
   hasParameter(type) {
-    return this.parametersByType.hasOwnProperty(type);
+    return this._parametersByType.hasOwnProperty(type);
   }
 
   /**
@@ -192,8 +192,8 @@ export class OpenSearchUrl {
   isCompatible(parameters) {
     let compatible = true;
     Object.keys(parameters).forEach(key => {
-      if (!this.parametersByType.hasOwnProperty(key)
-          && !this.parametersByName.hasOwnProperty(key)) {
+      if (!this._parametersByType.hasOwnProperty(key)
+          && !this._parametersByName.hasOwnProperty(key)) {
         compatible = false;
       }
     });
@@ -263,8 +263,8 @@ export class OpenSearchUrl {
   createRequest(parameters) {
     // check parameters
     Object.keys(parameters).forEach(key => {
-      if (!this.parametersByType.hasOwnProperty(key)
-          && !this.parametersByName.hasOwnProperty(key)) {
+      if (!this._parametersByType.hasOwnProperty(key)
+          && !this._parametersByName.hasOwnProperty(key)) {
         throw new Error(`Invalid parameter '${key}'.`);
       }
     });
@@ -290,7 +290,7 @@ export class OpenSearchUrl {
       let url = this.url;
 
       Object.keys(parameters).forEach(key => {
-        const type = (this.parametersByType[key] || this.parametersByName[key]).type;
+        const type = (this._parametersByType[key] || this._parametersByName[key]).type;
         url = url.replace(
           new RegExp(`{${type}[?]?}`),
           this.serializeParameter(type, parameters[key])
@@ -309,7 +309,7 @@ export class OpenSearchUrl {
     let body = null;
     if (enctype === 'application/x-www-form-urlencoded') {
       body = Object.keys(parameters).map(key => {
-        const param = (this.parametersByType[key] || this.parametersByName[key]);
+        const param = (this._parametersByType[key] || this._parametersByName[key]);
         const k = encodeURIComponent(param.name);
         const v = encodeURIComponent(this.serializeParameter(param.type, parameters[key]));
         return `${k}=${v}`;
@@ -317,7 +317,7 @@ export class OpenSearchUrl {
     } else if (enctype === 'multipart/form-data') {
       body = new FormData();
       Object.keys(parameters).forEach(key => {
-        const param = (this.parametersByType[key] || this.parametersByName[key]);
+        const param = (this._parametersByType[key] || this._parametersByName[key]);
         body.append(param.name, this.serializeParameter(param.type, parameters[key]));
       });
     } else {
