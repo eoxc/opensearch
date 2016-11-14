@@ -10,7 +10,7 @@ import { getFormat, getSupportedTypes } from './formats/';
 export class OpenSearchService {
   /**
    * Create an OpenSearchDescription object
-   * @param {string} xml The string containing the desription XML
+   * @param {string} osdd The string containing the desription XML
    */
   constructor(osdd) {
     this.descriptionDocument = new OpenSearchDescription(osdd);

@@ -78,6 +78,13 @@ function eoValueToString(value, isDate = false) {
 /**
  * Class to parse a single URL of an OpenSearchDescription XML document and
  * to create HTTP requests for searches.
+ * @property {string} type The mime-type for the content the URL is referring to
+ * @property {string} url The URL template or base URL
+ * @property {array} parameters The template/request parameters of the URL
+ * @property {string} method The HTTP method
+ * @property {string} enctype The encoding type
+ * @property {Number} indexOffset the index offset of this URL
+ * @property {Number} pageOffset the page offset of this URL
  */
 export class OpenSearchUrl {
   /**
@@ -87,28 +94,85 @@ export class OpenSearchUrl {
    * @param {array} parameters The template/request parameters of the URL
    * @param {string} parameters[].name The parameters name
    * @param {string} parameters[].type The parameters type
-   * @param {boolean} parameters[].type Whether the parameter is mandatory
+   * @param {boolean} parameters[].mandatory Whether the parameter is mandatory
    * @param {string} [method='GET'] The HTTP method
    * @param {string} [enctype='application/x-www-form-urlencoded'] The encoding type
-   * @returns {OpenSearchUrl} The constructed OpenSearchUrl object
+   * @param {Number} [indexOffset=1] The index offset of this URL
+   * @param {Number} [pageOffset=1] The page offset of this URL
    */
   constructor(type, url, parameters = [], method = 'GET',
               enctype = 'application/x-www-form-urlencoded',
               indexOffset = 1, pageOffset = 1) {
-    this.type = type;
-    this.url = url;
-    this.method = method;
-    this.enctype = enctype;
-    this.indexOffset = indexOffset;
-    this.pageOffset = pageOffset;
+    this._type = type;
+    this._url = url;
+    this._method = method;
+    this._enctype = enctype;
+    this._indexOffset = indexOffset;
+    this._pageOffset = pageOffset;
 
-    this.parameters = parameters;
-    this.parametersByName = {};
-    this.parametersByType = {};
+    this._parameters = parameters;
+    this._parametersByName = {};
+    this._parametersByType = {};
     parameters.forEach(param => {
-      this.parametersByType[param.type] = param;
-      this.parametersByName[param.name] = param;
+      this._parametersByType[param.type] = param;
+      this._parametersByName[param.name] = param;
     });
+  }
+
+  /**
+   * The mime-type for the content the URL is referring to
+   * @readonly
+   */
+  get type() {
+    return this._type;
+  }
+
+  /**
+   * The URL template or base URL
+   * @readonly
+   */
+  get url() {
+    return this._url;
+  }
+
+  /**
+   * The HTTP method
+   * @readonly
+   */
+  get method() {
+    return this._method;
+  }
+
+  /**
+   * The encoding type
+   * @readonly
+   */
+  get enctype() {
+    return this._enctype;
+  }
+
+  /**
+   * The index offset of this URL
+   * @readonly
+   */
+  get indexOffset() {
+    return this._indexOffset;
+  }
+
+  /**
+   * The page offset of this URL
+   * @readonly
+   */
+  get pageOffset() {
+    return this._pageOffset;
+  }
+
+  /**
+   * The template/request parameters of the URL
+   * @readonly
+   */
+  get parameters() {
+    return this._parameters;
   }
 
   /**
