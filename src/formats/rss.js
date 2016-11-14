@@ -36,7 +36,9 @@ export class RSSFormat extends BaseFeedFormat {
         if (geometry) {
           item.geometry = geometry;
 
-          // TODO: calculate bbox as-well, if not already defined
+          if (!item.bbox) {
+            item.bbox = this.getBoxFromGeometry(geometry);
+          }
         }
 
         const date = this.parseDate(node);
