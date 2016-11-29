@@ -16,7 +16,7 @@ export class AtomFormat extends BaseFeedFormat {
       const xmlDoc = parseXml(text).documentElement;
       const records = xPathArray(xmlDoc, 'atom:entry').map((node) => {
         const entry = {
-          id: xPath(node, 'atom:id/text()'),
+          id: xPath(node, 'dc:identifier/text()') || xPath(node, 'atom:id/text()'),
           properties: {
             title: xPath(node, 'atom:title/text()'),
             updated: new Date(xPath(node, 'atom:updated/text()')),

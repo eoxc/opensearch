@@ -16,7 +16,7 @@ export class RSSFormat extends BaseFeedFormat {
       const xmlDoc = parseXml(text).documentElement;
       const records = xPathArray(xmlDoc, 'channel/item').map((node) => {
         const item = {
-          id: xPath(node, 'guid/text()'),
+          id: xPath(node, 'dc:identifier/text()') || xPath(node, 'guid/text()'),
           properties: {
             title: xPath(node, 'title/text()'),
             content: xPath(node, 'description/text()'),
