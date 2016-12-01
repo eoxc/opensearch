@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { OpenSearchUrl } from '../src/url.js';
+import { OpenSearchParameter } from '../src/parameter.js';
 import { parseXml } from '../src/utils.js';
 
 describe('OpenSearchUrl', () => {
@@ -15,8 +16,8 @@ describe('OpenSearchUrl', () => {
 
     it('should have the correct parameters', () => {
       expect(url.parameters).to.deep.equal([
-        { name: 'q', type: 'searchTerms', mandatory: true },
-        { name: 'start', type: 'startIndex', mandatory: false },
+        new OpenSearchParameter('searchTerms', 'q', true),
+        new OpenSearchParameter('startIndex', 'start', false),
       ]);
     });
   });
@@ -49,9 +50,9 @@ describe('OpenSearchUrl', () => {
 
     it('should have the correct parameters', () => {
       expect(url.parameters).to.deep.equal([
-        { name: 'q', type: 'searchTerms', mandatory: true, options: undefined },
-        { name: 'count', type: 'itemsPerPage', mandatory: false, options: undefined },
-        { name: 'start', type: 'startIndex', mandatory: false, options: undefined },
+        new OpenSearchParameter('searchTerms', 'q', true),
+        new OpenSearchParameter('itemsPerPage', 'count', false),
+        new OpenSearchParameter('startIndex', 'start', false),
       ]);
     });
   });
