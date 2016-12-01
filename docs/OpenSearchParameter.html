@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: OpenSearchUrl</title>
+    <title>JSDoc: Class: OpenSearchParameter</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: OpenSearchUrl</h1>
+    <h1 class="page-title">Class: OpenSearchParameter</h1>
 
     
 
@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2>OpenSearchUrl</h2>
+        <h2>OpenSearchParameter</h2>
         
     
 </header>
@@ -40,14 +40,14 @@
 
     
 
-    <h4 class="name" id="OpenSearchUrl"><span class="type-signature"></span>new OpenSearchUrl<span class="signature">(type, url, parameters, method<span class="signature-attributes">opt</span>, enctype<span class="signature-attributes">opt</span>, indexOffset<span class="signature-attributes">opt</span>, pageOffset<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="OpenSearchParameter"><span class="type-signature"></span>new OpenSearchParameter<span class="signature">(type, name, mandatory, options<span class="signature-attributes">opt</span>, minExclusive<span class="signature-attributes">opt</span>, maxExclusive<span class="signature-attributes">opt</span>, minInclusive<span class="signature-attributes">opt</span>, maxInclusive<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Create an OpenSearchUrl object
+    Class to describe a single OpenSearch URL parameter.
 </div>
 
 
@@ -115,14 +115,14 @@
                 </td>
             
 
-            <td class="description last">The mime-type for the content the URL is referring to</td>
+            <td class="description last">The type of the parameter</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>url</code></td>
+                <td class="name"><code>name</code></td>
             
 
             <td class="type">
@@ -150,20 +150,20 @@
                 </td>
             
 
-            <td class="description last">The URL template or base URL</td>
+            <td class="description last">The name of the parameter</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>parameters</code></td>
+                <td class="name"><code>mandatory</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">array</span>
+<span class="param-type">boolean</span>
 
 
             
@@ -185,7 +185,46 @@
                 </td>
             
 
-            <td class="description last">The template/request parameters of the URL
+            <td class="description last">Whether the parameter is mandatory</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array:<a href="-_.html"></a>.&lt;object:<a href="-_.html"></a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">The possible values for this parameter
                 <h6>Properties</h6>
                 
 
@@ -211,7 +250,7 @@
 
         <tr>
             
-                <td class="name"><code>name</code></td>
+                <td class="name"><code>label</code></td>
             
 
             <td class="type">
@@ -227,14 +266,14 @@
 
             
 
-            <td class="description last">The parameters name</td>
+            <td class="description last">The label of the option</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>type</code></td>
+                <td class="name"><code>value</code></td>
             
 
             <td class="type">
@@ -250,30 +289,7 @@
 
             
 
-            <td class="description last">The parameters type</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>mandatory</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Whether the parameter is mandatory</td>
+            <td class="description last">The value of the option</td>
         </tr>
 
     
@@ -287,85 +303,7 @@
 
         <tr>
             
-                <td class="name"><code>method</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    'GET'
-                
-                </td>
-            
-
-            <td class="description last">The HTTP method</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>enctype</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    'application/x-www-form-urlencoded'
-                
-                </td>
-            
-
-            <td class="description last">The encoding type</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>indexOffset</code></td>
+                <td class="name"><code>minExclusive</code></td>
             
 
             <td class="type">
@@ -392,19 +330,17 @@
             
                 <td class="default">
                 
-                    1
-                
                 </td>
             
 
-            <td class="description last">The index offset of this URL</td>
+            <td class="description last">The minimum value allowed for this parameter (exclusive)</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>pageOffset</code></td>
+                <td class="name"><code>maxExclusive</code></td>
             
 
             <td class="type">
@@ -431,12 +367,84 @@
             
                 <td class="default">
                 
-                    1
+                </td>
+            
+
+            <td class="description last">The maximum value allowed for this parameter (exclusive)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>minInclusive</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
                 
                 </td>
             
 
-            <td class="description last">The page offset of this URL</td>
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The minimum value allowed for this parameter (inclusive)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>maxInclusive</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The maximum value allowed for this parameter (inclusive)</td>
         </tr>
 
     
@@ -477,7 +485,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="url.js.html">url.js</a>, <a href="url.js.html#line30">line 30</a>
+        <a href="parameter.js.html">parameter.js</a>, <a href="parameter.js.html#line100">line 100</a>
     </li></ul></dd>
     
 
@@ -521,13 +529,13 @@
 
         
             
-<h4 class="name" id="enctype"><span class="type-signature">(readonly) </span>enctype<span class="type-signature"></span></h4>
+<h4 class="name" id="mandatory"><span class="type-signature">(readonly) </span>mandatory<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    The encoding type
+    Whether the parameter is mandatory
 </div>
 
 
@@ -565,7 +573,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="url.js.html">url.js</a>, <a href="url.js.html#line77">line 77</a>
+        <a href="parameter.js.html">parameter.js</a>, <a href="parameter.js.html#line133">line 133</a>
     </li></ul></dd>
     
 
@@ -583,13 +591,13 @@
 
         
             
-<h4 class="name" id="indexOffset"><span class="type-signature">(readonly) </span>indexOffset<span class="type-signature"></span></h4>
+<h4 class="name" id="maxExclusive"><span class="type-signature">(readonly) </span>maxExclusive<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    The index offset of this URL
+    The maximum value allowed for this parameter (exclusive)
 </div>
 
 
@@ -627,7 +635,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="url.js.html">url.js</a>, <a href="url.js.html#line85">line 85</a>
+        <a href="parameter.js.html">parameter.js</a>, <a href="parameter.js.html#line157">line 157</a>
     </li></ul></dd>
     
 
@@ -645,13 +653,13 @@
 
         
             
-<h4 class="name" id="method"><span class="type-signature">(readonly) </span>method<span class="type-signature"></span></h4>
+<h4 class="name" id="maxInclusive"><span class="type-signature">(readonly) </span>maxInclusive<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    The HTTP method
+    The maximum value allowed for this parameter (inclusive)
 </div>
 
 
@@ -689,7 +697,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="url.js.html">url.js</a>, <a href="url.js.html#line69">line 69</a>
+        <a href="parameter.js.html">parameter.js</a>, <a href="parameter.js.html#line173">line 173</a>
     </li></ul></dd>
     
 
@@ -707,13 +715,13 @@
 
         
             
-<h4 class="name" id="pageOffset"><span class="type-signature">(readonly) </span>pageOffset<span class="type-signature"></span></h4>
+<h4 class="name" id="minExclusive"><span class="type-signature">(readonly) </span>minExclusive<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    The page offset of this URL
+    The minimum value allowed for this parameter (exclusive)
 </div>
 
 
@@ -751,7 +759,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="url.js.html">url.js</a>, <a href="url.js.html#line93">line 93</a>
+        <a href="parameter.js.html">parameter.js</a>, <a href="parameter.js.html#line149">line 149</a>
     </li></ul></dd>
     
 
@@ -769,13 +777,13 @@
 
         
             
-<h4 class="name" id="parameters"><span class="type-signature">(readonly) </span>parameters<span class="type-signature"></span></h4>
+<h4 class="name" id="minInclusive"><span class="type-signature">(readonly) </span>minInclusive<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    The template/request parameters of the URL
+    The minimum value allowed for this parameter (inclusive)
 </div>
 
 
@@ -813,7 +821,131 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="url.js.html">url.js</a>, <a href="url.js.html#line101">line 101</a>
+        <a href="parameter.js.html">parameter.js</a>, <a href="parameter.js.html#line165">line 165</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="name"><span class="type-signature">(readonly) </span>name<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    The name of the parameter
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="parameter.js.html">parameter.js</a>, <a href="parameter.js.html#line125">line 125</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="options"><span class="type-signature">(readonly) </span>options<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    The possible values for this parameter
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="parameter.js.html">parameter.js</a>, <a href="parameter.js.html#line141">line 141</a>
     </li></ul></dd>
     
 
@@ -837,7 +969,7 @@
 
 
 <div class="description">
-    The mime-type for the content the URL is referring to
+    The type of the parameter
 </div>
 
 
@@ -875,69 +1007,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="url.js.html">url.js</a>, <a href="url.js.html#line53">line 53</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="url"><span class="type-signature">(readonly) </span>url<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    The URL template or base URL
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="url.js.html">url.js</a>, <a href="url.js.html#line61">line 61</a>
+        <a href="parameter.js.html">parameter.js</a>, <a href="parameter.js.html#line117">line 117</a>
     </li></ul></dd>
     
 
@@ -964,14 +1034,14 @@
 
     
 
-    <h4 class="name" id=".fromNode"><span class="type-signature">(static) </span>fromNode<span class="signature">(node)</span><span class="type-signature"> &rarr; {<a href="OpenSearchUrl.html">OpenSearchUrl</a>}</span></h4>
+    <h4 class="name" id=".fromNode"><span class="type-signature">(static) </span>fromNode<span class="signature">(node)</span><span class="type-signature"> &rarr; {<a href="OpenSearchParameter.html">OpenSearchParameter</a>}</span></h4>
 
     
 
 
 
 <div class="description">
-    Construct a <a href="OpenSearchUrl.html">OpenSearchUrl</a> from a DOMNode
+    Constructs a new OpenSearchParameter from a DOM-Node.
 </div>
 
 
@@ -1023,7 +1093,7 @@
 
             
 
-            <td class="description last">The DOM node from the OpenSearchDescription XML document</td>
+            <td class="description last">the node to create the parameter from.</td>
         </tr>
 
     
@@ -1064,7 +1134,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="url.js.html">url.js</a>, <a href="url.js.html#line227">line 227</a>
+        <a href="parameter.js.html">parameter.js</a>, <a href="parameter.js.html#line248">line 248</a>
     </li></ul></dd>
     
 
@@ -1091,7 +1161,7 @@
 
         
 <div class="param-desc">
-    The constructed OpenSearchUrl object
+    the constructed parameters object.
 </div>
 
 
@@ -1102,7 +1172,7 @@
     </dt>
     <dd>
         
-<span class="param-type"><a href="OpenSearchUrl.html">OpenSearchUrl</a></span>
+<span class="param-type"><a href="OpenSearchParameter.html">OpenSearchParameter</a></span>
 
 
     </dd>
@@ -1117,14 +1187,14 @@
 
     
 
-    <h4 class="name" id=".fromTemplateUrl"><span class="type-signature">(static) </span>fromTemplateUrl<span class="signature">(type, templateUrl, method<span class="signature-attributes">opt</span>, enctype<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="OpenSearchUrl.html">OpenSearchUrl</a>}</span></h4>
+    <h4 class="name" id="combined"><span class="type-signature"></span>combined<span class="signature">(other)</span><span class="type-signature"> &rarr; {<a href="OpenSearchParameter.html">OpenSearchParameter</a>}</span></h4>
 
     
 
 
 
 <div class="description">
-    Construct a <a href="OpenSearchUrl.html">OpenSearchUrl</a> from a template URL
+    Combines this parameter with the values of another parameter.
 </div>
 
 
@@ -1148,11 +1218,7 @@
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
-        
-        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -1164,148 +1230,23 @@
 
         <tr>
             
-                <td class="name"><code>type</code></td>
+                <td class="name"><code>other</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type"><a href="OpenSearchParameter.html">OpenSearchParameter</a></span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
 
             
-                <td class="default">
-                
-                </td>
-            
 
-            <td class="description last">The mime-type</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>templateUrl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">The template URL string.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>method</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    'GET'
-                
-                </td>
-            
-
-            <td class="description last">The HTTP method</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>enctype</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    'application/x-www-form-urlencoded'
-                
-                </td>
-            
-
-            <td class="description last">The encoding type</td>
+            <td class="description last">the other parameter</td>
         </tr>
 
     
@@ -1346,7 +1287,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="url.js.html">url.js</a>, <a href="url.js.html#line268">line 268</a>
+        <a href="parameter.js.html">parameter.js</a>, <a href="parameter.js.html#line182">line 182</a>
     </li></ul></dd>
     
 
@@ -1373,7 +1314,7 @@
 
         
 <div class="param-desc">
-    The constructed OpenSearchUrl object
+    the combined parameter
 </div>
 
 
@@ -1384,7 +1325,7 @@
     </dt>
     <dd>
         
-<span class="param-type"><a href="OpenSearchUrl.html">OpenSearchUrl</a></span>
+<span class="param-type"><a href="OpenSearchParameter.html">OpenSearchParameter</a></span>
 
 
     </dd>
@@ -1399,14 +1340,15 @@
 
     
 
-    <h4 class="name" id="createRequest"><span class="type-signature"></span>createRequest<span class="signature">(parameterValues)</span><span class="type-signature"> &rarr; {Request}</span></h4>
+    <h4 class="name" id="serialize"><span class="type-signature"></span>serialize<span class="signature">(value)</span><span class="type-signature"> &rarr; {string}</span></h4>
 
     
 
 
 
 <div class="description">
-    Create a request for the given parameters
+    Serialize the given value according to the internal type to be sent in a
+request.
 </div>
 
 
@@ -1442,12 +1384,24 @@
 
         <tr>
             
-                <td class="name"><code>parameterValues</code></td>
+                <td class="name"><code>value</code></td>
             
 
             <td class="type">
             
                 
+<span class="param-type">Number</span>
+|
+
+<span class="param-type">string</span>
+|
+
+<span class="param-type">Date</span>
+|
+
+<span class="param-type">array</span>
+|
+
 <span class="param-type">object</span>
 
 
@@ -1458,7 +1412,9 @@
 
             
 
-            <td class="description last">An object mapping the name or type to the value</td>
+            <td class="description last">The value to serialize. The
+                                               allowed types depend on the
+                                               internal type.</td>
         </tr>
 
     
@@ -1499,7 +1455,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="url.js.html">url.js</a>, <a href="url.js.html#line149">line 149</a>
+        <a href="parameter.js.html">parameter.js</a>, <a href="parameter.js.html#line202">line 202</a>
     </li></ul></dd>
     
 
@@ -1526,9 +1482,7 @@
 
         
 <div class="param-desc">
-    The <a href="https://developer.mozilla.org/en-US/docs/Web/API/Request">Request</a>
-                   object for the
-                   <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">Fetch API</a>
+    the serialized value.
 </div>
 
 
@@ -1539,313 +1493,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Request</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="hasParameter"><span class="type-signature"></span>hasParameter<span class="signature">(type)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Returns whether the URL has a template parameter of the given type
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>type</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The parameter type to check</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="url.js.html">url.js</a>, <a href="url.js.html#line110">line 110</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Whether the URL has a parameter of that type
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="isCompatible"><span class="type-signature"></span>isCompatible<span class="signature">(parameters)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Checks whether this URL is compatible with the given parameters
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>parameters</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">An object mapping the name or type to the value</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="url.js.html">url.js</a>, <a href="url.js.html#line119">line 119</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Whether or not the URL is compatible with the given parameters
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
 
 
     </dd>
