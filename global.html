@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: opensearch</title>
+    <title>JSDoc: Global</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: opensearch</h1>
+    <h1 class="page-title">Global</h1>
 
     
 
@@ -28,6 +28,7 @@
 
 <header>
     
+        <h2></h2>
         
     
 </header>
@@ -36,6 +37,45 @@
     <div class="container-overview">
     
         
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
 
         
     
@@ -61,14 +101,14 @@
 
     
 
-    <h4 class="name" id=".discover"><span class="type-signature">(static) </span>discover<span class="signature">(url)</span><span class="type-signature"> &rarr; {Promise:<a href="-_.html"></a>.&lt;<a href="OpenSearchService.html">OpenSearchService</a>:<a href="-_.html"></a>>}</span></h4>
+    <h4 class="name" id="parseTemplateParameters"><span class="type-signature"></span>parseTemplateParameters<span class="signature">(templateUrl)</span><span class="type-signature"> &rarr; {Array:<a href="-_.html"></a>.&lt;<a href="OpenSearchParameter.html">OpenSearchParameter</a>:<a href="-_.html"></a>>}</span></h4>
 
     
 
 
 
 <div class="description">
-    Accesses an OpenSearch service and discovers it.
+    Parse a template URL string and get a list of parameters.
 </div>
 
 
@@ -104,13 +144,13 @@
 
         <tr>
             
-                <td class="name"><code>url</code></td>
+                <td class="name"><code>templateUrl</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">string</span>
 
 
             
@@ -120,7 +160,7 @@
 
             
 
-            <td class="description last">The URL to find the OpenSearchDescription XML document</td>
+            <td class="description last">the string to parse the parameters from.</td>
         </tr>
 
     
@@ -161,7 +201,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line13">line 13</a>
+        <a href="parameter.js.html">parameter.js</a>, <a href="parameter.js.html#line25">line 25</a>
     </li></ul></dd>
     
 
@@ -188,7 +228,7 @@
 
         
 <div class="param-desc">
-    The <a href="OpenSearchService.html">OpenSearchService</a> as a Promise
+    the parsed parameters objects
 </div>
 
 
@@ -199,7 +239,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Promise:<a href="-_.html"></a>.&lt;<a href="OpenSearchService.html">OpenSearchService</a>:<a href="-_.html"></a>></span>
+<span class="param-type">Array:<a href="-_.html"></a>.&lt;<a href="OpenSearchParameter.html">OpenSearchParameter</a>:<a href="-_.html"></a>></span>
 
 
     </dd>
