@@ -1,79 +1,6 @@
-import parse from 'url-parse';
-import { stringify } from 'wellknown';
 import { xPathArray, resolver, namespaces, getAttributeNS } from './utils';
+import { OpenSearchParameter, parseTemplateParameters } from './parameter';
 
-
-const typeRE = /{([a-zA-Z:]+)([?]?)}/;
-
-function parseType(value) {
-  const match = typeRE.exec(value);
-  if (match) {
-    return match[1];
-  }
-  return null;
-}
-
-function isMandatory(value) {
-  return typeRE.exec(value)[2] !== '?';
-}
-
-function parseTemplateParameters(templateUrl) {
-  const parameters = [];
-  const parsed = parse(templateUrl, true);
-
-  Object.keys(parsed.query).forEach(name => {
-    const parameterType = parseType(parsed.query[name]);
-    if (parameterType) {
-      parameters.push({
-        name,
-        type: parameterType,
-        mandatory: isMandatory(parsed.query[name]),
-      });
-    }
-  });
-  return parameters;
-}
-
-function eoValueToString(value, isDate = false) {
-  const convertDate = (dateValue) => {
-    if (dateValue instanceof Date) {
-      return dateValue.toISOString();
-    }
-    return value;
-  };
-
-  if (typeof value === 'number') {
-    return value.toString();
-  } else if (isDate && value instanceof Date) {
-    return convertDate(value);
-  } else if (Array.isArray(value)) {
-    if (isDate) {
-      return `{${value.map(convertDate).join(',')}}`;
-    }
-    return `{${value.join(',')}}`;
-  }
-
-  let left = null;
-  let right = null;
-  if (value.hasOwnProperty('min')) {
-    left = `[${isDate ? convertDate(value.min) : value.min}`;
-  } else if (value.hasOwnProperty('minExclusive')) {
-    left = `]${isDate ? convertDate(value.minExclusive) : value.minExclusive}`;
-  }
-
-  if (value.hasOwnProperty('max')) {
-    right = `${isDate ? convertDate(value.max) : value.max}]`;
-  } else if (value.hasOwnProperty('maxExclusive')) {
-    right = `${isDate ? convertDate(value.maxExclusive) : value.maxExclusive}[`;
-  }
-
-  if (left !== null && right !== null) {
-    return `${left},${right}`;
-  } else if (left !== null) {
-    return left;
-  }
-  return right;
-}
 
 /**
  * Class to parse a single URL of an OpenSearchDescription XML document and
@@ -212,57 +139,16 @@ export class OpenSearchUrl {
     return true;
   }
 
-  serializeParameter(type, value) {
-    switch (type) {
-      case 'time:start':
-      case 'time:end':
-        if (value instanceof Date) {
-          return value.toISOString();
-        }
-        break;
-      case 'geo:box':
-        if (Array.isArray(value)) {
-          return value.join(',');
-        }
-        break;
-      case 'geo:geometry':
-        return stringify(value);
-      case 'eo:orbitNumber':
-      case 'eo:track':
-      case 'eo:frame':
-      case 'eo:cloudCover':
-      case 'eo:snowCover':
-      case 'eo:startTimeFromAscendingNode':
-      case 'eo:completionTimeFromAscendingNode':
-      case 'eo:illuminationAzimuthAngle':
-      case 'eo:illuminationZenithAngle':
-      case 'eo:illuminationElevationAngle':
-      case 'eo:minimumIncidenceAngle':
-      case 'eo:maximumIncidenceAngle':
-      case 'eo:dopplerFrequency':
-      case 'eo:incidenceAngleVariation':
-        return eoValueToString(value);
-      case 'eo:availabilityTime':
-      case 'eo:creationDate':
-      case 'eo:modificationDate':
-      case 'eo:processingDate':
-        return eoValueToString(value, true);
-      default:
-        break;
-    }
-    return value;
-  }
-
   /**
    * Create a request for the given parameters
-   * @param {object} parameters An object mapping the name or type to the value
+   * @param {object} parameterValues An object mapping the name or type to the value
    * @returns {Request} The {@link https://developer.mozilla.org/en-US/docs/Web/API/Request Request}
    *                    object for the
    *                    {@link https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API Fetch API}
    */
-  createRequest(parameters) {
+  createRequest(parameterValues) {
     // check parameters
-    Object.keys(parameters).forEach(key => {
+    Object.keys(parameterValues).forEach(key => {
       if (!this._parametersByType.hasOwnProperty(key)
           && !this._parametersByName.hasOwnProperty(key)) {
         throw new Error(`Invalid parameter '${key}'.`);
@@ -271,14 +157,14 @@ export class OpenSearchUrl {
 
     const missingMandatoryParameters = this.parameters.filter(
       (parameter) => parameter.mandatory
-        && !parameters.hasOwnProperty(parameter.name)
-        && !parameters.hasOwnProperty(parameter.type)
+        && !parameterValues.hasOwnProperty(parameter.name)
+        && !parameterValues.hasOwnProperty(parameter.type)
     ).map((parameter) => parameter.type);
 
     const missingOptionalParameters = this.parameters.filter(
       (parameter) => !parameter.mandatory
-        && !parameters.hasOwnProperty(parameter.name)
-        && !parameters.hasOwnProperty(parameter.type)
+        && !parameterValues.hasOwnProperty(parameter.name)
+        && !parameterValues.hasOwnProperty(parameter.type)
     ).map((parameter) => parameter.type);
 
     if (missingMandatoryParameters.length) {
@@ -289,11 +175,11 @@ export class OpenSearchUrl {
       // insert parameters into URL template
       let url = this.url;
 
-      Object.keys(parameters).forEach(key => {
-        const type = (this._parametersByType[key] || this._parametersByName[key]).type;
+      Object.keys(parameterValues).forEach(key => {
+        const parameter = this._parametersByType[key] || this._parametersByName[key];
         url = url.replace(
-          new RegExp(`{${type}[?]?}`),
-          this.serializeParameter(type, parameters[key])
+          new RegExp(`{${parameter.type}[?]?}`),
+          parameter.serialize(parameterValues[key])
         );
       });
 
@@ -308,17 +194,17 @@ export class OpenSearchUrl {
     const enctype = this.enctype || 'application/x-www-form-urlencoded';
     let body = null;
     if (enctype === 'application/x-www-form-urlencoded') {
-      body = Object.keys(parameters).map(key => {
+      body = Object.keys(parameterValues).map(key => {
         const param = (this._parametersByType[key] || this._parametersByName[key]);
         const k = encodeURIComponent(param.name);
-        const v = encodeURIComponent(this.serializeParameter(param.type, parameters[key]));
+        const v = encodeURIComponent(param.serialize(parameterValues[key]));
         return `${k}=${v}`;
       }).join('&');
     } else if (enctype === 'multipart/form-data') {
       body = new FormData();
-      Object.keys(parameters).forEach(key => {
+      Object.keys(parameterValues).forEach(key => {
         const param = (this._parametersByType[key] || this._parametersByName[key]);
-        body.append(param.name, this.serializeParameter(param.type, parameters[key]));
+        body.append(param.name, param.serialize(parameterValues[key]));
       });
     } else {
       throw new Error(`Unsupported enctype '${enctype}'.`);
@@ -348,21 +234,7 @@ export class OpenSearchUrl {
       parseInt(node.getAttribute('pageOffset'), 10) : 1;
 
     const parametersFromTemplate = parseTemplateParameters(node.getAttribute('template'));
-    const parametersFromNode = parameterNodes.map((parameterNode) => {
-      const type = parseType(parameterNode.getAttribute('value'));
-      const name = parameterNode.getAttribute('name');
-      const mandatory = parameterNode.hasAttribute('minimum')
-                          ? parameterNode.getAttribute('minimum') !== '0' : undefined;
-      const optionNodes = xPathArray(parameterNode, 'parameters:Option', resolver);
-      let options;
-      if (optionNodes.length) {
-        options = optionNodes.map(optionNode => ({
-          label: optionNode.getAttribute('label'),
-          value: optionNode.getAttribute('value'),
-        }));
-      }
-      return { name, type, mandatory, options };
-    });
+    const parametersFromNode = parameterNodes.map((parameterNode) => new OpenSearchParameter(parameterNode));
 
     const parametersNotInTemplate = parametersFromNode.filter(
       p1 => !parametersFromTemplate.find(p2 => p1.name === p2.name)
@@ -374,12 +246,7 @@ export class OpenSearchUrl {
     const parameters = parametersFromTemplate.map(p1 => {
       const p2 = parametersFromNode.find(p => p1.name === p.name);
       if (p2) {
-        return {
-          name: p1.name,
-          type: p1.type,
-          mandatory: (typeof p2.mandatory !== 'undefined') ? p2.mandatory : p1.mandatory,
-          options: p2.options,
-        };
+        return p1.combine(p2);
       }
       return p1;
     }).concat(parametersNotInTemplate);
