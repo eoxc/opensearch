@@ -1,6 +1,6 @@
 import parse from 'url-parse';
 import { xPathArray, resolver, namespaces, getAttributeNS } from './utils';
-import { OpenSearchParameter, parseTemplateParameters } from './parameter';
+import { OpenSearchParameter } from './parameter';
 
 
 /**
@@ -272,7 +272,10 @@ export class OpenSearchUrl {
    */
   static fromTemplateUrl(type, templateUrl, method = 'GET',
                          enctype = 'application/x-www-form-urlencoded') {
-    const parameters = parseTemplateParameters(templateUrl);
+    const parsed = parse(templateUrl, true);
+    const parameters = Object.keys(parsed.query)
+      .map(name => OpenSearchParameter.fromKeyValuePair(name, parsed.query[name]))
+      .filter(parameter => parameter);
     return new OpenSearchUrl(type, templateUrl, parameters, method, enctype);
   }
 }

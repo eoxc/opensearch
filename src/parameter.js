@@ -228,13 +228,13 @@ export class OpenSearchParameter {
     const mandatory = node.hasAttribute('minimum')
                         ? node.getAttribute('minimum') !== '0' : undefined;
     const minExclusive = node.hasAttribute('minExclusive')
-                          ? parseInt(node.getAttribute('minExclusive')) : null;
+                          ? parseInt(node.getAttribute('minExclusive')) : undefined;
     const maxExclusive = node.hasAttribute('maxExclusive')
-                          ? parseInt(node.getAttribute('maxExclusive')) : null;
+                          ? parseInt(node.getAttribute('maxExclusive')) : undefined;
     const minInclusive = node.hasAttribute('minInclusive')
-                          ? parseInt(node.getAttribute('minInclusive')) : null;
+                          ? parseInt(node.getAttribute('minInclusive')) : undefined;
     const maxInclusive = node.hasAttribute('maxInclusive')
-                          ? parseInt(node.getAttribute('maxInclusive')) : null;
+                          ? parseInt(node.getAttribute('maxInclusive')) : undefined;
     const optionNodes = xPathArray(node, 'parameters:Option', resolver);
     let options;
     if (optionNodes.length) {
