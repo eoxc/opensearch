@@ -1,4 +1,3 @@
-import parse from 'url-parse';
 import { stringify } from 'wellknown';
 import { xPathArray, resolver, isNullOrUndefined } from './utils';
 
@@ -15,28 +14,6 @@ function parseType(value) {
 
 function isMandatory(value) {
   return typeRE.exec(value)[2] !== '?';
-}
-
-/**
- * Parse a template URL string and get a list of parameters.
- * @param {string} templateUrl the string to parse the parameters from.
- * @returns {OpenSearchParameter[]} the parsed parameters objects
- */
-export function parseTemplateParameters(templateUrl) {
-  const parameters = [];
-  const parsed = parse(templateUrl, true);
-
-  Object.keys(parsed.query).forEach(name => {
-    const parameterType = parseType(parsed.query[name]);
-    if (parameterType) {
-      parameters.push({
-        name,
-        type: parameterType,
-        mandatory: isMandatory(parsed.query[name]),
-      });
-    }
-  });
-  return parameters;
 }
 
 function eoValueToString(value, isDate = false) {
@@ -267,7 +244,23 @@ export class OpenSearchParameter {
       }));
     }
     return new OpenSearchParameter(
-      name, type, mandatory, options, minExclusive, maxExclusive, minInclusive, maxInclusive
+      type, name, mandatory, options, minExclusive, maxExclusive, minInclusive, maxInclusive
     );
+  }
+
+  /**
+   * Constructs a new OpenSearchParameter from a key value pair (e.g: from the
+   * query part of a KVP-URL). Returns null, when the value could not be parsed.
+   * @param {DOMNode} key the key of the key-value-pair.
+   * @param {DOMNode} value the value of the key-value-pair.
+   * @returns {OpenSearchParameter|null} the constructed parameters object.
+   */
+  static fromKeyValuePair(key, value) {
+    const type = parseType(value);
+    if (type) {
+      return new OpenSearchParameter(
+        type, key, isMandatory(value),
+      );
+    }
   }
 }

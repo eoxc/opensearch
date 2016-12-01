@@ -1,3 +1,4 @@
+import parse from 'url-parse';
 import { xPathArray, resolver, namespaces, getAttributeNS } from './utils';
 import { OpenSearchParameter, parseTemplateParameters } from './parameter';
 
@@ -233,20 +234,24 @@ export class OpenSearchUrl {
     const pageOffset = node.hasAttribute('pageOffset') ?
       parseInt(node.getAttribute('pageOffset'), 10) : 1;
 
-    const parametersFromTemplate = parseTemplateParameters(node.getAttribute('template'));
-    const parametersFromNode = parameterNodes.map((parameterNode) => new OpenSearchParameter(parameterNode));
+    const parsed = parse(node.getAttribute('template'), true);
+    const parametersFromTemplate = Object.keys(parsed.query)
+      .map(name => OpenSearchParameter.fromKeyValuePair(name, parsed.query[name]))
+      .filter(parameter => parameter);
+    const parametersFromNode = parameterNodes.map(OpenSearchParameter.fromNode);
 
     const parametersNotInTemplate = parametersFromNode.filter(
       p1 => !parametersFromTemplate.find(p2 => p1.name === p2.name)
-    ).map(param => Object.assign(param, {
-      mandatory: (typeof param.mandatory === 'undefined') ? true : param.mandatory,
-    }));
+    ).map(param => {
+      param._mandatory = (typeof param.mandatory === 'undefined') ? true : param.mandatory;
+      return param;
+    });
 
     // merge parameters from node and template
     const parameters = parametersFromTemplate.map(p1 => {
       const p2 = parametersFromNode.find(p => p1.name === p.name);
       if (p2) {
-        return p1.combine(p2);
+        return p1.combined(p2);
       }
       return p1;
     }).concat(parametersNotInTemplate);
