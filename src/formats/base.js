@@ -199,7 +199,7 @@ export class BaseFeedFormat {
   }
 
   parseMedia(node) {
-    return xPathArray(node, 'media:content').map(mediaNode => ({
+    return xPathArray(node, 'media:group/media:content|media:content').map(mediaNode => ({
       url: mediaNode.getAttribute('url'),
       category: xPath(mediaNode, 'media:category/text()'),
       scheme: xPath(mediaNode, 'media:category/@scheme'),
