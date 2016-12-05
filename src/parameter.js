@@ -24,7 +24,9 @@ function eoValueToString(value, isDate = false) {
     return value;
   };
 
-  if (typeof value === 'number') {
+  if (typeof value === 'string') {
+    return value;
+  } else if (typeof value === 'number') {
     return value.toString();
   } else if (isDate && value instanceof Date) {
     return convertDate(value);
