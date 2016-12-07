@@ -27,16 +27,18 @@ export class OpenSearchUrl {
    * @param {string} [enctype='application/x-www-form-urlencoded'] The encoding type
    * @param {Number} [indexOffset=1] The index offset of this URL
    * @param {Number} [pageOffset=1] The page offset of this URL
+   * @param {string[]} [relations=['results']] The relations of this URL.
    */
   constructor(type, url, parameters = [], method = 'GET',
               enctype = 'application/x-www-form-urlencoded',
-              indexOffset = 1, pageOffset = 1) {
+              indexOffset = 1, pageOffset = 1, relations = ['results']) {
     this._type = type;
     this._url = url;
     this._method = method;
     this._enctype = enctype;
     this._indexOffset = indexOffset;
     this._pageOffset = pageOffset;
+    this._relations = relations;
 
     this._parameters = parameters;
     this._parametersByName = {};
@@ -93,6 +95,14 @@ export class OpenSearchUrl {
    */
   get pageOffset() {
     return this._pageOffset;
+  }
+
+  /**
+   * The page offset of this URL
+   * @readonly
+   */
+  get relations() {
+    return this._relations;
   }
 
   /**
@@ -233,6 +243,8 @@ export class OpenSearchUrl {
       parseInt(node.getAttribute('indexOffset'), 10) : 1;
     const pageOffset = node.hasAttribute('pageOffset') ?
       parseInt(node.getAttribute('pageOffset'), 10) : 1;
+    const rel = node.getAttribute('rel');
+    const relations = (typeof rel === 'undefined' || rel === '') ? undefined : rel.split(' ');
 
     const parsed = parse(node.getAttribute('template'), true);
     const parametersFromTemplate = Object.keys(parsed.query)
@@ -258,7 +270,7 @@ export class OpenSearchUrl {
 
     return new OpenSearchUrl(
       node.getAttribute('type'), node.getAttribute('template'),
-      parameters, method, enctype, indexOffset, pageOffset
+      parameters, method, enctype, indexOffset, pageOffset, relations
     );
   }
 

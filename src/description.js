@@ -71,7 +71,7 @@ export class OpenSearchDescription {
    * @returns {OpenSearchUrl[]}
    */
   getUrls(parameters = null, type = null, method = null) {
-    let urls = this.urls;
+    let urls = this.urls.filter(url => url.relations.find(rel => rel === 'results'));
 
     if (type) {
       urls = urls.filter(
