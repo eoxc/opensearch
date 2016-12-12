@@ -1,6 +1,8 @@
 import 'isomorphic-fetch';
 import xpath from 'xpath';
 
+import { getFormat } from './formats'
+
 export function parseURLQuery(url) {
   const search = (url.indexOf('?') === -1) ? url : url.substring(url.indexOf('?'));
   const vars = search.split('&');
@@ -87,4 +89,27 @@ export function fetchAndCheck(...args) {
 
 export function isNullOrUndefined(value) {
   return typeof value === 'undefined' || value === null;
+}
+
+/**
+ * Performs a search for the given URL and parameters.
+ * @param {OpenSearchUrl} url The URL to search on.
+ * @param {object} [parameters={}] The search parameters.
+ * @param {string} [type=null] The response format.
+ * @param {boolean} [raw=false] Whether the response shall be parsed or returned raw.
+ * @returns {Promise<array>|Promise<Response>} The search result as a Promise
+ */
+export function search(url, parameters = {}, type = null, raw = false) {
+  return fetchAndCheck(url.createRequest(parameters))
+    .then(response => {
+      if (raw) {
+        return response;
+      }
+
+      const format = getFormat(type || url.type);
+      if (!format) {
+        throw new Error(`Could not parse response of type '${type}'.`);
+      }
+      return format.parse(response);
+    });
 }

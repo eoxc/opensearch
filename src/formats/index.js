@@ -8,6 +8,15 @@ import { GeoJSONFormat } from './geojson';
  */
 
  /**
+  * @typedef Record
+  * @type Object
+  * @property {string} id The id of the record
+  * @property {object} properties The parsed properties of the record
+  * @property {object} [geometry] The parsed record geometry
+  * @property {float[]} [bbox] The parsed record geometry
+  */
+
+ /**
   * @typedef SearchResult
   * @type Object
   * @property {int} [totalResults] The total amount of matched records
@@ -15,11 +24,7 @@ import { GeoJSONFormat } from './geojson';
   * @property {int} [itemsPerPage] The number of items per page of results
   * @property {object} [query] The query of this result
   * @property {object[]} [links] Relevant links of this result
-  * @property {object[]} records The parsed records
-  * @property {string} records[].id The id of the record
-  * @property {object} records[].properties The parsed properties of the record
-  * @property {object} [records[].geometry] The parsed record geometry
-  * @property {float[]} [records[].bbox] The parsed record geometry
+  * @property {Record[]} records The parsed records
   */
 
 const formatRegistry = {};

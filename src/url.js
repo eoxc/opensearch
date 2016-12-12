@@ -123,6 +123,15 @@ export class OpenSearchUrl {
   }
 
   /**
+   * Get the parameter of the specified type, if available
+   * @param {string} type The parameter type to check
+   * @returns {OpenSearchParameter} The parameter of the given type or null
+   */
+  getParameter(type) {
+    return this._parametersByType[type];
+  }
+
+  /**
    * Checks whether this URL is compatible with the given parameters
    * @param {object} parameters An object mapping the name or type to the value
    * @returns {boolean} Whether or not the URL is compatible with the given parameters

@@ -1,8 +1,9 @@
 import 'isomorphic-fetch';
 
 import { OpenSearchDescription } from './description';
-import { fetchAndCheck } from './utils';
-import { getFormat, getSupportedTypes } from './formats/';
+import { OpenSearchPaginator } from './paginator';
+import { search } from './utils';
+import { getSupportedTypes } from './formats/';
 
 /**
  * Class to perform searches.
@@ -22,6 +23,21 @@ export class OpenSearchService {
    */
   getDescription() {
     return this.descriptionDocument;
+  }
+
+  /**
+   * Get the URL for the given parameters.
+   * @param {object} parameters An object mapping the name or type to the value
+   * @param {string} [type=null] The preferred transfer type.
+   * @param {string} [method=null] The preferred HTTP method type.
+   * @returns {OpenSearchUrl} The resulting URL objec.
+   */
+  getUrl(parameters, type, method) {
+    const url = this.descriptionDocument.getUrl(parameters, type, method);
+    if (!url) {
+      throw new Error(`No URL found for type '${type}' and the given parameters.`);
+    }
+    return url;
   }
 
   /**
@@ -47,24 +63,15 @@ export class OpenSearchService {
         throw new Error('No compatible URL found.');
       }
     } else {
-      url = this.descriptionDocument.getUrl(parameters, type, method);
-      if (!url) {
-        throw new Error(`No URL found for type '${type}' and the given parameters.`);
-      }
+      url = this.getUrl(parameters, type, method);
     }
 
-    // actually perform the search
-    return fetchAndCheck(url.createRequest(parameters))
-      .then(response => {
-        if (raw) {
-          return response;
-        }
+    return search(url, parameters, type, raw);
+  }
 
-        const format = getFormat(type || url.type);
-        if (!format) {
-          throw new Error(`Could not parse response of type '${type}'.`);
-        }
-        return format.parse(response);
-      });
+  getPaginator(parameters, type = null, method = null) {
+    return new OpenSearchPaginator(
+      this.getUrl(parameters, type, method), parameters
+    );
   }
 }
