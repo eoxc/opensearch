@@ -12,17 +12,18 @@ export class OpenSearchPaginator {
    * @param {int} [preferredItemsPerPage=undefined] The preferred page size. This
    *                                                defaults to the advertised
    *                                                default of the URL.
-   * @param {boolean} [preferIndexOffset=true] Whether the paging shall be done
-   *                                           using the `startIndex` parameter
-   *                                           (the default) or the `startPage`.
+   * @param {boolean} [preferStartIndex=true] Whether the paging shall be done
+   *                                          using the `startIndex` parameter
+   *                                          (the default) or the `startPage`.
    */
   constructor(url, parameters, {useCache = true,
                                 preferredItemsPerPage = undefined,
-                                preferIndexOffset = true} = {}) {
+                                preferStartIndex = true} = {}) {
     this._url = url;
+    this._parameters = parameters;
     this._cache = useCache ? {} : null;
     this._preferredItemsPerPage = preferredItemsPerPage;
-    this._preferIndexOffset = preferIndexOffset;
+    this._preferStartIndex = preferStartIndex;
     this._serverItemsPerPage = undefined;
     this._totalResults = undefined;
   }
@@ -30,10 +31,10 @@ export class OpenSearchPaginator {
   /**
    * Fetch a single page of the result set. Sets the server side items per page,
    * when the result is available.
-   * @param {int} [pageIndex=null] The index of the page to be fetched.
+   * @param {int} [pageIndex=0] The index of the page to be fetched.
    * @returns {Promise<SearchResult>} The search result.
    */
-  fetchPage(pageIndex = null) {
+  fetchPage(pageIndex = 0) {
     // TODO: get first page index
 
     if (this._cache && this._cache[pageIndex]) {
@@ -48,10 +49,14 @@ export class OpenSearchPaginator {
       parameters.count = pageSize;
     }
 
-    if (this._preferIndexOffset) {
-      parameters.startIndex = pageSize * pageIndex;
+    if (this._preferStartIndex) {
+      if (typeof pageSize === 'undefined') {
+        parameters.startIndex = this._url.indexOffset;
+      } else {
+        parameters.startIndex = pageSize * pageIndex + this._url.indexOffset;
+      }
     } else {
-      parameters.startPage = pageIndex;
+      parameters.startPage = pageIndex + this._url.pageOffset;
     }
     return search(this._url, parameters)
       .then(result => {
