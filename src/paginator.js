@@ -40,9 +40,7 @@ export class OpenSearchPaginator {
     if (this._cache && this._cache[pageIndex]) {
       return this._cache[pageIndex];
     }
-    const parameters = {
-      ...this._parameters,
-    };
+    const parameters = Object.assign({}, this._parameters);
 
     const pageSize = this.getActualPageSize();
     if (pageSize) {
