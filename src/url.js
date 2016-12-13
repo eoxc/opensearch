@@ -253,7 +253,7 @@ export class OpenSearchUrl {
     const pageOffset = node.hasAttribute('pageOffset') ?
       parseInt(node.getAttribute('pageOffset'), 10) : 1;
     const rel = node.getAttribute('rel');
-    const relations = (typeof rel === 'undefined' || rel === '') ? undefined : rel.split(' ');
+    const relations = (!rel || rel === '') ? undefined : rel.split(' ');
 
     const parsed = parse(node.getAttribute('template'), true);
     const parametersFromTemplate = Object.keys(parsed.query)
