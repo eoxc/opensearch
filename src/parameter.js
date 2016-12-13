@@ -1,5 +1,4 @@
-import { stringify } from 'wellknown';
-import { xPathArray, resolver, isNullOrUndefined } from './utils';
+import { xPathArray, resolver, isNullOrUndefined, toWKT } from './utils';
 
 
 const typeRE = /{([a-zA-Z:]+)([?]?)}/;
@@ -192,7 +191,7 @@ export class OpenSearchParameter {
         }
         break;
       case 'geo:geometry':
-        return stringify(value);
+        return toWKT(value);
       case 'eo:orbitNumber':
       case 'eo:track':
       case 'eo:frame':

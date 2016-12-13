@@ -91,6 +91,55 @@ export function isNullOrUndefined(value) {
   return typeof value === 'undefined' || value === null;
 }
 
+/*
+ * Forked from https://github.com/mapbox/wellknown/blob/87965f6f46ee38355e7e1f82107aa832ea29bc6c/wellknown.js
+ * Removed whitespaces after geometry type to be more robust with some (FedEO)
+ * services.
+ */
+
+export function toWKT(gj) {
+  if (gj.type === 'Feature') {
+    gj = gj.geometry;
+  }
+
+  function pairWKT (c) {
+    return c.join(' ');
+  }
+
+  function ringWKT (r) {
+    return r.map(pairWKT).join(', ');
+  }
+
+  function ringsWKT (r) {
+    return r.map(ringWKT).map(wrapParens).join(', ');
+  }
+
+  function multiRingsWKT (r) {
+    return r.map(ringsWKT).map(wrapParens).join(', ');
+  }
+
+  function wrapParens (s) { return '(' + s + ')'; }
+
+  switch (gj.type) {
+    case 'Point':
+      return 'POINT(' + pairWKT(gj.coordinates) + ')';
+    case 'LineString':
+      return 'LINESTRING(' + ringWKT(gj.coordinates) + ')';
+    case 'Polygon':
+      return 'POLYGON(' + ringsWKT(gj.coordinates) + ')';
+    case 'MultiPoint':
+      return 'MULTIPOINT(' + ringWKT(gj.coordinates) + ')';
+    case 'MultiPolygon':
+      return 'MULTIPOLYGON(' + multiRingsWKT(gj.coordinates) + ')';
+    case 'MultiLineString':
+      return 'MULTILINESTRING(' + ringsWKT(gj.coordinates) + ')';
+    case 'GeometryCollection':
+      return 'GEOMETRYCOLLECTION(' + gj.geometries.map(stringify).join(', ') + ')';
+    default:
+      throw new Error('stringify requires a valid GeoJSON Feature or geometry object as input');
+  }
+}
+
 /**
  * Performs a search for the given URL and parameters.
  * @param {OpenSearchUrl} url The URL to search on.
