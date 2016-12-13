@@ -16,9 +16,9 @@ export class OpenSearchPaginator {
    *                                          using the `startIndex` parameter
    *                                          (the default) or the `startPage`.
    */
-  constructor(url, parameters, {useCache = true,
-                                preferredItemsPerPage = undefined,
-                                preferStartIndex = true} = {}) {
+  constructor(url, parameters, { useCache = true,
+                                 preferredItemsPerPage = undefined,
+                                 preferStartIndex = true } = {}) {
     this._url = url;
     this._parameters = parameters;
     this._cache = useCache ? {} : null;
