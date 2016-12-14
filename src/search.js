@@ -1,5 +1,6 @@
 import { getFormat } from './formats'
 import { fetchAndCheck } from './utils';
+import { getPromiseClass } from './config';
 
 /*
  * Returns an object that can be transformed into a fetch Request or an
@@ -117,10 +118,10 @@ function createXHR(url, parameters) {
  * @param {object} [PromiseClass=Promise] What Promise class to use to wrap XHR requests.
  * @returns {Promise<SearchResult>|Promise<Response>} The search result as a Promise
  */
-export function search(url, parameters = {}, type = null, raw = false, useXHR = false,
-                       PromiseClass = Promise) {
+export function search(url, parameters = {}, type = null, raw = false, useXHR = false) {
   // XHR API
   if (useXHR) {
+    const PromiseClass = getPromiseClass();
     return new PromiseClass((resolve, reject, onCancel) => {
       const xhr = createXHR(url, parameters);
       xhr.onload = () => {

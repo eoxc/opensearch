@@ -1,4 +1,5 @@
 import { search } from './utils';
+import { getPromiseClass } from './config';
 
 /**
  * Class to help with paginated results of an OpenSearch service.
@@ -80,7 +81,7 @@ export class OpenSearchPaginator {
         for (let i = 0; i < pageCount; ++i) {
           requests.push(this.fetchPage(i));
         }
-        return Promise.all(requests);
+        return getPromiseClass().all(requests);
       });
   }
 
