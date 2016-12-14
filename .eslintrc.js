@@ -6,6 +6,7 @@ module.exports = {
     "allowImportExportEverywhere": false
   },
   "env": {
+    "es6": true,
     "mocha": true,
     "browser": true,
     "node": true
