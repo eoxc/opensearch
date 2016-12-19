@@ -1,4 +1,4 @@
-import { search } from './utils';
+import { search } from './search';
 import { getPromiseClass } from './config';
 
 /**
