@@ -68,7 +68,7 @@ export class OpenSearchPaginator {
 
   /**
    * Fetches all pages from the URL. A probing request is sent to determine how
-   * many succeding requests have to be sent.
+   * many succeeding requests have to be sent.
    * @returns {Promise<SearchResult[]>} The async result of all the pages in the
    *                                    search.
    */
@@ -76,9 +76,9 @@ export class OpenSearchPaginator {
     return this.fetchPage()
       .then(firstPage => {
         this._totalResults = firstPage.totalResults;
-        const pageCount = this.getPageCount() - 1;
+        const pageCount = this.getPageCount();
         const requests = [firstPage];
-        for (let i = 0; i < pageCount; ++i) {
+        for (let i = 1; i < pageCount; ++i) {
           requests.push(this.fetchPage(i));
         }
         return getPromiseClass().all(requests);
