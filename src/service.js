@@ -2,7 +2,7 @@ import 'isomorphic-fetch';
 
 import { OpenSearchDescription } from './description';
 import { OpenSearchPaginator } from './paginator';
-import { search } from './utils';
+import { search } from './search';
 import { getSupportedTypes } from './formats/';
 
 /**
