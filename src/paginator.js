@@ -35,17 +35,20 @@ export class OpenSearchPaginator {
    * @param {int} [pageIndex=0] The index of the page to be fetched.
    * @returns {Promise<SearchResult>} The search result.
    */
-  fetchPage(pageIndex = 0) {
-    // TODO: get first page index
-
-    if (this._cache && this._cache[pageIndex]) {
-      return this._cache[pageIndex];
-    }
+  fetchPage(pageIndex = 0, maxCount = undefined) {
+    // TODO: implement caching of whole pages
+    // if (this._cache && this._cache[pageIndex]) {
+    //   return this._cache[pageIndex];
+    // }
     const parameters = Object.assign({}, this._parameters);
 
     const pageSize = this.getActualPageSize();
-    if (pageSize) {
+    if (pageSize && maxCount) {
+      parameters.count = Math.min(maxCount, pageSize);
+    } else if (pageSize) {
       parameters.count = pageSize;
+    } else if (maxCount) {
+      parameters.count = maxCount;
     }
 
     if (this._preferStartIndex) {
@@ -59,6 +62,7 @@ export class OpenSearchPaginator {
     }
     return search(this._url, parameters)
       .then(result => {
+        this._totalResults = result.totalResults;
         if (!this._serverItemsPerPage && result.itemsPerPage) {
           this._serverItemsPerPage = result.itemsPerPage;
         }
@@ -75,7 +79,6 @@ export class OpenSearchPaginator {
   fetchAllPages() {
     return this.fetchPage()
       .then(firstPage => {
-        this._totalResults = firstPage.totalResults;
         const pageCount = this.getPageCount();
         const requests = [firstPage];
         for (let i = 1; i < pageCount; ++i) {
@@ -87,13 +90,61 @@ export class OpenSearchPaginator {
 
   /**
    * Convenience method to get the records of all pages in a single result array
-   * @returns {Promise<Record[]>} The records of all the pages in the search.
+   * @returns {Promise<SearchResult>} The records of all the pages in the search.
    */
   fetchAllRecords() {
     return this.fetchAllPages()
-      .then(pages => pages.reduce((records, page) => {
-        return records.concat(page.records);
-      }, []));
+      .then(pages => {
+        const firstPage = pages[0];
+        const records = pages.reduce((records, page) => {
+          return records.concat(page.records);
+        }, []);
+        return {
+          totalResults: firstPage.totalResults,
+          startIndex: firstPage.startIndex,
+          itemsPerPage: firstPage.itemsPerPage,
+          records,
+        };
+      });
+  }
+
+  /**
+   * Fetches the first X records of a search in a single search result.
+   * @param {int} maxCount The maximum number of records to fetch.
+   * @returns {Promise<SearchResult>} The resulting records as a promise.
+   */
+  fetchFirstRecords(maxCount) {
+    // Get the first page
+    return this.fetchPage(0, maxCount)
+      .then(firstPage => {
+        if (firstPage.itemsPerPage >= maxCount) {
+          // return if we already have all records
+          return firstPage;
+        }
+        // fetch other pages until we have the required count
+        const requests = [firstPage];
+        for (let i = 1; i < maxCount / firstPage.itemsPerPage; ++i ) {
+          let count = firstPage.itemsPerPage;
+          if (firstPage.itemsPerPage * i > maxCount) {
+            count = maxCount - firstPage.itemsPerPage * (i - 1);
+          }
+          requests.push(this.fetchPage(i, count));
+        }
+
+        return getPromiseClass()
+          .all(requests)
+          .then(pages => {
+            const records = pages.reduce((records, page) => {
+              return records.concat(page.records);
+            }, []);
+            return {
+              totalResults: firstPage.totalResults,
+              startIndex: firstPage.startIndex,
+              itemsPerPage: firstPage.itemsPerPage,
+              records,
+            };
+          });
+      });
   }
 
   /**
