@@ -117,13 +117,14 @@ export class OpenSearchPaginator {
     // Get the first page
     return this.fetchPage(0, maxCount)
       .then(firstPage => {
-        if (firstPage.itemsPerPage >= maxCount) {
+        // check if all records fit in the first page (then return this page)
+        if (firstPage.totalResults <= firstPage.itemsPerPage) {
           // return if we already have all records
           return firstPage;
         }
         // fetch other pages until we have the required count
         const requests = [firstPage];
-        for (let i = 1; i < maxCount / firstPage.itemsPerPage; ++i ) {
+        for (let i = 1; i < maxCount / firstPage.itemsPerPage; ++i) {
           let count = firstPage.itemsPerPage;
           if (firstPage.itemsPerPage * i > maxCount) {
             count = maxCount - firstPage.itemsPerPage * (i - 1);
