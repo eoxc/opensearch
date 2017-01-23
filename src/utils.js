@@ -13,10 +13,10 @@ export function parseURLQuery(url) {
 }
 
 export function parseXml(xmlStr) {
-  if (typeof window.DOMParser !== 'undefined') {
-    return (new window.DOMParser()).parseFromString(xmlStr, 'text/xml');
+  if (typeof DOMParser !== 'undefined') {
+    return (new DOMParser()).parseFromString(xmlStr, 'text/xml');
   } else if (typeof ActiveXObject !== 'undefined') {
-    const xmlDoc = new window.ActiveXObject('Microsoft.XMLDOM');
+    const xmlDoc = new ActiveXObject('Microsoft.XMLDOM');
     xmlDoc.async = 'false';
     xmlDoc.loadXML(xmlStr);
     return xmlDoc;
