@@ -1,5 +1,6 @@
 import { OpenSearchService } from './service';
-import { fetchAndCheck } from './utils';
+import { fetchAndCheck, createXHR } from './utils';
+import config from './config';
 
 /**
  * @module opensearch
@@ -11,7 +12,30 @@ import { fetchAndCheck } from './utils';
  * @returns {Promise<OpenSearchService>} The {@link OpenSearchService} as a Promise
  */
 export function discover(url) {
+  const { PromiseClass, useXHR } = config();
+  if (useXHR) {
+    return new PromiseClass(function(resolve, reject, onCancel) {
+      const xhr = createXHR(url);
+      xhr.onload = () => {
+        try {
+          resolve(new OpenSearchService(xhr.responseText));
+        } catch(error) {
+          reject(error);
+        }
+      };
+      xhr.onerror = (event) => {
+        reject(event);
+      }
+      if (onCancel && typeof onCancel === 'function') {
+        onCancel(() => {
+          xhr.abort();
+        });
+      }
+    });
+  }
   return fetchAndCheck(url)
     .then(response => response.text())
     .then(response => new OpenSearchService(response));
 }
+
+export { config };

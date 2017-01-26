@@ -33,6 +33,7 @@ export class OpenSearchPaginator {
    * Fetch a single page of the result set. Sets the server side items per page,
    * when the result is available.
    * @param {int} [pageIndex=0] The index of the page to be fetched.
+   * @param {int} [maxCount=undefined] The maximum count of objects to be retrieved.
    * @returns {Promise<SearchResult>} The search result.
    */
   fetchPage(pageIndex = 0, maxCount = undefined) {
@@ -96,8 +97,8 @@ export class OpenSearchPaginator {
     return this.fetchAllPages()
       .then(pages => {
         const firstPage = pages[0];
-        const records = pages.reduce((records, page) => {
-          return records.concat(page.records);
+        const records = pages.reduce((rs, page) => {
+          return rs.concat(page.records);
         }, []);
         return {
           totalResults: firstPage.totalResults,
@@ -135,8 +136,8 @@ export class OpenSearchPaginator {
         return getPromiseClass()
           .all(requests)
           .then(pages => {
-            const records = pages.reduce((records, page) => {
-              return records.concat(page.records);
+            const records = pages.reduce((rs, page) => {
+              return rs.concat(page.records);
             }, []);
             return {
               totalResults: firstPage.totalResults,

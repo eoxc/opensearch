@@ -1,6 +1,7 @@
 import { getFormat } from './formats'
-import { fetchAndCheck } from './utils';
-import { getPromiseClass } from './config';
+import { fetchAndCheck, createRequest, createXHR } from './utils';
+import { getPromiseClass, getUseXHR } from './config';
+
 
 /*
  * Returns an object that can be transformed into a fetch Request or an
@@ -83,31 +84,6 @@ function createBaseRequest(url, parameterValues) {
   };
 }
 
-/*
- * Returns a Request object for the fetch API.
- */
-function createRequest(url, parameters) {
-  const baseRequest = createBaseRequest(url, parameters);
-  return new Request(baseRequest.url, baseRequest);
-}
-
-/*
- * Creates (and sends) an XMLHttpRequest.
- */
-function createXHR(url, parameters) {
-  const baseRequest = createBaseRequest(url, parameters);
-  const xhr = new XMLHttpRequest();
-
-  if (baseRequest.headers) {
-    Object.keys(baseRequest.headers).forEach(key => {
-      xhr.setRequestHeader(key, baseRequest.headers[key]);
-    });
-  }
-  xhr.open(baseRequest.method, baseRequest.url);
-  xhr.send(baseRequest.body ? baseRequest.body : null);
-  return xhr;
-}
-
 /**
  * Performs a search for the given URL and parameters.
  * @param {OpenSearchUrl} url The URL to search on.
@@ -118,12 +94,13 @@ function createXHR(url, parameters) {
  * @param {object} [PromiseClass=Promise] What Promise class to use to wrap XHR requests.
  * @returns {Promise<SearchResult>|Promise<Response>} The search result as a Promise
  */
-export function search(url, parameters = {}, type = null, raw = false, useXHR = false) {
+export function search(url, parameters = {}, type = null, raw = false) {
+  const baseRequest = createBaseRequest(url, parameters);
   // XHR API
-  if (useXHR) {
+  if (getUseXHR()) {
     const PromiseClass = getPromiseClass();
     return new PromiseClass((resolve, reject, onCancel) => {
-      const xhr = createXHR(url, parameters);
+      const xhr = createXHR(baseRequest.url, baseRequest);
       xhr.onload = () => {
         if (raw) {
           resolve(xhr);
@@ -153,7 +130,7 @@ export function search(url, parameters = {}, type = null, raw = false, useXHR = 
   }
 
   // fetch API
-  const request = fetchAndCheck(createRequest(url, parameters));
+  const request = fetchAndCheck(createRequest(baseRequest.url, baseRequest));
   if (raw) {
     return request;
   }

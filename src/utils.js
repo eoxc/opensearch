@@ -16,7 +16,7 @@ export function parseXml(xmlStr) {
   if (typeof DOMParser !== 'undefined') {
     return (new DOMParser()).parseFromString(xmlStr, 'text/xml');
   } else if (typeof ActiveXObject !== 'undefined') {
-    const xmlDoc = new ActiveXObject('Microsoft.XMLDOM');
+    const xmlDoc = new ActiveXObject('Microsoft.XMLDOM'); // eslint-disable-line no-undef
     xmlDoc.async = 'false';
     xmlDoc.loadXML(xmlStr);
     return xmlDoc;
@@ -136,4 +136,33 @@ export function toWKT(gj) {
     default:
       throw new Error('stringify requires a valid GeoJSON Feature or geometry object as input');
   }
+}
+
+/**
+ * Returns a Request object for the fetch API.
+ * @param {string} url The request URL
+ * @param {object} [baseRequest] the baseRequest
+ * @returns {Request} The constructed request.
+ */
+export function createRequest(url, baseRequest) {
+  return new Request(url, baseRequest);
+}
+
+/**
+ * Creates (and sends) an XMLHttpRequest.
+ * @param {string} url The request URL
+ * @param {object} [baseRequest] the baseRequest
+ * @returns {XMLHttpRequest} The constructed request.
+ */
+export function createXHR(url, baseRequest = {}) {
+  const xhr = new XMLHttpRequest();
+
+  if (baseRequest.headers) {
+    Object.keys(baseRequest.headers).forEach(key => {
+      xhr.setRequestHeader(key, baseRequest.headers[key]);
+    });
+  }
+  xhr.open(baseRequest.method || 'GET', url);
+  xhr.send(baseRequest.body ? baseRequest.body : null);
+  return xhr;
 }
