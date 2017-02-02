@@ -268,7 +268,7 @@ export class OpenSearchParameter {
     const type = parseType(value);
     if (type) {
       return new OpenSearchParameter(
-        type, key, isMandatory(value),
+        type, key, isMandatory(value)
       );
     }
     return null;

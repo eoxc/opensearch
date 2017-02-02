@@ -92,6 +92,72 @@
     
 
     
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="globalConfig"><span class="type-signature">(constant) </span>globalConfig<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    The global configuration.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="config.js.html">config.js</a>, <a href="config.js.html#line4">line 4</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -101,14 +167,14 @@
 
     
 
-    <h4 class="name" id="parseTemplateParameters"><span class="type-signature"></span>parseTemplateParameters<span class="signature">(templateUrl)</span><span class="type-signature"> &rarr; {Array:<a href="-_.html"></a>.&lt;<a href="OpenSearchParameter.html">OpenSearchParameter</a>:<a href="-_.html"></a>>}</span></h4>
+    <h4 class="name" id="assign"><span class="type-signature"></span>assign<span class="signature">(target, &hellip;sources)</span><span class="type-signature"> &rarr; {object}</span></h4>
 
     
 
 
 
 <div class="description">
-    Parse a template URL string and get a list of parameters.
+    Sort of polyfill for `Object.assign`
 </div>
 
 
@@ -132,6 +198,8 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -144,23 +212,64 @@
 
         <tr>
             
-                <td class="name"><code>templateUrl</code></td>
+                <td class="name"><code>target</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">object</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">the string to parse the parameters from.</td>
+            <td class="description last">the target to set the properties on.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sources</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the source objects to copy properties from.</td>
         </tr>
 
     
@@ -201,7 +310,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="parameter.js.html">parameter.js</a>, <a href="parameter.js.html#line25">line 25</a>
+        <a href="utils.js.html">utils.js</a>, <a href="utils.js.html#line200">line 200</a>
     </li></ul></dd>
     
 
@@ -228,7 +337,7 @@
 
         
 <div class="param-desc">
-    the parsed parameters objects
+    the target
 </div>
 
 
@@ -239,7 +348,965 @@
     </dt>
     <dd>
         
-<span class="param-type">Array:<a href="-_.html"></a>.&lt;<a href="OpenSearchParameter.html">OpenSearchParameter</a>:<a href="-_.html"></a>></span>
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="createRequest"><span class="type-signature"></span>createRequest<span class="signature">(url, baseRequest<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Request}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Returns a Request object for the fetch API.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The request URL</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>baseRequest</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the baseRequest</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils.js.html">utils.js</a>, <a href="utils.js.html#line151">line 151</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The constructed request.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Request</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="createXHR"><span class="type-signature"></span>createXHR<span class="signature">(url, baseRequest<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {XMLHttpRequest}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Creates (and sends) an XMLHttpRequest.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The request URL</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>baseRequest</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the baseRequest</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils.js.html">utils.js</a>, <a href="utils.js.html#line161">line 161</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The constructed request.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">XMLHttpRequest</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="find"><span class="type-signature"></span>find<span class="signature">(arr, predicate, thisArg)</span><span class="type-signature"> &rarr; {*}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Sort of polyfill for `Array.prototype.find`
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>arr</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the array to find the entry on.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>predicate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the callback to find the value.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>thisArg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the `this` for the predicate function.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils.js.html">utils.js</a>, <a href="utils.js.html#line181">line 181</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the found item or undefined
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="search"><span class="type-signature"></span>search<span class="signature">(url, parameters<span class="signature-attributes">opt</span>, type<span class="signature-attributes">opt</span>, raw<span class="signature-attributes">opt</span>, useXHR<span class="signature-attributes">opt</span>, PromiseClass<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise:<a href="-_.html"></a>.&lt;SearchResult:<a href="-_.html"></a>>|Promise:<a href="-_.html"></a>.&lt;Response:<a href="-_.html"></a>>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Performs a search for the given URL and parameters.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="OpenSearchUrl.html">OpenSearchUrl</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The URL to search on.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>parameters</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">The search parameters.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">The response format.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>raw</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Whether the response shall be parsed or returned raw.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>useXHR</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Whether to use `XMLHttpRequest`s or the `fetch` API.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>PromiseClass</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    Promise
+                
+                </td>
+            
+
+            <td class="description last">What Promise class to use to wrap XHR requests.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="search.js.html">search.js</a>, <a href="search.js.html#line101">line 101</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The search result as a Promise
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise:<a href="-_.html"></a>.&lt;SearchResult:<a href="-_.html"></a>></span>
+|
+
+<span class="param-type">Promise:<a href="-_.html"></a>.&lt;Response:<a href="-_.html"></a>></span>
 
 
     </dd>
@@ -265,13 +1332,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-opensearch.html">opensearch</a></li><li><a href="module-opensearch_formats.html">opensearch/formats</a></li></ul><h3>Classes</h3><ul><li><a href="-_.html"></a></li><li><a href="AtomFormat.html">AtomFormat</a></li><li><a href="GeoJSONFormat.html">GeoJSONFormat</a></li><li><a href="OpenSearchDescription.html">OpenSearchDescription</a></li><li><a href="OpenSearchParameter.html">OpenSearchParameter</a></li><li><a href="OpenSearchService.html">OpenSearchService</a></li><li><a href="OpenSearchUrl.html">OpenSearchUrl</a></li><li><a href="RSSFormat.html">RSSFormat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#parseTemplateParameters">parseTemplateParameters</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-opensearch.html">opensearch</a></li><li><a href="module-opensearch_formats.html">opensearch/formats</a></li></ul><h3>Classes</h3><ul><li><a href="-_.html"></a></li><li><a href="AtomFormat.html">AtomFormat</a></li><li><a href="GeoJSONFormat.html">GeoJSONFormat</a></li><li><a href="OpenSearchDescription.html">OpenSearchDescription</a></li><li><a href="OpenSearchPaginator.html">OpenSearchPaginator</a></li><li><a href="OpenSearchParameter.html">OpenSearchParameter</a></li><li><a href="OpenSearchService.html">OpenSearchService</a></li><li><a href="OpenSearchUrl.html">OpenSearchUrl</a></li><li><a href="RSSFormat.html">RSSFormat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#assign">assign</a></li><li><a href="global.html#createRequest">createRequest</a></li><li><a href="global.html#createXHR">createXHR</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#globalConfig">globalConfig</a></li><li><a href="global.html#search">search</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Dec 01 2016 12:11:10 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Feb 02 2017 15:37:04 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

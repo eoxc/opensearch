@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: index.js</title>
+    <title>JSDoc: Source: config.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: index.js</h1>
+    <h1 class="page-title">Source: config.js</h1>
 
     
 
@@ -26,47 +26,30 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { OpenSearchService } from './service';
-import { fetchAndCheck, createXHR } from './utils';
-import config from './config';
+            <pre class="prettyprint source linenums"><code>/**
+ * The global configuration.
+ */
+const globalConfig = {
+  useXHR: false,
+};
 
 /**
- * @module opensearch
+ * Retrieve config values or set one or more config values at once.
+ * @param {object} [values] The new values to set. If omitted, just return the
+ *                          current configuration.
+ * @returns {object} The current configuration.
  */
-
-/**
- * Accesses an OpenSearch service and discovers it.
- * @param {object} url The URL to find the OpenSearchDescription XML document
- * @returns {Promise&lt;OpenSearchService>} The {@link OpenSearchService} as a Promise
- */
-export function discover(url) {
-  const { useXHR } = config();
-  if (useXHR) {
-    return new Promise((resolve, reject, onCancel) => {
-      const xhr = createXHR(url);
-      xhr.onload = () => {
-        try {
-          resolve(new OpenSearchService(xhr.responseText));
-        } catch (error) {
-          reject(error);
-        }
-      };
-      xhr.onerror = (event) => {
-        reject(event);
-      };
-      if (onCancel &amp;&amp; typeof onCancel === 'function') {
-        onCancel(() => {
-          xhr.abort();
-        });
-      }
-    });
+export default function config(values = null) {
+  if (!values) {
+    return globalConfig;
   }
-  return fetchAndCheck(url)
-    .then(response => response.text())
-    .then(response => new OpenSearchService(response));
+  for (const key in values) {
+    if (Object.prototype.hasOwnProperty.call(values, key)) {
+      globalConfig[key] = values[key];
+    }
+  }
+  return globalConfig;
 }
-
-export { config };
 </code></pre>
         </article>
     </section>
