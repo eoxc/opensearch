@@ -1,6 +1,6 @@
 import { getFormat } from './formats'
 import { fetchAndCheck, createRequest, createXHR } from './utils';
-import { getPromiseClass, getUseXHR } from './config';
+import config from './config';
 
 
 /*
@@ -96,10 +96,10 @@ function createBaseRequest(url, parameterValues) {
  */
 export function search(url, parameters = {}, type = null, raw = false) {
   const baseRequest = createBaseRequest(url, parameters);
+  const { useXHR } = config();
   // XHR API
-  if (getUseXHR()) {
-    const PromiseClass = getPromiseClass();
-    return new PromiseClass((resolve, reject, onCancel) => {
+  if (useXHR) {
+    return new Promise((resolve, reject, onCancel) => {
       const xhr = createXHR(baseRequest.url, baseRequest);
       xhr.onload = () => {
         if (raw) {

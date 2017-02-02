@@ -166,3 +166,46 @@ export function createXHR(url, baseRequest = {}) {
   xhr.send(baseRequest.body ? baseRequest.body : null);
   return xhr;
 }
+
+/**
+ * Sort of polyfill for `Array.prototype.find`
+ * @param {Array} arr the array to find the entry on.
+ * @param {function} predicate the callback to find the value.
+ * @param {*} thisArg the `this` for the predicate function.
+ * @returns {*} the found item or undefined
+ */
+export function find(arr, predicate, thisArg) {
+  if (Array.prototype.find) {
+    return arr.find(predicate, thisArg);
+  }
+  for (let i = 0; i < arr.length; ++i) {
+    const v = arr[i];
+    if (predicate(v, i, arr)) {
+      return v;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Sort of polyfill for `Object.assign`
+ * @param {object} target the target to set the properties on.
+ * @param {...object} sources the source objects to copy properties from.
+ * @returns {object} the target
+ */
+export function assign(target, ...sources) {
+  if (Object.assign) {
+    return Object.assign(target, ...sources);
+  }
+  for (let i = 0; i < sources.length; ++i) {
+    const source = sources[i];
+    if (source) {
+      for (const key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key]; // eslint-disable-line no-param-reassign
+        }
+      }
+    }
+  }
+  return target;
+}

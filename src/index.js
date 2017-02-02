@@ -12,9 +12,9 @@ import config from './config';
  * @returns {Promise<OpenSearchService>} The {@link OpenSearchService} as a Promise
  */
 export function discover(url) {
-  const { PromiseClass, useXHR } = config();
+  const { useXHR } = config();
   if (useXHR) {
-    return new PromiseClass(function(resolve, reject, onCancel) {
+    return new Promise((resolve, reject, onCancel) => {
       const xhr = createXHR(url);
       xhr.onload = () => {
         try {

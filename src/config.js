@@ -1,27 +1,9 @@
-
 /**
  * The global configuration.
  */
-const config = {
-  PromiseClass: Promise,
+const globalConfig = {
   useXHR: false,
-}
-
-export function getPromiseClass() {
-  return config.PromiseClass;
-}
-
-export function setPromiseClass(PromiseClass) {
-  config.PromiseClass = PromiseClass;
-}
-
-export function getUseXHR() {
-  return config.useXHR;
-}
-
-export function setUseXHR(useXHR) {
-  config.useXHR = useXHR;
-}
+};
 
 /**
  * Retrieve config values or set one or more config values at once.
@@ -29,14 +11,14 @@ export function setUseXHR(useXHR) {
  *                          current configuration.
  * @returns {object} The current configuration.
  */
-export default function(values = null) {
+export default function config(values = null) {
   if (!values) {
-    return config;
+    return globalConfig;
   }
-  for (let key in values) {
-    if (values.hasOwnProperty(key)) {
-      config[key] = values[key];
+  for (const key in values) {
+    if (Object.prototype.hasOwnProperty.call(values, key)) {
+      globalConfig[key] = values[key];
     }
   }
-  return config;
+  return globalConfig;
 }

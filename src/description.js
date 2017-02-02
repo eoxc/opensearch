@@ -1,5 +1,5 @@
 import { OpenSearchUrl } from './url';
-import { parseXml, xPath, xPathArray } from './utils';
+import { parseXml, xPath, xPathArray, find } from './utils';
 
 /**
  * Class to parse the OpenSearchDescription XML document and get the saerch URLs
@@ -71,7 +71,7 @@ export class OpenSearchDescription {
    * @returns {OpenSearchUrl[]}
    */
   getUrls(parameters = null, type = null, method = null) {
-    let urls = this.urls.filter(url => url.relations.find(rel => rel === 'results'));
+    let urls = this.urls.filter(url => find(url.relations, rel => rel === 'results'));
 
     if (type) {
       urls = urls.filter(

@@ -1,5 +1,5 @@
 import parse from 'url-parse';
-import { xPathArray, resolver, namespaces, getAttributeNS } from './utils';
+import { xPathArray, resolver, namespaces, getAttributeNS, find } from './utils';
 import { OpenSearchParameter } from './parameter';
 
 
@@ -30,8 +30,8 @@ export class OpenSearchUrl {
    * @param {string[]} [relations=['results']] The relations of this URL.
    */
   constructor(type, url, parameters = [], method = 'GET',
-              enctype = 'application/x-www-form-urlencoded',
-              indexOffset = 1, pageOffset = 1, relations = ['results']) {
+    enctype = 'application/x-www-form-urlencoded',
+    indexOffset = 1, pageOffset = 1, relations = ['results']) {
     this._type = type;
     this._url = url;
     this._method = method;
@@ -43,7 +43,7 @@ export class OpenSearchUrl {
     this._parameters = parameters;
     this._parametersByName = {};
     this._parametersByType = {};
-    parameters.forEach(param => {
+    parameters.forEach((param) => {
       this._parametersByType[param.type] = param;
       this._parametersByName[param.name] = param;
     });
@@ -119,7 +119,7 @@ export class OpenSearchUrl {
    * @returns {boolean} Whether the URL has a parameter of that type
    */
   hasParameter(type) {
-    return this._parametersByType.hasOwnProperty(type);
+    return Object.prototype.hasOwnProperty.call(this._parametersByType, type);
   }
 
   /**
@@ -138,9 +138,9 @@ export class OpenSearchUrl {
    */
   isCompatible(parameters) {
     let compatible = true;
-    Object.keys(parameters).forEach(key => {
-      if (!this._parametersByType.hasOwnProperty(key)
-          && !this._parametersByName.hasOwnProperty(key)) {
+    Object.keys(parameters).forEach((key) => {
+      if (!Object.prototype.hasOwnProperty.call(this._parametersByType, key)
+          && !Object.prototype.hasOwnProperty.call(this._parametersByName, key)) {
         compatible = false;
       }
     });
@@ -149,9 +149,9 @@ export class OpenSearchUrl {
     }
 
     const missingMandatoryParameters = this.parameters.filter(
-      (parameter) => parameter.mandatory
-        && !parameters.hasOwnProperty(parameter.name)
-        && !parameters.hasOwnProperty(parameter.type)
+      parameter => parameter.mandatory
+        && !Object.prototype.hasOwnProperty.call(parameters, parameter.name)
+        && !Object.prototype.hasOwnProperty.call(parameters, parameter.type)
     );
     if (missingMandatoryParameters.length) {
       return false;
@@ -182,15 +182,16 @@ export class OpenSearchUrl {
     const parametersFromNode = parameterNodes.map(OpenSearchParameter.fromNode);
 
     const parametersNotInTemplate = parametersFromNode.filter(
-      p1 => !parametersFromTemplate.find(p2 => p1.name === p2.name)
-    ).map(param => {
+      p1 => !find(parametersFromTemplate, p2 => p1.name === p2.name)
+    ).map((param) => {
+      // eslint-disable-next-line no-underscore-dangle, no-param-reassign
       param._mandatory = (typeof param.mandatory === 'undefined') ? true : param.mandatory;
       return param;
     });
 
     // merge parameters from node and template
-    const parameters = parametersFromTemplate.map(p1 => {
-      const p2 = parametersFromNode.find(p => p1.name === p.name);
+    const parameters = parametersFromTemplate.map((p1) => {
+      const p2 = find(parametersFromNode, p => p1.name === p.name);
       if (p2) {
         return p1.combined(p2);
       }

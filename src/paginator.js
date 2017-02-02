@@ -1,5 +1,5 @@
 import { search } from './search';
-import { getPromiseClass } from './config';
+import { assign } from './utils';
 
 /**
  * Class to help with paginated results of an OpenSearch service.
@@ -41,7 +41,7 @@ export class OpenSearchPaginator {
     // if (this._cache && this._cache[pageIndex]) {
     //   return this._cache[pageIndex];
     // }
-    const parameters = Object.assign({}, this._parameters);
+    const parameters = assign({}, this._parameters);
 
     const pageSize = this.getActualPageSize();
     if (pageSize && maxCount) {
@@ -85,7 +85,7 @@ export class OpenSearchPaginator {
         for (let i = 1; i < pageCount; ++i) {
           requests.push(this.fetchPage(i));
         }
-        return getPromiseClass().all(requests);
+        return Promise.all(requests);
       });
   }
 
