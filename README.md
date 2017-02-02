@@ -34,6 +34,31 @@ have it available use the following polyfill:
 require('es6-promise').polyfill();
 ```
 
+### Configuration
+
+This library uses a global configuration interface, provided by the `config`
+function, which is used for getting and setting configuration values:
+
+```javascript
+import { config } from 'opensearch-browser';
+
+// getting the config
+const { useXHR } = config();
+
+// setting the config
+config({
+  useXHR: true,
+});
+```
+
+Currently supported are the following config values:
+  * `useXHR`: Whether to use the
+    [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest)
+    or the `fetch` API. The former has the advantage that the requests can be
+    aborted. This is exposed when a `Promise` type is used that supports
+    cancelling, like the great
+    [bluebird](http://bluebirdjs.com/docs/getting-started.html) library.
+
 ### Request parameters
 
 Request parameters are supplied as an object whose attribute names shall either
