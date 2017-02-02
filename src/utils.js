@@ -160,13 +160,12 @@ export function createRequest(url, baseRequest) {
  */
 export function createXHR(url, baseRequest = {}) {
   const xhr = new XMLHttpRequest();
-
+  xhr.open(baseRequest.method || 'GET', url);
   if (baseRequest.headers) {
     Object.keys(baseRequest.headers).forEach((key) => {
       xhr.setRequestHeader(key, baseRequest.headers[key]);
     });
   }
-  xhr.open(baseRequest.method || 'GET', url);
   xhr.send(baseRequest.body ? baseRequest.body : null);
   return xhr;
 }
