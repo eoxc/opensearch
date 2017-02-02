@@ -36,56 +36,54 @@ import { BaseFeedFormat } from './base';
 export class RSSFormat extends BaseFeedFormat {
   /**
    * Parse the given XML.
-   * @param {Response} response The {@link https://developer.mozilla.org/en-US/docs/Web/API/Response Response} object containing the XML to parse.
-   * @returns {Promise&lt;SearchResult>} The parsed search result as a promise
+   * @param {string} text The XML string to parse.
+   * @returns {SearchResult} The parsed search result
    */
-  parse(response) {
-    return response.text().then(text => {
-      const xmlDoc = parseXml(text).documentElement;
-      const records = xPathArray(xmlDoc, 'channel/item').map((node) => {
-        const item = {
-          id: xPath(node, 'dc:identifier/text()') || xPath(node, 'guid/text()'),
-          properties: {
-            title: xPath(node, 'title/text()'),
-            content: xPath(node, 'description/text()'),
-            summary: xPath(node, 'description/text()'),
-            links: this.parseLinks(node),
-            media: this.parseMedia(node),
-            // TODO: further fields + geometry
-          },
-        };
-
-        const box = this.parseBox(node);
-        if (box) {
-          item.bbox = box;
-        }
-
-        const geometry = this.parseGeometry(node);
-        if (geometry) {
-          item.geometry = geometry;
-
-          if (!item.bbox) {
-            item.bbox = this.getBoxFromGeometry(geometry);
-          }
-        }
-
-        const date = this.parseDate(node);
-        if (date) {
-          item.properties.time = date;
-        }
-
-        return item;
-      });
-
-      return {
-        totalResults: parseInt(xPath(xmlDoc, 'channel/os:totalResults/text()'), 10),
-        startIndex: parseInt(xPath(xmlDoc, 'channel/os:startIndex/text()'), 10),
-        itemsPerPage: parseInt(xPath(xmlDoc, 'channel/os:itemsPerPage/text()'), 10),
-        query: {}, // TODO:
-        links: this.parseLinks(xmlDoc),
-        records,
+  parse(text) {
+    const xmlDoc = parseXml(text).documentElement;
+    const records = xPathArray(xmlDoc, 'channel/item').map((node) => {
+      const item = {
+        id: xPath(node, 'dc:identifier/text()') || xPath(node, 'guid/text()'),
+        properties: {
+          title: xPath(node, 'title/text()'),
+          content: xPath(node, 'description/text()'),
+          summary: xPath(node, 'description/text()'),
+          links: this.parseLinks(node),
+          media: this.parseMedia(node),
+          // TODO: further fields + geometry
+        },
       };
+
+      const box = this.parseBox(node);
+      if (box) {
+        item.bbox = box;
+      }
+
+      const geometry = this.parseGeometry(node);
+      if (geometry) {
+        item.geometry = geometry;
+
+        if (!item.bbox) {
+          item.bbox = this.getBoxFromGeometry(geometry);
+        }
+      }
+
+      const date = this.parseDate(node);
+      if (date) {
+        item.properties.time = date;
+      }
+
+      return item;
     });
+
+    return {
+      totalResults: parseInt(xPath(xmlDoc, 'channel/os:totalResults/text()'), 10),
+      startIndex: parseInt(xPath(xmlDoc, 'channel/os:startIndex/text()'), 10),
+      itemsPerPage: parseInt(xPath(xmlDoc, 'channel/os:itemsPerPage/text()'), 10),
+      query: {}, // TODO:
+      links: this.parseLinks(xmlDoc),
+      records,
+    };
   }
 }
 </code></pre>
@@ -98,13 +96,13 @@ export class RSSFormat extends BaseFeedFormat {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-opensearch.html">opensearch</a></li><li><a href="module-opensearch_formats.html">opensearch/formats</a></li></ul><h3>Classes</h3><ul><li><a href="-_.html"></a></li><li><a href="AtomFormat.html">AtomFormat</a></li><li><a href="GeoJSONFormat.html">GeoJSONFormat</a></li><li><a href="OpenSearchDescription.html">OpenSearchDescription</a></li><li><a href="OpenSearchParameter.html">OpenSearchParameter</a></li><li><a href="OpenSearchService.html">OpenSearchService</a></li><li><a href="OpenSearchUrl.html">OpenSearchUrl</a></li><li><a href="RSSFormat.html">RSSFormat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#parseTemplateParameters">parseTemplateParameters</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-opensearch.html">opensearch</a></li><li><a href="module-opensearch_formats.html">opensearch/formats</a></li></ul><h3>Classes</h3><ul><li><a href="-_.html"></a></li><li><a href="AtomFormat.html">AtomFormat</a></li><li><a href="GeoJSONFormat.html">GeoJSONFormat</a></li><li><a href="OpenSearchDescription.html">OpenSearchDescription</a></li><li><a href="OpenSearchPaginator.html">OpenSearchPaginator</a></li><li><a href="OpenSearchParameter.html">OpenSearchParameter</a></li><li><a href="OpenSearchService.html">OpenSearchService</a></li><li><a href="OpenSearchUrl.html">OpenSearchUrl</a></li><li><a href="RSSFormat.html">RSSFormat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#assign">assign</a></li><li><a href="global.html#createRequest">createRequest</a></li><li><a href="global.html#createXHR">createXHR</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#globalConfig">globalConfig</a></li><li><a href="global.html#search">search</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Dec 01 2016 12:11:10 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Feb 02 2017 15:37:04 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

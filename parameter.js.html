@@ -26,9 +26,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import parse from 'url-parse';
-import { stringify } from 'wellknown';
-import { xPathArray, resolver, isNullOrUndefined } from './utils';
+            <pre class="prettyprint source linenums"><code>import { xPathArray, resolver, isNullOrUndefined, toWKT } from './utils';
 
 
 const typeRE = /{([a-zA-Z:]+)([?]?)}/;
@@ -45,28 +43,6 @@ function isMandatory(value) {
   return typeRE.exec(value)[2] !== '?';
 }
 
-/**
- * Parse a template URL string and get a list of parameters.
- * @param {string} templateUrl the string to parse the parameters from.
- * @returns {OpenSearchParameter[]} the parsed parameters objects
- */
-export function parseTemplateParameters(templateUrl) {
-  const parameters = [];
-  const parsed = parse(templateUrl, true);
-
-  Object.keys(parsed.query).forEach(name => {
-    const parameterType = parseType(parsed.query[name]);
-    if (parameterType) {
-      parameters.push({
-        name,
-        type: parameterType,
-        mandatory: isMandatory(parsed.query[name]),
-      });
-    }
-  });
-  return parameters;
-}
-
 function eoValueToString(value, isDate = false) {
   const convertDate = (dateValue) => {
     if (dateValue instanceof Date) {
@@ -75,7 +51,9 @@ function eoValueToString(value, isDate = false) {
     return value;
   };
 
-  if (typeof value === 'number') {
+  if (typeof value === 'string') {
+    return value;
+  } else if (typeof value === 'number') {
     return value.toString();
   } else if (isDate &amp;&amp; value instanceof Date) {
     return convertDate(value);
@@ -88,15 +66,15 @@ function eoValueToString(value, isDate = false) {
 
   let left = null;
   let right = null;
-  if (value.hasOwnProperty('min')) {
+  if (Object.prototype.hasOwnProperty.call(value, 'min')) {
     left = `[${isDate ? convertDate(value.min) : value.min}`;
-  } else if (value.hasOwnProperty('minExclusive')) {
+  } else if (Object.prototype.hasOwnProperty.call(value, 'minExclusive')) {
     left = `]${isDate ? convertDate(value.minExclusive) : value.minExclusive}`;
   }
 
-  if (value.hasOwnProperty('max')) {
+  if (Object.prototype.hasOwnProperty.call(value, 'max')) {
     right = `${isDate ? convertDate(value.max) : value.max}]`;
-  } else if (value.hasOwnProperty('maxExclusive')) {
+  } else if (Object.prototype.hasOwnProperty.call(value, 'maxExclusive')) {
     right = `${isDate ? convertDate(value.maxExclusive) : value.maxExclusive}[`;
   }
 
@@ -120,14 +98,18 @@ export class OpenSearchParameter {
    * @param {object[]} [options=null] The possible values for this parameter
    * @param {string} options[].label The label of the option
    * @param {string} options[].value The value of the option
-   * @param {Number} [minExclusive=undefined] The minimum value allowed for this parameter (exclusive)
-   * @param {Number} [maxExclusive=undefined] The maximum value allowed for this parameter (exclusive)
-   * @param {Number} [minInclusive=undefined] The minimum value allowed for this parameter (inclusive)
-   * @param {Number} [maxInclusive=undefined] The maximum value allowed for this parameter (inclusive)
+   * @param {Number} [minExclusive=undefined] The minimum value allowed for this
+                                              parameter (exclusive)
+   * @param {Number} [maxExclusive=undefined] The maximum value allowed for this
+                                              parameter (exclusive)
+   * @param {Number} [minInclusive=undefined] The minimum value allowed for this
+                                              parameter (inclusive)
+   * @param {Number} [maxInclusive=undefined] The maximum value allowed for this
+                                              parameter (inclusive)
    */
   constructor(type, name, mandatory, options = null,
-              minExclusive = undefined, maxExclusive = undefined,
-              minInclusive = undefined, maxInclusive = undefined) {
+    minExclusive = undefined, maxExclusive = undefined,
+    minInclusive = undefined, maxInclusive = undefined) {
     this._type = type;
     this._name = name;
     this._mandatory = mandatory;
@@ -241,7 +223,7 @@ export class OpenSearchParameter {
         }
         break;
       case 'geo:geometry':
-        return stringify(value);
+        return toWKT(value);
       case 'eo:orbitNumber':
       case 'eo:track':
       case 'eo:frame':
@@ -279,13 +261,17 @@ export class OpenSearchParameter {
     const mandatory = node.hasAttribute('minimum')
                         ? node.getAttribute('minimum') !== '0' : undefined;
     const minExclusive = node.hasAttribute('minExclusive')
-                          ? parseInt(node.getAttribute('minExclusive')) : null;
+                          ? parseInt(node.getAttribute('minExclusive'), 10)
+                          : undefined;
     const maxExclusive = node.hasAttribute('maxExclusive')
-                          ? parseInt(node.getAttribute('maxExclusive')) : null;
+                          ? parseInt(node.getAttribute('maxExclusive'), 10)
+                          : undefined;
     const minInclusive = node.hasAttribute('minInclusive')
-                          ? parseInt(node.getAttribute('minInclusive')) : null;
+                          ? parseInt(node.getAttribute('minInclusive'), 10)
+                          : undefined;
     const maxInclusive = node.hasAttribute('maxInclusive')
-                          ? parseInt(node.getAttribute('maxInclusive')) : null;
+                          ? parseInt(node.getAttribute('maxInclusive'), 10)
+                          : undefined;
     const optionNodes = xPathArray(node, 'parameters:Option', resolver);
     let options;
     if (optionNodes.length) {
@@ -295,8 +281,25 @@ export class OpenSearchParameter {
       }));
     }
     return new OpenSearchParameter(
-      name, type, mandatory, options, minExclusive, maxExclusive, minInclusive, maxInclusive
+      type, name, mandatory, options, minExclusive, maxExclusive, minInclusive, maxInclusive
     );
+  }
+
+  /**
+   * Constructs a new OpenSearchParameter from a key value pair (e.g: from the
+   * query part of a KVP-URL). Returns null, when the value could not be parsed.
+   * @param {DOMNode} key the key of the key-value-pair.
+   * @param {DOMNode} value the value of the key-value-pair.
+   * @returns {OpenSearchParameter|null} the constructed parameters object.
+   */
+  static fromKeyValuePair(key, value) {
+    const type = parseType(value);
+    if (type) {
+      return new OpenSearchParameter(
+        type, key, isMandatory(value)
+      );
+    }
+    return null;
   }
 }
 </code></pre>
@@ -309,13 +312,13 @@ export class OpenSearchParameter {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-opensearch.html">opensearch</a></li><li><a href="module-opensearch_formats.html">opensearch/formats</a></li></ul><h3>Classes</h3><ul><li><a href="-_.html"></a></li><li><a href="AtomFormat.html">AtomFormat</a></li><li><a href="GeoJSONFormat.html">GeoJSONFormat</a></li><li><a href="OpenSearchDescription.html">OpenSearchDescription</a></li><li><a href="OpenSearchParameter.html">OpenSearchParameter</a></li><li><a href="OpenSearchService.html">OpenSearchService</a></li><li><a href="OpenSearchUrl.html">OpenSearchUrl</a></li><li><a href="RSSFormat.html">RSSFormat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#parseTemplateParameters">parseTemplateParameters</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-opensearch.html">opensearch</a></li><li><a href="module-opensearch_formats.html">opensearch/formats</a></li></ul><h3>Classes</h3><ul><li><a href="-_.html"></a></li><li><a href="AtomFormat.html">AtomFormat</a></li><li><a href="GeoJSONFormat.html">GeoJSONFormat</a></li><li><a href="OpenSearchDescription.html">OpenSearchDescription</a></li><li><a href="OpenSearchPaginator.html">OpenSearchPaginator</a></li><li><a href="OpenSearchParameter.html">OpenSearchParameter</a></li><li><a href="OpenSearchService.html">OpenSearchService</a></li><li><a href="OpenSearchUrl.html">OpenSearchUrl</a></li><li><a href="RSSFormat.html">RSSFormat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#assign">assign</a></li><li><a href="global.html#createRequest">createRequest</a></li><li><a href="global.html#createXHR">createXHR</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#globalConfig">globalConfig</a></li><li><a href="global.html#search">search</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Dec 01 2016 12:11:10 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Feb 02 2017 15:37:04 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>
