@@ -177,7 +177,7 @@ export class BaseFeedFormat {
   }
 
   parseLinks(node) {
-    return xPathArray(node, 'atom:link').map(linkNode => {
+    return xPathArray(node, 'atom:link').map((linkNode) => {
       const link = {
         href: linkNode.getAttribute('href'),
       };

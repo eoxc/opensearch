@@ -1,4 +1,4 @@
-
+import { assign } from '../utils';
 /**
  * Class to parse GeoJSON results
  * @constructor GeoJSONFormat
@@ -11,9 +11,9 @@ export class GeoJSONFormat {
    */
   parse(text) {
     const result = JSON.parse(text);
-    const records = result.features.map(item => {
-      if (!item.hasOwnProperty('id') && item.properties.hasOwnProperty('id')) {
-        return Object.assign({
+    const records = result.features.map((item) => {
+      if (!Object.prototype.hasOwnProperty.call(item, 'id') && Object.prototype.hasOwnProperty.call(item.properties, 'id')) {
+        return assign({
           id: item.properties.id,
         }, item);
       }

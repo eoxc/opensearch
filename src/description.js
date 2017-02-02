@@ -18,7 +18,7 @@ export class OpenSearchDescription {
     this.tags = xPath(xmlDoc, 'os:Tags/text()');
     this.contact = xPath(xmlDoc, 'os:Contact/text()');
     this.urls = xPathArray(xmlDoc, 'os:Url').map(
-      (node) => OpenSearchUrl.fromNode(node)
+      node => OpenSearchUrl.fromNode(node)
     );
     this.longName = xPath(xmlDoc, 'os:LongName/text()');
     this.images = xPathArray(xmlDoc, 'os:Image').map((node) => { // eslint-disable-line
@@ -86,7 +86,7 @@ export class OpenSearchDescription {
 
     if (parameters) {
       return urls.filter(
-        (url) => url.isCompatible(parameters)
+        url => url.isCompatible(parameters)
       );
     }
     return urls;

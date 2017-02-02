@@ -213,7 +213,7 @@ export class OpenSearchUrl {
    * @returns {OpenSearchUrl} The constructed OpenSearchUrl object
    */
   static fromTemplateUrl(type, templateUrl, method = 'GET',
-                         enctype = 'application/x-www-form-urlencoded') {
+    enctype = 'application/x-www-form-urlencoded') {
     const parsed = parse(templateUrl, true);
     const parameters = Object.keys(parsed.query)
       .map(name => OpenSearchParameter.fromKeyValuePair(name, parsed.query[name]))

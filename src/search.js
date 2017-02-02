@@ -1,4 +1,8 @@
-import { getFormat } from './formats'
+/* eslint no-underscore-dangle:
+  ["error", { "allow": ["_parametersByName", "_parametersByType"] }]
+*/
+
+import { getFormat } from './formats';
 import { fetchAndCheck, createRequest, createXHR } from './utils';
 import config from './config';
 
@@ -9,24 +13,24 @@ import config from './config';
  */
 function createBaseRequest(url, parameterValues) {
   // check parameters
-  Object.keys(parameterValues).forEach(key => {
-    if (!url._parametersByType.hasOwnProperty(key)
-        && !url._parametersByName.hasOwnProperty(key)) {
+  Object.keys(parameterValues).forEach((key) => {
+    if (!Object.prototype.hasOwnProperty.call(url._parametersByType, key)
+        && !Object.prototype.hasOwnProperty.call(url._parametersByName, key)) {
       throw new Error(`Invalid parameter '${key}'.`);
     }
   });
 
   const missingMandatoryParameters = url.parameters.filter(
-    (parameter) => parameter.mandatory
-      && !parameterValues.hasOwnProperty(parameter.name)
-      && !parameterValues.hasOwnProperty(parameter.type)
-  ).map((parameter) => parameter.type);
+    parameter => parameter.mandatory
+      && !Object.prototype.hasOwnProperty.call(parameterValues, parameter.name)
+      && !Object.prototype.hasOwnProperty.call(parameterValues, parameter.type)
+  ).map(parameter => parameter.type);
 
   const missingOptionalParameters = url.parameters.filter(
-    (parameter) => !parameter.mandatory
-      && !parameterValues.hasOwnProperty(parameter.name)
-      && !parameterValues.hasOwnProperty(parameter.type)
-  ).map((parameter) => parameter.type);
+    parameter => !parameter.mandatory
+      && !Object.prototype.hasOwnProperty.call(parameterValues, parameter.name)
+      && !Object.prototype.hasOwnProperty.call(parameterValues, parameter.type)
+  ).map(parameter => parameter.type);
 
   if (missingMandatoryParameters.length) {
     throw new Error(`Missing mandatory parameters: ${missingMandatoryParameters.join(', ')}`);
@@ -36,7 +40,7 @@ function createBaseRequest(url, parameterValues) {
     // insert parameters into URL template
     let urlString = url.url;
 
-    Object.keys(parameterValues).forEach(key => {
+    Object.keys(parameterValues).forEach((key) => {
       const parameter = url._parametersByType[key] || url._parametersByName[key];
       urlString = urlString.replace(
         new RegExp(`{${parameter.type}[?]?}`),
@@ -44,7 +48,7 @@ function createBaseRequest(url, parameterValues) {
       );
     });
 
-    missingOptionalParameters.forEach(type => {
+    missingOptionalParameters.forEach((type) => {
       urlString = urlString.replace(new RegExp(`{${type}[?]?}`), '');
     });
 
@@ -58,7 +62,7 @@ function createBaseRequest(url, parameterValues) {
   const enctype = url.enctype || 'application/x-www-form-urlencoded';
   let body = null;
   if (enctype === 'application/x-www-form-urlencoded') {
-    body = Object.keys(parameterValues).map(key => {
+    body = Object.keys(parameterValues).map((key) => {
       const param = (url._parametersByType[key] || url._parametersByName[key]);
       const k = encodeURIComponent(param.name);
       const v = encodeURIComponent(param.serialize(parameterValues[key]));
@@ -66,7 +70,7 @@ function createBaseRequest(url, parameterValues) {
     }).join('&');
   } else if (enctype === 'multipart/form-data') {
     body = new FormData();
-    Object.keys(parameterValues).forEach(key => {
+    Object.keys(parameterValues).forEach((key) => {
       const param = (url._parametersByType[key] || url._parametersByName[key]);
       body.append(param.name, param.serialize(parameterValues[key]));
     });
@@ -112,7 +116,7 @@ export function search(url, parameters = {}, type = null, raw = false) {
             throw new Error(`Could not parse response of type '${type}'.`);
           }
           resolve(format.parse(xhr.responseText));
-        } catch(error) {
+        } catch (error) {
           reject(error);
         }
       };
@@ -136,7 +140,7 @@ export function search(url, parameters = {}, type = null, raw = false) {
   }
   return request
     .then(response => response.text())
-    .then(text => {
+    .then((text) => {
       const format = getFormat(type || url.type);
       if (!format) {
         throw new Error(`Could not parse response of type '${type}'.`);

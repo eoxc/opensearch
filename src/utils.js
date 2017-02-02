@@ -95,28 +95,30 @@ export function isNullOrUndefined(value) {
  * services.
  */
 
+/* eslint-disable no-param-reassign, prefer-template */
+
 export function toWKT(gj) {
   if (gj.type === 'Feature') {
     gj = gj.geometry;
   }
 
-  function pairWKT (c) {
+  function wrapParens(s) { return '(' + s + ')'; }
+
+  function pairWKT(c) {
     return c.join(' ');
   }
 
-  function ringWKT (r) {
+  function ringWKT(r) {
     return r.map(pairWKT).join(', ');
   }
 
-  function ringsWKT (r) {
+  function ringsWKT(r) {
     return r.map(ringWKT).map(wrapParens).join(', ');
   }
 
-  function multiRingsWKT (r) {
+  function multiRingsWKT(r) {
     return r.map(ringsWKT).map(wrapParens).join(', ');
   }
-
-  function wrapParens (s) { return '(' + s + ')'; }
 
   switch (gj.type) {
     case 'Point':
@@ -138,6 +140,8 @@ export function toWKT(gj) {
   }
 }
 
+/* eslint-enable no-param-reassign, prefer-template */
+
 /**
  * Returns a Request object for the fetch API.
  * @param {string} url The request URL
@@ -158,7 +162,7 @@ export function createXHR(url, baseRequest = {}) {
   const xhr = new XMLHttpRequest();
 
   if (baseRequest.headers) {
-    Object.keys(baseRequest.headers).forEach(key => {
+    Object.keys(baseRequest.headers).forEach((key) => {
       xhr.setRequestHeader(key, baseRequest.headers[key]);
     });
   }

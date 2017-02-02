@@ -19,13 +19,13 @@ export function discover(url) {
       xhr.onload = () => {
         try {
           resolve(new OpenSearchService(xhr.responseText));
-        } catch(error) {
+        } catch (error) {
           reject(error);
         }
       };
       xhr.onerror = (event) => {
         reject(event);
-      }
+      };
       if (onCancel && typeof onCancel === 'function') {
         onCancel(() => {
           xhr.abort();

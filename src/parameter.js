@@ -38,15 +38,15 @@ function eoValueToString(value, isDate = false) {
 
   let left = null;
   let right = null;
-  if (value.hasOwnProperty('min')) {
+  if (Object.prototype.hasOwnProperty.call(value, 'min')) {
     left = `[${isDate ? convertDate(value.min) : value.min}`;
-  } else if (value.hasOwnProperty('minExclusive')) {
+  } else if (Object.prototype.hasOwnProperty.call(value, 'minExclusive')) {
     left = `]${isDate ? convertDate(value.minExclusive) : value.minExclusive}`;
   }
 
-  if (value.hasOwnProperty('max')) {
+  if (Object.prototype.hasOwnProperty.call(value, 'max')) {
     right = `${isDate ? convertDate(value.max) : value.max}]`;
-  } else if (value.hasOwnProperty('maxExclusive')) {
+  } else if (Object.prototype.hasOwnProperty.call(value, 'maxExclusive')) {
     right = `${isDate ? convertDate(value.maxExclusive) : value.maxExclusive}[`;
   }
 
@@ -70,14 +70,18 @@ export class OpenSearchParameter {
    * @param {object[]} [options=null] The possible values for this parameter
    * @param {string} options[].label The label of the option
    * @param {string} options[].value The value of the option
-   * @param {Number} [minExclusive=undefined] The minimum value allowed for this parameter (exclusive)
-   * @param {Number} [maxExclusive=undefined] The maximum value allowed for this parameter (exclusive)
-   * @param {Number} [minInclusive=undefined] The minimum value allowed for this parameter (inclusive)
-   * @param {Number} [maxInclusive=undefined] The maximum value allowed for this parameter (inclusive)
+   * @param {Number} [minExclusive=undefined] The minimum value allowed for this
+                                              parameter (exclusive)
+   * @param {Number} [maxExclusive=undefined] The maximum value allowed for this
+                                              parameter (exclusive)
+   * @param {Number} [minInclusive=undefined] The minimum value allowed for this
+                                              parameter (inclusive)
+   * @param {Number} [maxInclusive=undefined] The maximum value allowed for this
+                                              parameter (inclusive)
    */
   constructor(type, name, mandatory, options = null,
-              minExclusive = undefined, maxExclusive = undefined,
-              minInclusive = undefined, maxInclusive = undefined) {
+    minExclusive = undefined, maxExclusive = undefined,
+    minInclusive = undefined, maxInclusive = undefined) {
     this._type = type;
     this._name = name;
     this._mandatory = mandatory;
@@ -229,13 +233,17 @@ export class OpenSearchParameter {
     const mandatory = node.hasAttribute('minimum')
                         ? node.getAttribute('minimum') !== '0' : undefined;
     const minExclusive = node.hasAttribute('minExclusive')
-                          ? parseInt(node.getAttribute('minExclusive')) : undefined;
+                          ? parseInt(node.getAttribute('minExclusive'), 10)
+                          : undefined;
     const maxExclusive = node.hasAttribute('maxExclusive')
-                          ? parseInt(node.getAttribute('maxExclusive')) : undefined;
+                          ? parseInt(node.getAttribute('maxExclusive'), 10)
+                          : undefined;
     const minInclusive = node.hasAttribute('minInclusive')
-                          ? parseInt(node.getAttribute('minInclusive')) : undefined;
+                          ? parseInt(node.getAttribute('minInclusive'), 10)
+                          : undefined;
     const maxInclusive = node.hasAttribute('maxInclusive')
-                          ? parseInt(node.getAttribute('maxInclusive')) : undefined;
+                          ? parseInt(node.getAttribute('maxInclusive'), 10)
+                          : undefined;
     const optionNodes = xPathArray(node, 'parameters:Option', resolver);
     let options;
     if (optionNodes.length) {
@@ -263,5 +271,6 @@ export class OpenSearchParameter {
         type, key, isMandatory(value),
       );
     }
+    return null;
   }
 }

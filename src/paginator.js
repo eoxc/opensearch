@@ -56,13 +56,13 @@ export class OpenSearchPaginator {
       if (typeof pageSize === 'undefined') {
         parameters.startIndex = this._url.indexOffset;
       } else {
-        parameters.startIndex = pageSize * pageIndex + this._url.indexOffset;
+        parameters.startIndex = (pageSize * pageIndex) + this._url.indexOffset;
       }
     } else {
       parameters.startPage = pageIndex + this._url.pageOffset;
     }
     return search(this._url, parameters)
-      .then(result => {
+      .then((result) => {
         this._totalResults = result.totalResults;
         if (!this._serverItemsPerPage && result.itemsPerPage) {
           this._serverItemsPerPage = result.itemsPerPage;
@@ -79,7 +79,7 @@ export class OpenSearchPaginator {
    */
   fetchAllPages() {
     return this.fetchPage()
-      .then(firstPage => {
+      .then((firstPage) => {
         const pageCount = this.getPageCount();
         const requests = [firstPage];
         for (let i = 1; i < pageCount; ++i) {
@@ -95,11 +95,9 @@ export class OpenSearchPaginator {
    */
   fetchAllRecords() {
     return this.fetchAllPages()
-      .then(pages => {
+      .then((pages) => {
         const firstPage = pages[0];
-        const records = pages.reduce((rs, page) => {
-          return rs.concat(page.records);
-        }, []);
+        const records = pages.reduce((rs, page) => rs.concat(page.records), []);
         return {
           totalResults: firstPage.totalResults,
           startIndex: firstPage.startIndex,
@@ -117,7 +115,7 @@ export class OpenSearchPaginator {
   fetchFirstRecords(maxCount) {
     // Get the first page
     return this.fetchPage(0, maxCount)
-      .then(firstPage => {
+      .then((firstPage) => {
         // check if all records fit in the first page (then return this page)
         if (firstPage.totalResults <= firstPage.itemsPerPage) {
           // return if we already have all records
@@ -128,17 +126,14 @@ export class OpenSearchPaginator {
         for (let i = 1; i < maxCount / firstPage.itemsPerPage; ++i) {
           let count = firstPage.itemsPerPage;
           if (firstPage.itemsPerPage * i > maxCount) {
-            count = maxCount - firstPage.itemsPerPage * (i - 1);
+            count = maxCount - (firstPage.itemsPerPage * (i - 1));
           }
           requests.push(this.fetchPage(i, count));
         }
 
-        return getPromiseClass()
-          .all(requests)
-          .then(pages => {
-            const records = pages.reduce((rs, page) => {
-              return rs.concat(page.records);
-            }, []);
+        return Promise.all(requests)
+          .then((pages) => {
+            const records = pages.reduce((rs, page) => rs.concat(page.records), []);
             return {
               totalResults: firstPage.totalResults,
               startIndex: firstPage.startIndex,
@@ -156,7 +151,7 @@ export class OpenSearchPaginator {
   getActualPageSize() {
     if (this._preferredItemsPerPage && this._serverItemsPerPage) {
       return Math.min(this._preferredItemsPerPage, this._serverItemsPerPage);
-    } else if(this._serverItemsPerPage) {
+    } else if (this._serverItemsPerPage) {
       return this._serverItemsPerPage;
     } else if (this._preferredItemsPerPage) {
       return this._preferredItemsPerPage;

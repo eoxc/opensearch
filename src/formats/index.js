@@ -57,7 +57,7 @@ export function registerFormat(type, format) {
   formatRegistry[type] = format;
 }
 
-registerFormat('application/atom+xml', new AtomFormat);
-registerFormat('application/rss+xml', new RSSFormat);
-registerFormat('application/json', new GeoJSONFormat);
-registerFormat('application/vnd.geo+json', new GeoJSONFormat);
+registerFormat('application/atom+xml', new AtomFormat());
+registerFormat('application/rss+xml', new RSSFormat());
+registerFormat('application/json', new GeoJSONFormat());
+registerFormat('application/vnd.geo+json', new GeoJSONFormat());
