@@ -123,7 +123,10 @@ export class OpenSearchPaginator {
         }
         // fetch other pages until we have the required count
         const requests = [firstPage];
-        for (let i = 1; i < maxCount / firstPage.itemsPerPage; ++i) {
+        const numPages = Math.ceil(
+          Math.min(maxCount, firstPage.totalResults) / firstPage.itemsPerPage
+        );
+        for (let i = 1; i < numPages; ++i) {
           let count = firstPage.itemsPerPage;
           if (firstPage.itemsPerPage * i > maxCount) {
             count = maxCount - (firstPage.itemsPerPage * (i - 1));
@@ -132,15 +135,12 @@ export class OpenSearchPaginator {
         }
 
         return Promise.all(requests)
-          .then((pages) => {
-            const records = pages.reduce((rs, page) => rs.concat(page.records), []);
-            return {
-              totalResults: firstPage.totalResults,
-              startIndex: firstPage.startIndex,
-              itemsPerPage: firstPage.itemsPerPage,
-              records,
-            };
-          });
+          .then(pages => ({
+            totalResults: firstPage.totalResults,
+            startIndex: firstPage.startIndex,
+            itemsPerPage: firstPage.itemsPerPage,
+            records: pages.reduce((rs, page) => rs.concat(page.records), []),
+          }));
       });
   }
 
