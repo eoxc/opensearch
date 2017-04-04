@@ -9,7 +9,12 @@ import { assign } from './utils';
  * @fires PagedSearchProgressEmitter#success
  * @fires PagedSearchProgressEmitter#error
  */
-export class PagedSearchProgressEmitter extends EventEmitter { }
+
+class PagedSearchProgressEmitter extends EventEmitter {
+  constructor(...args) {
+    super(...args);
+  }
+}
 
 /**
  * Search Progress Event
@@ -31,6 +36,9 @@ export class PagedSearchProgressEmitter extends EventEmitter { }
  * @event PagedSearchProgressEmitter#error
  * @type {Error}
  */
+
+export { PagedSearchProgressEmitter };
+
 
 function isCancellable(promise) {
   return promise && typeof promise.cancel === 'function' && !promise.isCancelled();

@@ -343,7 +343,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="paginator.js.html">paginator.js</a>, <a href="paginator.js.html#line20">line 20</a>
+        <a href="paginator.js.html">paginator.js</a>, <a href="paginator.js.html#line74">line 74</a>
     </li></ul></dd>
     
 
@@ -444,7 +444,7 @@ many succeeding requests have to be sent.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="paginator.js.html">paginator.js</a>, <a href="paginator.js.html#line80">line 80</a>
+        <a href="paginator.js.html">paginator.js</a>, <a href="paginator.js.html#line136">line 136</a>
     </li></ul></dd>
     
 
@@ -549,7 +549,7 @@ many succeeding requests have to be sent.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="paginator.js.html">paginator.js</a>, <a href="paginator.js.html#line96">line 96</a>
+        <a href="paginator.js.html">paginator.js</a>, <a href="paginator.js.html#line152">line 152</a>
     </li></ul></dd>
     
 
@@ -702,7 +702,7 @@ many succeeding requests have to be sent.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="paginator.js.html">paginator.js</a>, <a href="paginator.js.html#line115">line 115</a>
+        <a href="paginator.js.html">paginator.js</a>, <a href="paginator.js.html#line171">line 171</a>
     </li></ul></dd>
     
 
@@ -913,7 +913,7 @@ when the result is available.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="paginator.js.html">paginator.js</a>, <a href="paginator.js.html#line39">line 39</a>
+        <a href="paginator.js.html">paginator.js</a>, <a href="paginator.js.html#line95">line 95</a>
     </li></ul></dd>
     
 
@@ -1017,7 +1017,7 @@ when the result is available.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="paginator.js.html">paginator.js</a>, <a href="paginator.js.html#line151">line 151</a>
+        <a href="paginator.js.html">paginator.js</a>, <a href="paginator.js.html#line299">line 299</a>
     </li></ul></dd>
     
 
@@ -1122,7 +1122,7 @@ was received.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="paginator.js.html">paginator.js</a>, <a href="paginator.js.html#line171">line 171</a>
+        <a href="paginator.js.html">paginator.js</a>, <a href="paginator.js.html#line319">line 319</a>
     </li></ul></dd>
     
 
@@ -1171,6 +1171,186 @@ was received.
 
 
         
+            
+
+    
+
+    <h4 class="name" id="searchFirstRecords"><span class="type-signature"></span>searchFirstRecords<span class="signature">(maxCount, preserveOrder)</span><span class="type-signature"> &rarr; {<a href="PagedSearchProgressEmitter.html">PagedSearchProgressEmitter</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Fetches the first X records of a search in a single search result.
+Use this method when the progressive results are whished and not just a
+final result.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>maxCount</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The maximum number of records to fetch.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>preserveOrder</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Whether the results must be returned in the
+                               order received from the server, or the
+                               orignally requested order.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="paginator.js.html">paginator.js</a>, <a href="paginator.js.html#line208">line 208</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The resulting records as a promise.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="PagedSearchProgressEmitter.html">PagedSearchProgressEmitter</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
     
 
     
@@ -1186,13 +1366,13 @@ was received.
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-opensearch.html">opensearch</a></li><li><a href="module-opensearch_formats.html">opensearch/formats</a></li></ul><h3>Classes</h3><ul><li><a href="-_.html"></a></li><li><a href="AtomFormat.html">AtomFormat</a></li><li><a href="GeoJSONFormat.html">GeoJSONFormat</a></li><li><a href="OpenSearchDescription.html">OpenSearchDescription</a></li><li><a href="OpenSearchPaginator.html">OpenSearchPaginator</a></li><li><a href="OpenSearchParameter.html">OpenSearchParameter</a></li><li><a href="OpenSearchService.html">OpenSearchService</a></li><li><a href="OpenSearchUrl.html">OpenSearchUrl</a></li><li><a href="RSSFormat.html">RSSFormat</a></li></ul><h3>Global</h3><ul><li><a href="global.html#assign">assign</a></li><li><a href="global.html#createRequest">createRequest</a></li><li><a href="global.html#createXHR">createXHR</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#globalConfig">globalConfig</a></li><li><a href="global.html#search">search</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-opensearch.html">opensearch</a></li><li><a href="module-opensearch_formats.html">opensearch/formats</a></li></ul><h3>Classes</h3><ul><li><a href="-_.html"></a></li><li><a href="AtomFormat.html">AtomFormat</a></li><li><a href="GeoJSONFormat.html">GeoJSONFormat</a></li><li><a href="OpenSearchDescription.html">OpenSearchDescription</a></li><li><a href="OpenSearchPaginator.html">OpenSearchPaginator</a></li><li><a href="OpenSearchParameter.html">OpenSearchParameter</a></li><li><a href="OpenSearchService.html">OpenSearchService</a></li><li><a href="OpenSearchUrl.html">OpenSearchUrl</a></li><li><a href="PagedSearchProgressEmitter.html">PagedSearchProgressEmitter</a></li><li><a href="RSSFormat.html">RSSFormat</a></li></ul><h3>Events</h3><ul><li><a href="PagedSearchProgressEmitter.html#event:error">error</a></li><li><a href="PagedSearchProgressEmitter.html#event:page">page</a></li><li><a href="PagedSearchProgressEmitter.html#event:success">success</a></li></ul><h3>Global</h3><ul><li><a href="global.html#assign">assign</a></li><li><a href="global.html#createRequest">createRequest</a></li><li><a href="global.html#createXHR">createXHR</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#globalConfig">globalConfig</a></li><li><a href="global.html#search">search</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Feb 02 2017 16:42:17 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Apr 04 2017 12:13:28 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
