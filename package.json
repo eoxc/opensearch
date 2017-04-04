@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/eoxc/opensearch",
   "dependencies": {
+    "event-emitter": "^0.3.5",
     "isomorphic-fetch": "^2.2.1",
     "url-parse": "^1.1.7",
     "xpath": "0.0.23"
