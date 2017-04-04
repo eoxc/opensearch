@@ -1,5 +1,51 @@
+import EventEmitter from 'event-emitter';
 import { search } from './search';
 import { assign } from './utils';
+
+/**
+ * Event emitter to track the progress of paged searches.
+ *
+ * @fires PagedSearchProgressEmitter#page
+ * @fires PagedSearchProgressEmitter#success
+ * @fires PagedSearchProgressEmitter#error
+ */
+export class PagedSearchProgressEmitter extends EventEmitter { }
+
+/**
+ * Search Progress Event
+ *
+ * @event PagedSearchProgressEmitter#page
+ * @type {SearchResult}
+ */
+
+/**
+ * Search Success Event
+ *
+ * @event PagedSearchProgressEmitter#success
+ * @type {SearchResult}
+ */
+
+/**
+ * Search Error Event
+ *
+ * @event PagedSearchProgressEmitter#error
+ * @type {Error}
+ */
+
+function isCancellable(promise) {
+  return promise && typeof promise.cancel === 'function' && !promise.isCancelled();
+}
+
+function combinePages(pages) {
+  const firstPage = pages[0];
+  const records = pages.reduce((rs, page) => rs.concat(page.records), []);
+  return {
+    totalResults: firstPage.totalResults,
+    startIndex: firstPage.startIndex,
+    itemsPerPage: firstPage.itemsPerPage,
+    records,
+  };
+}
 
 /**
  * Class to help with paginated results of an OpenSearch service.
@@ -19,12 +65,14 @@ export class OpenSearchPaginator {
    */
   constructor(url, parameters, { useCache = true,
                                  preferredItemsPerPage = undefined,
-                                 preferStartIndex = true } = {}) {
+                                 preferStartIndex = true,
+                                 baseOffset = 0 } = {}) {
     this._url = url;
     this._parameters = parameters;
     this._cache = useCache ? {} : null;
     this._preferredItemsPerPage = preferredItemsPerPage;
     this._preferStartIndex = preferStartIndex;
+    this._baseOffset = baseOffset;
     this._serverItemsPerPage = undefined;
     this._totalResults = undefined;
   }
@@ -54,9 +102,9 @@ export class OpenSearchPaginator {
 
     if (this._preferStartIndex) {
       if (typeof pageSize === 'undefined') {
-        parameters.startIndex = this._url.indexOffset;
+        parameters.startIndex = this._baseOffset + this._url.indexOffset;
       } else {
-        parameters.startIndex = (pageSize * pageIndex) + this._url.indexOffset;
+        parameters.startIndex = this._baseOffset + (pageSize * pageIndex) + this._url.indexOffset;
       }
     } else {
       parameters.startPage = pageIndex + this._url.pageOffset;
@@ -135,13 +183,105 @@ export class OpenSearchPaginator {
         }
 
         return Promise.all(requests)
-          .then(pages => ({
-            totalResults: firstPage.totalResults,
-            startIndex: firstPage.startIndex,
-            itemsPerPage: firstPage.itemsPerPage,
-            records: pages.reduce((rs, page) => rs.concat(page.records), []),
-          }));
+          .then(pages => combinePages(pages));
       });
+  }
+
+  /**
+   * Fetches the first X records of a search in a single search result.
+   * Use this method when the progressive results are whished and not just a
+   * final result.
+   * @param {int} maxCount The maximum number of records to fetch.
+   * @param {boolean} preserveOrder Whether the results must be returned in the
+   *                                order received from the server, or the
+   *                                orignally requested order.
+   * @returns {PagedSearchProgressEmitter} The resulting records as a promise.
+   */
+  searchFirstRecords(maxCount = undefined, preserveOrder = true) {
+    // Get the first page
+    const emitter = new PagedSearchProgressEmitter();
+
+    // start requesting the first page
+    const request = this.fetchPage(0, maxCount);
+    let requests = [request];
+
+    // cancel requests when issued a cancel event
+    emitter.on('cancel', () => {
+      requests.forEach((req) => {
+        if (isCancellable(req)) {
+          req.cancel();
+        }
+      });
+    });
+
+    request
+      .then((firstPage) => {
+        // save the first page as a resolved promise (for later use when
+        // collecting results in a uniform fashion)
+        const newRequests = [Promise.resolve(firstPage)];
+        const usedMaxCount =
+          maxCount ? Math.min(maxCount, firstPage.totalResults) : firstPage.totalResults;
+
+        // determine the number of pages and issue a request for each
+        const numPages = Math.ceil(
+          Math.min(usedMaxCount, firstPage.totalResults) / firstPage.itemsPerPage
+        );
+        for (let i = 1; i < numPages; ++i) {
+          let count = firstPage.itemsPerPage;
+          if (firstPage.itemsPerPage * i > usedMaxCount) {
+            count = usedMaxCount - (firstPage.itemsPerPage * (i - 1));
+          }
+          newRequests.push(this.fetchPage(i, count));
+        }
+
+        // save the requests in the global variable to allow cancellation/result collection
+        requests = newRequests;
+
+        const pages = Array(requests.length);
+        let hasError = false;
+
+        const onError = (error) => {
+          hasError = true;
+          emitter.emit('error', error);
+        };
+
+        if (preserveOrder) {
+          // when the order of the the responses is important, the algorithm is
+          // more complex
+          let index = 0;
+          const allRequests = Array.from(requests);
+          const onPage = (page) => {
+            if (hasError) {
+              return;
+            }
+            pages[index] = page;
+            index += 1;
+            emitter.emit('page', page);
+            const promise = allRequests.shift();
+            if (promise) {
+              promise.then(onPage, onError);
+            } else {
+              emitter.emit('success', combinePages(pages)); // TODO:
+            }
+          };
+          allRequests.shift().then(onPage, onError);
+        } else {
+          let successCount = 0;
+          requests.forEach((req, index) => {
+            req.then((page) => {
+              if (hasError) {
+                return;
+              }
+              successCount += 1;
+              pages[index] = page;
+              if (successCount === requests.length) {
+                emitter.emit('success', combinePages(pages)); // TODO
+              }
+            }, onError);
+          });
+        }
+      });
+    return emitter;
   }
 
   /**

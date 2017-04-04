@@ -69,9 +69,9 @@ export class OpenSearchService {
     return search(url, parameters, type, raw);
   }
 
-  getPaginator(parameters, type = null, method = null) {
+  getPaginator(parameters, type = null, method = null, options = undefined) {
     return new OpenSearchPaginator(
-      this.getUrl(parameters, type, method), parameters
+      this.getUrl(parameters, type, method), parameters, options
     );
   }
 }
