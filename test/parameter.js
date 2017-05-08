@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-expressions */
 
 import { expect } from 'chai';
-import { OpenSearchParameter } from '../src/parameter.js';
-import { parseXml } from '../src/utils.js';
+import { OpenSearchParameter } from '../src/parameter';
+import { parseXml } from '../src/utils';
 
 describe('OpenSearchParameter', () => {
   describe('fromKeyValuePair', () => {
@@ -23,7 +23,7 @@ describe('OpenSearchParameter', () => {
     });
 
     it('should ignore parameters when the value is not right', () => {
-      expect(paramIgnored).to.be.undefined;
+      expect(paramIgnored).to.be.null;
     });
   });
 

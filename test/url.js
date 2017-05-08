@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { OpenSearchUrl } from '../src/url.js';
-import { OpenSearchParameter } from '../src/parameter.js';
-import { parseXml } from '../src/utils.js';
+import { OpenSearchUrl } from '../src/url';
+import { OpenSearchParameter } from '../src/parameter';
+import { parseXml } from '../src/utils';
 
 describe('OpenSearchUrl', () => {
   describe('fromTemplateUrl', () => {
@@ -57,6 +57,7 @@ describe('OpenSearchUrl', () => {
     });
   });
 
+  /* TODO: this was moved to a separate file
   describe('#createRequest', () => {
     const urlGet = OpenSearchUrl.fromTemplateUrl(
       'application/atom+xml',
@@ -164,4 +165,6 @@ describe('OpenSearchUrl', () => {
         .to.throw('Missing mandatory parameters: searchTerms');
     });
   });
+
+  */
 });

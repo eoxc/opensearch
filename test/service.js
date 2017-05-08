@@ -1,8 +1,9 @@
 /* eslint no-unused-expressions: ["off"] */
 
-import { expect } from 'chai';
-import { OpenSearchService } from '../src/service.js';
 import fetchMock from 'fetch-mock';
+
+import { expect } from 'chai';
+import { OpenSearchService } from '../src/service';
 
 const osddExample = require('./data/OSDD_example.xml');
 const atomExample = require('./data/atom_example.xml');
