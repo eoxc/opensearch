@@ -69,6 +69,15 @@ export class OpenSearchService {
     return search(url, parameters, type, raw);
   }
 
+  /**
+   * Creates a new Paginator object to enable a simpler search result handling
+   * for multi-page results.
+   * @param {object} parameters An object mapping the name or type to the value
+   * @param {string} [type=null] The preferred transfer type.
+   * @param {string} [method=null] The preferred HTTP method type.
+   * @param {object} [options] Additional options for the paginator
+   * @returns {OpenSearchPaginator} The created Paginator object.
+   */
   getPaginator(parameters, type = null, method = null, options = undefined) {
     return new OpenSearchPaginator(
       this.getUrl(parameters, type, method), parameters, options
