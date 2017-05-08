@@ -121,8 +121,8 @@ export function search(url, parameters = {}, type = null, raw = false) {
         }
       };
 
-      xhr.onerror = (event) => {
-        reject(event);
+      xhr.onerror = () => {
+        reject(new TypeError('Failed to fetch'));
       };
 
       if (onCancel && typeof onCancel === 'function') {
