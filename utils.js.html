@@ -104,6 +104,75 @@ export function getAttributeNS(node, namespace, name, defaultValue) {
   return defaultValue;
 }
 
+// adapted from https://developer.mozilla.org/en-US/Add-ons/Code_snippets/LookupPrefix
+// Private function for lookupPrefix only
+function _lookupNamespacePrefix(namespaceURI, originalElement) {
+  const xmlnsPattern = /^xmlns:(.*)$/;
+  if (originalElement.namespaceURI &amp;&amp; originalElement.namespaceURI === namespaceURI
+    &amp;&amp; originalElement.lookupNamespaceURI(originalElement.prefix) === namespaceURI) {
+    return originalElement.prefix;
+  }
+  if (originalElement.attributes &amp;&amp; originalElement.attributes.length) {
+    for (let i = 0; i &lt; originalElement.attributes.length; i++) {
+      const att = originalElement.attributes[i];
+      xmlnsPattern.lastIndex = 0;
+      let localName = att.localName || att.name.substr(att.name.indexOf(':') + 1); // latter test for IE which doesn't support localName
+      if (localName.indexOf(':') !== -1) { // For Firefox when in HTML mode
+        localName = localName.substr(att.name.indexOf(':') + 1);
+      }
+      if (xmlnsPattern.test(att.name) &amp;&amp; att.value === namespaceURI) {
+        return localName;
+      }
+    }
+  }
+  if (originalElement.parentNode) {
+    // EntityReferences may have to be skipped to get to it
+    return _lookupNamespacePrefix(namespaceURI, originalElement.parentNode);
+  }
+  return null;
+}
+
+/**
+ * Looks up the the namespace prefix on the given DOM Node and the given namespace
+ * @param {DOMNode} node The node to look up the namespace prefix
+ * @param {String} namespaceURI The namespace URI to look up the namespace definition
+ * @returns {String} The namespace prefix
+ */
+export function lookupPrefix(node, namespaceURI) {
+  // Depends on private function _lookupNamespacePrefix() below and on https://developer.mozilla.org/En/Code_snippets/LookupNamespaceURI
+  // http://www.w3.org/TR/DOM-Level-3-Core/core.html#Node3-lookupNamespacePrefix
+  // http://www.w3.org/TR/DOM-Level-3-Core/namespaces-algorithms.html#lookupNamespacePrefixAlgo
+  // (The above had a few apparent 'bugs' in the pseudo-code which were corrected here)
+  if (node.lookupPrefix) { // Shouldn't use this in text/html for Mozilla as will return null
+    return node.lookupPrefix(namespaceURI);
+  }
+  if (namespaceURI === null || namespaceURI === '') {
+    return null;
+  }
+  switch (node.nodeType) {
+    case 1: // Node.ELEMENT_NODE
+      return _lookupNamespacePrefix(namespaceURI, node);
+    case 9: // Node.DOCUMENT_NODE
+      return _lookupNamespacePrefix(namespaceURI, node.documentElement);
+    case 6: // Node.ENTITY_NODE
+    case 12: // Node.NOTATION_NODE
+    case 11: // Node.DOCUMENT_FRAGMENT_NODE
+    case 10: // Node.DOCUMENT_TYPE_NODE
+      return null; // type is unknown
+    case 2: // Node.ATTRIBUTE_NODE
+      if (node.ownerElement) {
+        return _lookupNamespacePrefix(namespaceURI, node.ownerElement);
+      }
+      return null;
+    default:
+      if (node.parentNode) {
+        // EntityReferences may have to be skipped to get to it
+        return _lookupNamespacePrefix(namespaceURI, node.parentNode);
+      }
+      return null;
+  }
+}
+
 export function fetchAndCheck(...args) {
   return fetch(...args).then((response) => {
     if (response.status >= 400) {
@@ -250,13 +319,13 @@ export function assign(target, ...sources) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-opensearch.html">opensearch</a></li><li><a href="module-opensearch_formats.html">opensearch/formats</a></li></ul><h3>Classes</h3><ul><li><a href="-_.html"></a></li><li><a href="AtomFormat.html">AtomFormat</a></li><li><a href="GeoJSONFormat.html">GeoJSONFormat</a></li><li><a href="OpenSearchDescription.html">OpenSearchDescription</a></li><li><a href="OpenSearchPaginator.html">OpenSearchPaginator</a></li><li><a href="OpenSearchParameter.html">OpenSearchParameter</a></li><li><a href="OpenSearchService.html">OpenSearchService</a></li><li><a href="OpenSearchUrl.html">OpenSearchUrl</a></li><li><a href="PagedSearchProgressEmitter.html">PagedSearchProgressEmitter</a></li><li><a href="RSSFormat.html">RSSFormat</a></li></ul><h3>Events</h3><ul><li><a href="PagedSearchProgressEmitter.html#event:error">error</a></li><li><a href="PagedSearchProgressEmitter.html#event:page">page</a></li><li><a href="PagedSearchProgressEmitter.html#event:success">success</a></li></ul><h3>Global</h3><ul><li><a href="global.html#assign">assign</a></li><li><a href="global.html#createRequest">createRequest</a></li><li><a href="global.html#createXHR">createXHR</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#globalConfig">globalConfig</a></li><li><a href="global.html#search">search</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-opensearch.html">opensearch</a></li><li><a href="module-opensearch_formats.html">opensearch/formats</a></li></ul><h3>Classes</h3><ul><li><a href="-_.html"></a></li><li><a href="AtomFormat.html">AtomFormat</a></li><li><a href="GeoJSONFormat.html">GeoJSONFormat</a></li><li><a href="OpenSearchDescription.html">OpenSearchDescription</a></li><li><a href="OpenSearchPaginator.html">OpenSearchPaginator</a></li><li><a href="OpenSearchParameter.html">OpenSearchParameter</a></li><li><a href="OpenSearchService.html">OpenSearchService</a></li><li><a href="OpenSearchUrl.html">OpenSearchUrl</a></li><li><a href="PagedSearchProgressEmitter.html">PagedSearchProgressEmitter</a></li><li><a href="RSSFormat.html">RSSFormat</a></li></ul><h3>Events</h3><ul><li><a href="PagedSearchProgressEmitter.html#event:error">error</a></li><li><a href="PagedSearchProgressEmitter.html#event:page">page</a></li><li><a href="PagedSearchProgressEmitter.html#event:success">success</a></li></ul><h3>Global</h3><ul><li><a href="global.html#assign">assign</a></li><li><a href="global.html#createRequest">createRequest</a></li><li><a href="global.html#createXHR">createXHR</a></li><li><a href="global.html#find">find</a></li><li><a href="global.html#globalConfig">globalConfig</a></li><li><a href="global.html#lookupPrefix">lookupPrefix</a></li><li><a href="global.html#search">search</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Apr 04 2017 12:13:28 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon May 08 2017 16:42:11 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
