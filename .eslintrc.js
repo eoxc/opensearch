@@ -15,6 +15,7 @@ module.exports = {
     }],
     "no-restricted-syntax": ["error", "WithStatement"],
     "import/prefer-default-export": "off",
+    "import/no-extraneous-dependencies": [2, { devDependencies: true }],
     "no-plusplus": "off",
     "no-underscore-dangle": ["error", {
       "allowAfterThis": true,
