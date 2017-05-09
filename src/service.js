@@ -11,10 +11,10 @@ import { getSupportedTypes } from './formats/';
 export class OpenSearchService {
   /**
    * Create an OpenSearchDescription object
-   * @param {string} osdd The string containing the desription XML
+   * @param {OpenSearchDescription} descriptionDocument The parsed description document
    */
-  constructor(osdd) {
-    this.descriptionDocument = new OpenSearchDescription(osdd);
+  constructor(descriptionDocument) {
+    this.descriptionDocument = descriptionDocument;
   }
 
   /**
@@ -81,6 +81,36 @@ export class OpenSearchService {
   getPaginator(parameters, type = null, method = null, options = undefined) {
     return new OpenSearchPaginator(
       this.getUrl(parameters, type, method), parameters, options
+    );
+  }
+
+  /**
+   * Create a new {@link OpenSearchService} from an OSDD XML string.
+   * @param {string} xml The XML string to parse the description from
+   * @returns {OpenSearchService} The created service object
+   */
+  static fromXml(xml) {
+    return new OpenSearchService(OpenSearchDescription.fromXml(xml));
+  }
+
+  /**
+   * Serialize the service to a simple object.
+   * @returns {object} The serialized service description
+   */
+  serialize() {
+    return {
+      description: this.descriptionDocument.serialize(),
+    };
+  }
+
+  /**
+   * Deserialize an OpenSearch description from an object.
+   * @param {object} values The serialized service description
+   * @returns {OpenSearchService} The deserialized service
+   */
+  static deserialize(values) {
+    return new OpenSearchService(
+      OpenSearchDescription.deserialize(values.description)
     );
   }
 }

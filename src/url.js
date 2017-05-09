@@ -220,4 +220,34 @@ export class OpenSearchUrl {
       .filter(parameter => parameter);
     return new OpenSearchUrl(type, templateUrl, parameters, method, enctype);
   }
+
+  /**
+   * Serialize the URL to a simple object.
+   * @returns {object} The serialized URL
+   */
+  serialize() {
+    return {
+      type: this._type,
+      url: this._url,
+      method: this._method,
+      enctype: this._enctype,
+      indexOffset: this._indexOffset,
+      pageOffset: this._pageOffset,
+      relations: this._relations,
+      parameters: this._parameters.map(parameter => parameter.serialize()),
+    };
+  }
+
+  /**
+   * Deserialize a parameter from a simple object.
+   * @param {object} values The serialized URL
+   * @returns {OpenSearchUrl} The deserialized URL
+   */
+  static deserialize(values) {
+    return new OpenSearchUrl(
+      values.type, values.url,
+      values.parameters.map(parameterDesc => OpenSearchParameter.deserialize(parameterDesc)),
+      values.method, values.enctype, values.indexOffset, values.pageOffset, values.relations
+    );
+  }
 }

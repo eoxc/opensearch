@@ -181,7 +181,7 @@ export class OpenSearchParameter {
    *                                                internal type.
    * @returns {string} the serialized value.
    */
-  serialize(value) {
+  serializeValue(value) {
     switch (this.type) {
       case 'time:start':
       case 'time:end':
@@ -272,5 +272,44 @@ export class OpenSearchParameter {
       );
     }
     return null;
+  }
+
+  /**
+   * Serialize the parameter to a simple object.
+   * @returns {object} The serialized parameter
+   */
+  serialize() {
+    const values = {
+      type: this._type,
+      name: this._name,
+      mandatory: this._mandatory,
+      options: this._options,
+    };
+
+    if (typeof this._minExclusive !== 'undefined') {
+      values.minExclusive = this._minExclusive;
+    }
+    if (typeof this._maxExclusive !== 'undefined') {
+      values.maxExclusive = this._maxExclusive;
+    }
+    if (typeof this._minInclusive !== 'undefined') {
+      values.minInclusive = this._minInclusive;
+    }
+    if (typeof this._maxInclusive !== 'undefined') {
+      values.maxInclusive = this._maxInclusive;
+    }
+    return values;
+  }
+
+  /**
+   * Deserialize a parameter from a simple object.
+   * @param {object} values The serialized parameter
+   * @returns {OpenSearchParameter} The deserialized parameter
+   */
+  static deserialize(values) {
+    return new OpenSearchParameter(
+      values.type, values.name, values.mandatory, values.options,
+      values.minExclusive, values.maxExclusive, values.minInclusive, values.maxInclusive
+    );
   }
 }

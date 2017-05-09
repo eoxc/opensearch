@@ -44,7 +44,7 @@ function createBaseRequest(url, parameterValues) {
       const parameter = url._parametersByType[key] || url._parametersByName[key];
       urlString = urlString.replace(
         new RegExp(`{${parameter.type}[?]?}`),
-        parameter.serialize(parameterValues[key])
+        parameter.serializeValue(parameterValues[key])
       );
     });
 
@@ -65,14 +65,14 @@ function createBaseRequest(url, parameterValues) {
     body = Object.keys(parameterValues).map((key) => {
       const param = (url._parametersByType[key] || url._parametersByName[key]);
       const k = encodeURIComponent(param.name);
-      const v = encodeURIComponent(param.serialize(parameterValues[key]));
+      const v = encodeURIComponent(param.serializeValue(parameterValues[key]));
       return `${k}=${v}`;
     }).join('&');
   } else if (enctype === 'multipart/form-data') {
     body = new FormData();
     Object.keys(parameterValues).forEach((key) => {
       const param = (url._parametersByType[key] || url._parametersByName[key]);
-      body.append(param.name, param.serialize(parameterValues[key]));
+      body.append(param.name, param.serializeValue(parameterValues[key]));
     });
   } else {
     throw new Error(`Unsupported enctype '${enctype}'.`);
@@ -132,7 +132,6 @@ export function search(url, parameters = {}, type = null, raw = false) {
       }
     });
   }
-
   // fetch API
   const request = fetchAndCheck(createRequest(baseRequest.url, baseRequest));
   if (raw) {
