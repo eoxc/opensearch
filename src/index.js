@@ -1,5 +1,4 @@
 import { OpenSearchService } from './service';
-import { fetchAndCheck, createXHR } from './utils';
 import config from './config';
 
 /**
@@ -12,30 +11,16 @@ import config from './config';
  * @returns {Promise<OpenSearchService>} The {@link OpenSearchService} as a Promise
  */
 export function discover(url) {
-  const { useXHR } = config();
-  if (useXHR) {
-    return new Promise((resolve, reject, onCancel) => {
-      const xhr = createXHR(url);
-      xhr.onload = () => {
-        try {
-          resolve(new OpenSearchService(xhr.responseText));
-        } catch (error) {
-          reject(error);
-        }
-      };
-      xhr.onerror = () => {
-        reject(new TypeError('Failed to fetch'));
-      };
-      if (onCancel && typeof onCancel === 'function') {
-        onCancel(() => {
-          xhr.abort();
-        });
-      }
-    });
-  }
-  return fetchAndCheck(url)
-    .then(response => response.text())
-    .then(response => new OpenSearchService(response));
+  return OpenSearchService.discover(url);
+}
+
+/**
+ * Deserialize a previously serialized {@link OpenSearchService}.
+ * @param {object} values The serialized service description
+ * @returns {OpenSearchService} The deserialized service
+ */
+export function deserialize(values) {
+  return OpenSearchService.deserialize(values);
 }
 
 export { config };

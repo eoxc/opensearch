@@ -4,6 +4,8 @@ import { OpenSearchDescription } from './description';
 import { OpenSearchPaginator } from './paginator';
 import { search } from './search';
 import { getSupportedTypes } from './formats/';
+import { fetchAndCheck, createXHR } from './utils';
+import config from './config';
 
 /**
  * Class to perform searches.
@@ -82,6 +84,38 @@ export class OpenSearchService {
     return new OpenSearchPaginator(
       this.getUrl(parameters, type, method), parameters, options
     );
+  }
+
+  /**
+   * Accesses an OpenSearch service and discovers it.
+   * @param {object} url The URL to find the OpenSearchDescription XML document
+   * @returns {Promise<OpenSearchService>} The {@link OpenSearchService} as a Promise
+   */
+  static discover(url) {
+    const { useXHR } = config();
+    if (useXHR) {
+      return new Promise((resolve, reject, onCancel) => {
+        const xhr = createXHR(url);
+        xhr.onload = () => {
+          try {
+            resolve(OpenSearchService.fromXml(xhr.responseText));
+          } catch (error) {
+            reject(error);
+          }
+        };
+        xhr.onerror = () => {
+          reject(new TypeError('Failed to fetch'));
+        };
+        if (onCancel && typeof onCancel === 'function') {
+          onCancel(() => {
+            xhr.abort();
+          });
+        }
+      });
+    }
+    return fetchAndCheck(url)
+      .then(response => response.text())
+      .then(response => OpenSearchService.fromXml(response));
   }
 
   /**
