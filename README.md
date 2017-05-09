@@ -166,9 +166,8 @@ To generate the API documentation run:
 
 This library aims to provide a broad support of the most common OpenSearch
 functionality and exchange formats. It also supports the
-[Geo](http://www.opensearch.org/Specifications/OpenSearch/Extensions/Geo/1.0/Draft_1) and
-[Time](http://www.opensearch.org/Specifications/OpenSearch/Extensions/Time/1.0/Draft_1) extensions and adheres to various points of the
+[Geo](http://www.opensearch.org/Specifications/OpenSearch/Extensions/Geo/1.0/Draft_1),
+[Time](http://www.opensearch.org/Specifications/OpenSearch/Extensions/Time/1.0/Draft_1), and
+[EO Products](https://portal.opengeospatial.org/files/?artifact_id=61006)
+extensions and adheres to various points of the
 [CEOS OpenSearch best practice paper](http://ceos.org/document_management/Working_Groups/WGISS/Interest_Groups/OpenSearch/CEOS-OPENSEARCH-BP-V1.1-Final.pdf).
-
-In the future, also the [Extension for EO Products](https://portal.opengeospatial.org/files/?artifact_id=61006)
-will be supported.
