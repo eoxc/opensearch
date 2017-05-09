@@ -1,13 +1,13 @@
 import { expect } from 'chai';
 
-import { OpenSearchDescription } from '../src/description.js';
+import { OpenSearchDescription } from '../src/description';
 
 const xml = require('./data/OSDD_example.xml');
 
 
 describe('OpenSearchDescription', () => {
   describe('constructor', () => {
-    const description = new OpenSearchDescription(xml);
+    const description = OpenSearchDescription.fromXml(xml);
     it('should have the correct metadata', () => {
       expect(description.shortName).to.equal('Web Search');
       expect(description.description).to.equal('Use Example.com to search the Web.');
@@ -37,7 +37,7 @@ describe('OpenSearchDescription', () => {
   });
 
   describe('#getUrl', () => {
-    const description = new OpenSearchDescription(xml);
+    const description = OpenSearchDescription.fromXml(xml);
     it('should return the correct URL object', () => {
       const url = description.getUrl({ searchTerms: 'test' }, 'text/html');
       expect(url.type).to.equal('text/html');
