@@ -40,7 +40,7 @@
 
     
 
-    <h4 class="name" id="OpenSearchService"><span class="type-signature"></span>new OpenSearchService<span class="signature">(osdd)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="OpenSearchService"><span class="type-signature"></span>new OpenSearchService<span class="signature">(descriptionDocument)</span><span class="type-signature"></span></h4>
 
     
 
@@ -83,13 +83,13 @@
 
         <tr>
             
-                <td class="name"><code>osdd</code></td>
+                <td class="name"><code>descriptionDocument</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type"><a href="OpenSearchDescription.html">OpenSearchDescription</a></span>
 
 
             
@@ -99,7 +99,7 @@
 
             
 
-            <td class="description last">The string containing the desription XML</td>
+            <td class="description last">The parsed description document</td>
         </tr>
 
     
@@ -183,6 +183,312 @@
 
     
         <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".deserialize"><span class="type-signature">(static) </span>deserialize<span class="signature">(values)</span><span class="type-signature"> &rarr; {<a href="OpenSearchService.html">OpenSearchService</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Deserialize an OpenSearch description from an object.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>values</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The serialized service description</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="service.js.html">service.js</a>, <a href="service.js.html#line111">line 111</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The deserialized service
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="OpenSearchService.html">OpenSearchService</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".fromXml"><span class="type-signature">(static) </span>fromXml<span class="signature">(xml)</span><span class="type-signature"> &rarr; {<a href="OpenSearchService.html">OpenSearchService</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Create a new <a href="OpenSearchService.html">OpenSearchService</a> from an OSDD XML string.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>xml</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The XML string to parse the description from</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="service.js.html">service.js</a>, <a href="service.js.html#line92">line 92</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The created service object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="OpenSearchService.html">OpenSearchService</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
 
         
             
@@ -1106,6 +1412,110 @@ for multi-page results.
 
 
         
+            
+
+    
+
+    <h4 class="name" id="serialize"><span class="type-signature"></span>serialize<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Serialize the service to a simple object.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="service.js.html">service.js</a>, <a href="service.js.html#line100">line 100</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The serialized service description
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
     
 
     
@@ -1127,7 +1537,7 @@ for multi-page results.
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon May 08 2017 16:42:11 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue May 09 2017 11:52:42 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
