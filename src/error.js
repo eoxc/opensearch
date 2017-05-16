@@ -1,13 +1,27 @@
 import { parseXml, getFirstElement, getText } from './utils';
 
-const ows = 'http://www.opengis.net/ows/2.0';
-
+/**
+ * Try to parse an OWS ExceptionReport and create an Error object from the
+ * parsed values.
+ * @param {string} xmlStr The XML string to parse the exception from.
+ * @returns {Error|null} The parsed error object or null of parsing failed.
+ */
 export function getErrorFromXml(xmlStr) {
-  const root = parseXml(xmlStr).documentElement;
-  const exceptionElement = getFirstElement(root, ows, 'Exception');
+  try {
+    const root = parseXml(xmlStr).documentElement;
+    const exceptionElement = getFirstElement(root, root.namespaceURI, 'Exception');
 
-  const error = new Error(getText(exceptionElement, ows, 'ExceptionText'));
-  error.locator = exceptionElement.getAttribute('locator');
-  error.code = exceptionElement.getAttribute('exceptionCode');
-  return error;
+    if (!exceptionElement) {
+      return null;
+    }
+
+    const error = new Error(
+      getText(exceptionElement, exceptionElement.namespaceURI, 'ExceptionText')
+    );
+    error.locator = exceptionElement.getAttribute('locator');
+    error.code = exceptionElement.getAttribute('exceptionCode');
+    return error;
+  } catch (error) {
+    return null;
+  }
 }
