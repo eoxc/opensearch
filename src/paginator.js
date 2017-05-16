@@ -11,9 +11,9 @@ import { assign } from './utils';
  */
 
 class PagedSearchProgressEmitter extends EventEmitter {
-  constructor(...args) {
-    super(...args);
-  }
+  // constructor(...args) {
+  //   super(...args);
+  // }
 }
 
 /**
@@ -184,7 +184,7 @@ export class OpenSearchPaginator {
         );
         for (let i = 1; i < numPages; ++i) {
           let count = firstPage.itemsPerPage;
-          if (firstPage.itemsPerPage * i > maxCount) {
+          if (firstPage.itemsPerPage * (i + 1) > maxCount) {
             count = maxCount - (firstPage.itemsPerPage * (i - 1));
           }
           requests.push(this.fetchPage(i, count));
@@ -222,7 +222,14 @@ export class OpenSearchPaginator {
       });
     });
 
+    let hasError = false;
+    const onError = (error) => {
+      hasError = true;
+      emitter.emit('error', error);
+    };
+
     request
+      .catch(onError)
       .then((firstPage) => {
         // save the first page as a resolved promise (for later use when
         // collecting results in a uniform fashion)
@@ -236,8 +243,8 @@ export class OpenSearchPaginator {
         );
         for (let i = 1; i < numPages; ++i) {
           let count = firstPage.itemsPerPage;
-          if (firstPage.itemsPerPage * i > usedMaxCount) {
-            count = usedMaxCount - (firstPage.itemsPerPage * (i - 1));
+          if (firstPage.itemsPerPage * (i + 1) > usedMaxCount) {
+            count = usedMaxCount - (firstPage.itemsPerPage * i);
           }
           newRequests.push(this.fetchPage(i, count));
         }
@@ -246,12 +253,6 @@ export class OpenSearchPaginator {
         requests = newRequests;
 
         const pages = Array(requests.length);
-        let hasError = false;
-
-        const onError = (error) => {
-          hasError = true;
-          emitter.emit('error', error);
-        };
 
         if (preserveOrder) {
           // when the order of the the responses is important, the algorithm is
