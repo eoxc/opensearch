@@ -3,12 +3,11 @@
   "version": "0.0.22",
   "description": "An OpenSearch client supporting the geo and time extensions.",
   "main": "dist/index.js",
-  "browser": "dist/opensearch-browserify.js",
   "scripts": {
     "test": "mochify --transform babelify --transform [ stringify --extensions [.xml] ] test/setup.js test/*js test/formats/*js",
     "test:watch": "npm run test -- -w",
     "build": "babel src/ -d dist/ && browserify -d -t babelify src/index.js -o dist/opensearch-browserify.js",
-    "watch": "npm run build -- -w",
+    "watch": "babel src/ -d dist/  -w",
     "lint": "eslint src test",
     "docs": "rm -rf docs/*; jsdoc -r src README.md -d docs",
     "prepublish": "npm run build"
