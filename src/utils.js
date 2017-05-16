@@ -1,5 +1,4 @@
 import 'isomorphic-fetch';
-import xpath from 'xpath';
 
 export function parseURLQuery(url) {
   const search = (url.indexOf('?') === -1) ? url : url.substring(url.indexOf('?'));
@@ -24,6 +23,9 @@ export function parseXml(xmlStr) {
   throw new Error('Could not parse XML document.');
 }
 
+/*
+ * Some common namespace definitions
+ */
 export const namespaces = {
   os: 'http://a9.com/-/spec/opensearch/1.1/',
   parameters: 'http://a9.com/-/spec/opensearch/extensions/parameters/1.0/',
@@ -33,47 +35,132 @@ export const namespaces = {
   media: 'http://search.yahoo.com/mrss/',
 };
 
-const resolver = {
-  lookupNamespaceURI(prefix) {
-    return namespaces[prefix];
-  },
-};
-
-
-export function xPath(node, query, customResolver) {
-  const value = xpath.selectWithResolver(
-    query, node, customResolver ? { lookupNamespaceURI: customResolver } : resolver, true
-  );
-
-  if (!value) {
-    return null;
+/*
+ * Get an array of all child elements
+ */
+function getChildren(element) {
+  if (element.children) {
+    return Array.from(element.children);
   }
-
-  if (query.indexOf('text()') !== -1) {
-    return value.nodeValue;
-  } else if (query.indexOf('@') !== -1) {
-    return value.value;
-  }
-  return value;
+  return Array.from(element.childNodes).filter(node => node.nodeType === 1); // Node.ELEMENT_NODE
 }
 
-export function xPathArray(node, query, customResolver) {
-  const values = xpath.selectWithResolver(
-    query, node, customResolver ? { lookupNamespaceURI: customResolver } : resolver, false
-  );
-  if (query.indexOf('text()') !== -1) {
-    return values.map(value => value.nodeValue);
-  } else if (query.indexOf('@') !== -1) {
-    return values.map(value => value.value);
+/*
+ * Get an array of all *direct* descendants (in contrast to getElementsByTagName)
+ * of an element with a certain namespace URI and tag name.
+ */
+export function getElements(element, namespace, tagName) {
+  if (!element) {
+    return [];
   }
-  return values;
+  const namespaceURI = namespaces[namespace] || namespace;
+  if (namespaceURI) {
+    return getChildren(element).filter(
+      child => child.localName === tagName && child.namespaceURI === namespaceURI
+    );
+  }
+  return getChildren(element).filter(child => child.localName === tagName);
 }
 
+/*
+ * Get the first direct descendant element with the given namespace URI and tag name.
+ */
+export function getFirstElement(element, namespace, tagName) {
+  const elements = getElements(element, namespace, tagName);
+  if (elements.length) {
+    return elements[0];
+  }
+  return null;
+}
+
+/*
+ * Get the text of the first direct descendant element with the given namespace
+ * URI and tag name.
+ */
+export function getText(element, namespace, tagName) {
+  const first = getFirstElement(element, namespace, tagName);
+  return first ? first.textContent : null;
+}
+
+/*
+ * Get the value of the namespaced attribute or return a default.
+ */
 export function getAttributeNS(node, namespace, name, defaultValue) {
-  if (node.hasAttributeNS(namespace, name)) {
-    return node.getAttributeNS(namespaces.parameters, name);
+  const namespaceURI = namespaces[namespace] || namespace;
+  if (node.hasAttributeNS(namespaceURI, name)) {
+    return node.getAttributeNS(namespaceURI, name);
   }
   return defaultValue;
+}
+
+// adapted from https://developer.mozilla.org/en-US/Add-ons/Code_snippets/LookupPrefix
+// Private function for lookupPrefix only
+// eslint-disable-next-line no-underscore-dangle
+function _lookupNamespacePrefix(namespaceURI, originalElement) {
+  const xmlnsPattern = /^xmlns:(.*)$/;
+  if (originalElement.namespaceURI && originalElement.namespaceURI === namespaceURI
+    && originalElement.lookupNamespaceURI(originalElement.prefix) === namespaceURI) {
+    return originalElement.prefix;
+  }
+  if (originalElement.attributes && originalElement.attributes.length) {
+    for (let i = 0; i < originalElement.attributes.length; i++) {
+      const att = originalElement.attributes[i];
+      xmlnsPattern.lastIndex = 0;
+      let localName = att.localName || att.name.substr(att.name.indexOf(':') + 1); // latter test for IE which doesn't support localName
+      if (localName.indexOf(':') !== -1) { // For Firefox when in HTML mode
+        localName = localName.substr(att.name.indexOf(':') + 1);
+      }
+      if (xmlnsPattern.test(att.name) && att.value === namespaceURI) {
+        return localName;
+      }
+    }
+  }
+  if (originalElement.parentNode) {
+    // EntityReferences may have to be skipped to get to it
+    return _lookupNamespacePrefix(namespaceURI, originalElement.parentNode);
+  }
+  return null;
+}
+
+/**
+ * Looks up the the namespace prefix on the given DOM Node and the given namespace
+ * @param {DOMNode} node The node to look up the namespace prefix
+ * @param {String} namespaceURI The namespace URI to look up the namespace definition
+ * @returns {String} The namespace prefix
+ */
+export function lookupPrefix(node, namespaceURI) {
+  // Depends on private function _lookupNamespacePrefix() below and on https://developer.mozilla.org/En/Code_snippets/LookupNamespaceURI
+  // http://www.w3.org/TR/DOM-Level-3-Core/core.html#Node3-lookupNamespacePrefix
+  // http://www.w3.org/TR/DOM-Level-3-Core/namespaces-algorithms.html#lookupNamespacePrefixAlgo
+  // (The above had a few apparent 'bugs' in the pseudo-code which were corrected here)
+  if (node.lookupPrefix) { // Shouldn't use this in text/html for Mozilla as will return null
+    return node.lookupPrefix(namespaceURI);
+  }
+  if (namespaceURI === null || namespaceURI === '') {
+    return null;
+  }
+  switch (node.nodeType) {
+    case 1: // Node.ELEMENT_NODE
+      return _lookupNamespacePrefix(namespaceURI, node);
+    case 9: // Node.DOCUMENT_NODE
+      return _lookupNamespacePrefix(namespaceURI, node.documentElement);
+    case 6: // Node.ENTITY_NODE
+    case 12: // Node.NOTATION_NODE
+    case 11: // Node.DOCUMENT_FRAGMENT_NODE
+    case 10: // Node.DOCUMENT_TYPE_NODE
+      return null; // type is unknown
+    case 2: // Node.ATTRIBUTE_NODE
+      if (node.ownerElement) {
+        return _lookupNamespacePrefix(namespaceURI, node.ownerElement);
+      }
+      return null;
+    default:
+      if (node.parentNode) {
+        // EntityReferences may have to be skipped to get to it
+        return _lookupNamespacePrefix(namespaceURI, node.parentNode);
+      }
+      return null;
+  }
 }
 
 export function fetchAndCheck(...args) {

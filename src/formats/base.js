@@ -1,4 +1,4 @@
-import { xPath, xPathArray } from '../utils';
+import { getElements, getFirstElement, getText } from '../utils';
 
 function swapAndPair(values) {
   const out = [];
@@ -16,33 +16,32 @@ function parseGeometryValues(value) {
   return swapAndPair(values);
 }
 
-function parseGmlLine(node, resolver) {
-  return swapAndPair(xPath(node, 'gml:posList/text()', resolver)
+function parseGmlLine(node) {
+  return swapAndPair(getText(node, node.namespaceURI, 'posList')
     .trim()
     .split(/\s+/)
     .map(parseFloat));
 }
 
-function parseGmlPolygon(node, resolver) {
+function parseGmlPolygon(node, namespaceURI) {
+  const exteriorElement = getFirstElement(node, namespaceURI, 'exterior');
+  const interiorElements = getElements(node, namespaceURI, 'interior');
+
   const exterior = parseGmlLine(
-    xPath(node, 'gml:exterior/gml:LinearRing', resolver), resolver
+    getFirstElement(exteriorElement, namespaceURI, 'LinearRing'), namespaceURI
   );
-  const interiors = xPathArray(node, 'gml:interior/gml:LinearRing', resolver)
-    .map(interior => parseGmlLine(interior, resolver));
+
+  const interiors = interiorElements
+    .map(interiorElement => parseGmlLine(
+      getFirstElement(interiorElement, namespaceURI, 'LinearRing'), namespaceURI
+    ));
   return [exterior, ...interiors];
 }
 
 function parseGml(node) {
-  const resolver = (prefix) => {
-    if (prefix === 'gml') {
-      return node.namespaceURI;
-    }
-    return null;
-  };
-
   switch (node.localName) {
     case 'Point': {
-      const coordinates = xPath(node, 'gml:pos/text()', resolver)
+      const coordinates = getText(node, node.namespaceURI, 'pos')
         .trim()
         .split(/\s+/)
         .map(parseFloat);
@@ -52,14 +51,14 @@ function parseGml(node) {
       };
     }
     case 'LineString': {
-      const coordinates = parseGmlLine(node, resolver);
+      const coordinates = parseGmlLine(node, node.namespaceURI);
       return {
         type: 'LineString',
         coordinates,
       };
     }
     case 'Polygon': {
-      const coordinates = parseGmlPolygon(node, resolver);
+      const coordinates = parseGmlPolygon(node, node.namespaceURI);
       return {
         type: 'Polygon',
         coordinates,
@@ -70,9 +69,14 @@ function parseGml(node) {
       break;
     }
     case 'MultiSurface': {
-      const coordinates = xPathArray(
-        node, 'gml:surfaceMembers/gml:Polygon|gml:surfaceMember/gml:Polygon', resolver)
-        .map(polygon => parseGmlPolygon(polygon, resolver));
+      // support both single 'surfaceMembers' or multiple 'surfaceMember' elements
+      let polygons = getElements(node, node.namespaceURI, 'surfaceMember')
+        .map(surfaceMember => getFirstElement(surfaceMember, surfaceMember.namespaceURI, 'Polygon'));
+      const surfaceMembers = getFirstElement(node, node.namespaceURI, 'surfaceMembers');
+      if (surfaceMembers) {
+        polygons = polygons.concat(getElements(surfaceMembers, surfaceMembers.namespaceURI, 'Polygon'));
+      }
+      const coordinates = polygons.map(polygon => parseGmlPolygon(polygon, node.namespaceURI));
       return {
         type: 'MultiPolygon',
         coordinates,
@@ -102,13 +106,13 @@ function boxFromLineString(lineString) {
 
 export class BaseFeedFormat {
   parseGeometry(node) {
-    const where = xPath(node, 'georss:where');
-    const point = xPath(node, 'georss:point/text()');
-    const line = xPath(node, 'georss:line/text()');
-    const polygon = xPath(node, 'georss:polygon/text()');
+    const where = getFirstElement(node, 'georss', 'where');
+    const point = getText(node, 'georss', 'point');
+    const line = getText(node, 'georss', 'line');
+    const polygon = getText(node, 'georss', 'polygon');
 
     if (where) {
-      return parseGml(xPath(where, '*'));
+      return parseGml(where.firstElementChild);
     } else if (point) {
       return {
         type: 'Point',
@@ -129,7 +133,7 @@ export class BaseFeedFormat {
   }
 
   parseBox(node) {
-    const box = xPath(node, 'georss:box/text()');
+    const box = getText(node, 'georss', 'box');
     if (box) {
       const values = box.split(/\s+/).map(parseFloat);
       return [values[1], values[0], values[3], values[2]];
@@ -164,7 +168,7 @@ export class BaseFeedFormat {
   }
 
   parseDate(node) {
-    const date = xPath(node, 'dc:date/text()');
+    const date = getText(node, 'dc', 'date');
     if (date) {
       const values = date.split('/');
       if (values.length === 1) {
@@ -177,7 +181,7 @@ export class BaseFeedFormat {
   }
 
   parseLinks(node) {
-    return xPathArray(node, 'atom:link').map((linkNode) => {
+    return getElements(node, 'atom', 'link').map((linkNode) => {
       const link = {
         href: linkNode.getAttribute('href'),
       };
@@ -199,10 +203,15 @@ export class BaseFeedFormat {
   }
 
   parseMedia(node) {
-    return xPathArray(node, 'media:group/media:content|media:content').map(mediaNode => ({
-      url: mediaNode.getAttribute('url'),
-      category: xPath(mediaNode, 'media:category/text()'),
-      scheme: xPath(mediaNode, 'media:category/@scheme'),
-    }));
+    return getElements(node, 'media', 'content')
+      .concat(getElements(getFirstElement(node, 'media', 'group'), 'media', 'content'))
+      .map((mediaNode) => {
+        const category = getFirstElement(mediaNode, 'media', 'category');
+        return {
+          url: mediaNode.getAttribute('url'),
+          category: category ? category.textContent : undefined,
+          scheme: category ? category.getAttribute('scheme') : undefined,
+        };
+      });
   }
 }

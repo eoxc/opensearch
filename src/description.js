@@ -1,5 +1,5 @@
 import { OpenSearchUrl } from './url';
-import { parseXml, xPath, xPathArray, find, assign } from './utils';
+import { parseXml, getElements, getText, find, assign } from './utils';
 
 /**
  * Class to parse the OpenSearchDescription XML document and get the saerch URLs
@@ -97,21 +97,21 @@ export class OpenSearchDescription {
     const xmlDoc = parseXml(xml).documentElement;
 
     const values = {
-      shortName: xPath(xmlDoc, 'os:ShortName/text()'),
-      description: xPath(xmlDoc, 'os:Description/text()'),
-      tags: xPath(xmlDoc, 'os:Tags/text()'),
-      contact: xPath(xmlDoc, 'os:Contact/text()'),
-      urls: xPathArray(xmlDoc, 'os:Url').map(
+      shortName: getText(xmlDoc, 'os', 'ShortName'),
+      description: getText(xmlDoc, 'os', 'Description'),
+      tags: getText(xmlDoc, 'os', 'Tags'),
+      contact: getText(xmlDoc, 'os', 'Contact'),
+      urls: getElements(xmlDoc, 'os', 'Url').map(
         node => OpenSearchUrl.fromNode(node)
       ),
-      longName: xPath(xmlDoc, 'os:LongName/text()'),
-      images: xPathArray(xmlDoc, 'os:Image').map(node => ({
+      longName: getText(xmlDoc, 'os', 'LongName'),
+      images: getElements(xmlDoc, 'os', 'Image').map(node => ({
         height: parseInt(node.getAttribute('height'), 10),
         width: parseInt(node.getAttribute('width'), 10),
         type: node.getAttribute('type'),
         url: node.textContent,
       })),
-      queries: xPathArray(xmlDoc, 'os:Query').map((node) => {
+      queries: getElements(xmlDoc, 'os', 'Query').map((node) => {
         const query = { role: node.getAttribute('role') };
         for (let i = 0; i < node.attributes.length; ++i) {
           const attribute = node.attributes[i];
@@ -119,13 +119,13 @@ export class OpenSearchDescription {
         }
         return query;
       }),
-      developer: xPath(xmlDoc, 'os:Developer/text()'),
-      attribution: xPath(xmlDoc, 'os:Attribution/text()'),
-      syndicationRight: xPath(xmlDoc, 'os:SyndicationRight/text()'),
-      adultContent: xPath(xmlDoc, 'os:AdultContent/text()'),
-      language: xPath(xmlDoc, 'os:Language/text()'),
-      outputEncoding: xPath(xmlDoc, 'os:OutputEncoding/text()'),
-      inputEncoding: xPath(xmlDoc, 'os:InputEncoding/text()'),
+      developer: getText(xmlDoc, 'os', 'Developer'),
+      attribution: getText(xmlDoc, 'os', 'Attribution'),
+      syndicationRight: getText(xmlDoc, 'os', 'SyndicationRight'),
+      adultContent: getText(xmlDoc, 'os', 'AdultContent'),
+      language: getText(xmlDoc, 'os', 'Language'),
+      outputEncoding: getText(xmlDoc, 'os', 'OutputEncoding'),
+      inputEncoding: getText(xmlDoc, 'os', 'InputEncoding'),
     };
     return new OpenSearchDescription(values);
   }

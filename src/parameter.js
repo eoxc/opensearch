@@ -1,4 +1,4 @@
-import { xPathArray, resolver, isNullOrUndefined, toWKT } from './utils';
+import { getElements, isNullOrUndefined, toWKT } from './utils';
 
 
 const typeRE = /{([a-zA-Z:]+)([?]?)}/;
@@ -244,7 +244,7 @@ export class OpenSearchParameter {
     const maxInclusive = node.hasAttribute('maxInclusive')
                           ? parseInt(node.getAttribute('maxInclusive'), 10)
                           : undefined;
-    const optionNodes = xPathArray(node, 'parameters:Option', resolver);
+    const optionNodes = getElements(node, 'parameters', 'Option');
     let options;
     if (optionNodes.length) {
       options = optionNodes.map(optionNode => ({

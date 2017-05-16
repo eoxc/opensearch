@@ -1,4 +1,4 @@
-import { parseXml, xPath, xPathArray } from '../utils';
+import { parseXml, getElements, getText } from '../utils';
 import { BaseFeedFormat } from './base';
 
 /**
@@ -13,14 +13,14 @@ export class AtomFormat extends BaseFeedFormat {
    */
   parse(text) {
     const xmlDoc = parseXml(text).documentElement;
-    const records = xPathArray(xmlDoc, 'atom:entry').map((node) => {
+    const records = getElements(xmlDoc, 'atom', 'entry').map((node) => {
       const entry = {
-        id: xPath(node, 'dc:identifier/text()') || xPath(node, 'atom:id/text()'),
+        id: getText(node, 'dc', 'identifier') || getText(node, 'atom', 'id'),
         properties: {
-          title: xPath(node, 'atom:title/text()'),
-          updated: new Date(xPath(node, 'atom:updated/text()')),
-          content: xPath(node, 'atom:content/text()'),
-          summary: xPath(node, 'atom:summary/text()'),
+          title: getText(node, 'atom', 'title'),
+          updated: new Date(getText(node, 'atom', 'updated')),
+          content: getText(node, 'atom', 'content'),
+          summary: getText(node, 'atom', 'summary'),
           links: this.parseLinks(node),
           media: this.parseMedia(node),
           // TODO: further fields
@@ -50,9 +50,9 @@ export class AtomFormat extends BaseFeedFormat {
     });
 
     return {
-      totalResults: parseInt(xPath(xmlDoc, 'os:totalResults/text()'), 10),
-      startIndex: parseInt(xPath(xmlDoc, 'os:startIndex/text()'), 10),
-      itemsPerPage: parseInt(xPath(xmlDoc, 'os:itemsPerPage/text()'), 10),
+      totalResults: parseInt(getText(xmlDoc, 'os', 'totalResults'), 10),
+      startIndex: parseInt(getText(xmlDoc, 'os', 'startIndex'), 10),
+      itemsPerPage: parseInt(getText(xmlDoc, 'os', 'itemsPerPage'), 10),
       query: {}, // TODO:
       links: this.parseLinks(xmlDoc),
       records,

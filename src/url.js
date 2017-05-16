@@ -1,5 +1,5 @@
 import parse from 'url-parse';
-import { xPathArray, resolver, namespaces, getAttributeNS, find } from './utils';
+import { getElements, getAttributeNS, find } from './utils';
 import { OpenSearchParameter } from './parameter';
 
 
@@ -165,9 +165,9 @@ export class OpenSearchUrl {
    * @returns {OpenSearchUrl} The constructed OpenSearchUrl object
    */
   static fromNode(node) {
-    const parameterNodes = xPathArray(node, 'parameters:Parameter', resolver);
-    const method = getAttributeNS(node, namespaces.parameters, 'method');
-    const enctype = getAttributeNS(node, namespaces.parameters, 'enctype');
+    const parameterNodes = getElements(node, 'parameters', 'Parameter');
+    const method = getAttributeNS(node, 'parameters', 'method');
+    const enctype = getAttributeNS(node, 'parameters', 'enctype');
     const indexOffset = node.hasAttribute('indexOffset') ?
       parseInt(node.getAttribute('indexOffset'), 10) : 1;
     const pageOffset = node.hasAttribute('pageOffset') ?

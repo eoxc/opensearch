@@ -1,4 +1,4 @@
-import { parseXml, xPath, xPathArray } from '../utils';
+import { parseXml, getElements, getFirstElement, getText } from '../utils';
 import { BaseFeedFormat } from './base';
 
 /**
@@ -13,16 +13,16 @@ export class RSSFormat extends BaseFeedFormat {
    */
   parse(text) {
     const xmlDoc = parseXml(text).documentElement;
-    const records = xPathArray(xmlDoc, 'channel/item').map((node) => {
+    const channel = getFirstElement(xmlDoc, null, 'channel');
+    const records = getElements(channel, null, 'item').map((node) => {
       const item = {
-        id: xPath(node, 'dc:identifier/text()') || xPath(node, 'guid/text()'),
+        id: getText(node, 'dc', 'identifier') || getText(node, null, 'guid'),
         properties: {
-          title: xPath(node, 'title/text()'),
-          content: xPath(node, 'description/text()'),
-          summary: xPath(node, 'description/text()'),
+          title: getText(node, null, 'title'),
+          content: getText(node, null, 'description'),
+          summary: getText(node, null, 'description'),
           links: this.parseLinks(node),
           media: this.parseMedia(node),
-          // TODO: further fields + geometry
         },
       };
 
@@ -49,9 +49,9 @@ export class RSSFormat extends BaseFeedFormat {
     });
 
     return {
-      totalResults: parseInt(xPath(xmlDoc, 'channel/os:totalResults/text()'), 10),
-      startIndex: parseInt(xPath(xmlDoc, 'channel/os:startIndex/text()'), 10),
-      itemsPerPage: parseInt(xPath(xmlDoc, 'channel/os:itemsPerPage/text()'), 10),
+      totalResults: parseInt(getText(channel, 'os', 'totalResults'), 10),
+      startIndex: parseInt(getText(channel, 'os', 'startIndex'), 10),
+      itemsPerPage: parseInt(getText(channel, 'os', 'itemsPerPage'), 10),
       query: {}, // TODO:
       links: this.parseLinks(xmlDoc),
       records,
