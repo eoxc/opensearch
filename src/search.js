@@ -3,7 +3,8 @@
 */
 
 import { getFormat } from './formats';
-import { fetchAndCheck, createRequest, createXHR } from './utils';
+import { createRequest, createXHR } from './utils';
+import { getErrorFromXml } from './error';
 import config from './config';
 
 
@@ -101,45 +102,47 @@ function createBaseRequest(url, parameterValues) {
 export function search(url, parameters = {}, type = null, raw = false) {
   const baseRequest = createBaseRequest(url, parameters);
   const { useXHR } = config();
-  // XHR API
+
+  let request = null;
+
+  // Decide whether to use XHR or fetch
   if (useXHR) {
-    return new Promise((resolve, reject, onCancel) => {
+    request = new Promise((resolve, reject, onCancel) => {
       const xhr = createXHR(baseRequest.url, baseRequest);
       xhr.onload = () => {
         if (raw) {
           resolve(xhr);
         }
-
-        try {
-          const format = getFormat(type || url.type);
-          if (!format) {
-            throw new Error(`Could not parse response of type '${type}'.`);
-          }
-          resolve(format.parse(xhr.responseText));
-        } catch (error) {
-          reject(error);
-        }
+        resolve([xhr.responseText, xhr.status]);
       };
 
       xhr.onerror = () => {
         reject(new TypeError('Failed to fetch'));
       };
 
+      // set up cancellation if available
       if (onCancel && typeof onCancel === 'function') {
         onCancel(() => {
           xhr.abort();
         });
       }
     });
+  } else {
+    // fetch API
+    request = fetch(createRequest(baseRequest.url, baseRequest));
+    if (raw) {
+      return request;
+    }
+    request = request.then(response => [response.text(), response.status]);
   }
-  // fetch API
-  const request = fetchAndCheck(createRequest(baseRequest.url, baseRequest));
-  if (raw) {
-    return request;
-  }
+
+  // postprocess, check for error and parse result
   return request
-    .then(response => response.text())
-    .then((text) => {
+    .then(([text, status]) => {
+      if (status >= 400) {
+        const error = getErrorFromXml(text);
+        throw (error || new Error(text));
+      }
       const format = getFormat(type || url.type);
       if (!format) {
         throw new Error(`Could not parse response of type '${type}'.`);
