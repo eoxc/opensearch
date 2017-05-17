@@ -53,6 +53,7 @@
     "mochify": "^2.18.1",
     "sinon": "^1.17.7",
     "sinon-chai": "^2.8.0",
-    "stringify": "^5.1.0"
+    "stringify": "^5.1.0",
+    "xhr-mock": "^1.9.0"
   }
 }
