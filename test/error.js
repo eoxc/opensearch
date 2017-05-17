@@ -13,8 +13,6 @@ describe('error.js', () => {
     it('shall correctly parse an OWS exception report', () => {
       const error = getErrorFromXml(errorXml);
       const expectedError = new Error('MIME type {xapplication/atom+xml} is not supported for dataset series {EOP:CODE-DE:S1_SAR_L1_GRD}.');
-      expectedError.locator = 'httpAccept';
-      expectedError.code = 'InvalidParameterValue';
       expect(error).to.deep.equal(expectedError);
     });
   });

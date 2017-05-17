@@ -133,7 +133,7 @@ export function search(url, parameters = {}, type = null, raw = false) {
     if (raw) {
       return request;
     }
-    request = request.then(response => [response.text(), response.status]);
+    request = request.then(response => response.text().then(text => [text, response.status]));
   }
 
   // postprocess, check for error and parse result
