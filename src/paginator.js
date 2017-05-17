@@ -11,9 +11,6 @@ import { assign } from './utils';
  */
 
 class PagedSearchProgressEmitter extends EventEmitter {
-  // constructor(...args) {
-  //   super(...args);
-  // }
 }
 
 /**
@@ -226,11 +223,15 @@ export class OpenSearchPaginator {
     const onError = (error) => {
       hasError = true;
       emitter.emit('error', error);
+      return error;
     };
 
     request
       .catch(onError)
       .then((firstPage) => {
+        if (hasError) {
+          throw firstPage;
+        }
         // save the first page as a resolved promise (for later use when
         // collecting results in a uniform fashion)
         const newRequests = [Promise.resolve(firstPage)];
