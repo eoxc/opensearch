@@ -15,12 +15,9 @@ export function getErrorFromXml(xmlStr) {
       return null;
     }
 
-    const error = new Error(
-      getText(exceptionElement, exceptionElement.namespaceURI, 'ExceptionText')
-    );
-    error.locator = exceptionElement.getAttribute('locator');
-    error.code = exceptionElement.getAttribute('exceptionCode');
-    return error;
+    const message = (getText(exceptionElement, exceptionElement.namespaceURI, 'ExceptionText') || '').trim();
+    const code = exceptionElement.getAttribute('exceptionCode');
+    return new Error(message.length ? message : code);
   } catch (error) {
     return null;
   }
