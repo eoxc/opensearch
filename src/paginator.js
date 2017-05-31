@@ -176,13 +176,15 @@ export class OpenSearchPaginator {
         }
         // fetch other pages until we have the required count
         const requests = [firstPage];
-        const numPages = Math.ceil(
-          Math.min(maxCount, firstPage.totalResults) / firstPage.itemsPerPage
-        );
+        const usedMaxCount =
+          Math.min(maxCount, firstPage.totalResults - firstPage.startIndex + 1)
+
+        // determine the number of pages and issue a request for each
+        const numPages = Math.ceil(usedMaxCount / firstPage.itemsPerPage);
         for (let i = 1; i < numPages; ++i) {
           let count = firstPage.itemsPerPage;
-          if (firstPage.itemsPerPage * (i + 1) > maxCount) {
-            count = maxCount - (firstPage.itemsPerPage * (i - 1));
+          if (firstPage.itemsPerPage * (i + 1) > usedMaxCount) {
+            count = usedMaxCount - (firstPage.itemsPerPage * i);
           }
           requests.push(this.fetchPage(i, count));
         }
@@ -194,12 +196,12 @@ export class OpenSearchPaginator {
 
   /**
    * Fetches the first X records of a search in a single search result.
-   * Use this method when the progressive results are whished and not just a
+   * Use this method when the progressive results are wished and not just a
    * final result.
    * @param {int} maxCount The maximum number of records to fetch.
    * @param {boolean} preserveOrder Whether the results must be returned in the
    *                                order received from the server, or the
-   *                                orignally requested order.
+   *                                originally requested order.
    * @returns {PagedSearchProgressEmitter} The resulting records as a promise.
    */
   searchFirstRecords(maxCount = undefined, preserveOrder = true) {
@@ -236,12 +238,10 @@ export class OpenSearchPaginator {
         // collecting results in a uniform fashion)
         const newRequests = [Promise.resolve(firstPage)];
         const usedMaxCount =
-          maxCount ? Math.min(maxCount, firstPage.totalResults) : firstPage.totalResults;
+          maxCount ? Math.min(maxCount, firstPage.totalResults - firstPage.startIndex + 1) : firstPage.totalResults;
 
         // determine the number of pages and issue a request for each
-        const numPages = Math.ceil(
-          Math.min(usedMaxCount, firstPage.totalResults) / firstPage.itemsPerPage
-        );
+        const numPages = Math.ceil(usedMaxCount / firstPage.itemsPerPage);
         for (let i = 1; i < numPages; ++i) {
           let count = firstPage.itemsPerPage;
           if (firstPage.itemsPerPage * (i + 1) > usedMaxCount) {
