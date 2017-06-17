@@ -308,7 +308,11 @@ export class OpenSearchPaginator {
     }
     const countParam = this._url.getParameter('count');
     if (countParam) {
-      return countParam.minInclusive || countParam.maxInclusive;
+      if (typeof countParam.maxExclusive !== 'undefined') {
+        return countParam.maxExclusive - 1;
+      } else if (countParam.maxInclusive) {
+        return countParam.maxInclusive;
+      }
     }
     return undefined;
   }
