@@ -19,10 +19,7 @@ export class OpenSearchUrl {
    * Create an OpenSearchUrl object
    * @param {string} type The mime-type for the content the URL is referring to
    * @param {string} url The URL template or base URL
-   * @param {array} parameters The template/request parameters of the URL
-   * @param {string} parameters[].name The parameters name
-   * @param {string} parameters[].type The parameters type
-   * @param {boolean} parameters[].mandatory Whether the parameter is mandatory
+   * @param {OpenSearchParameter[]} parameters The template/request parameters of the URL
    * @param {string} [method='GET'] The HTTP method
    * @param {string} [enctype='application/x-www-form-urlencoded'] The encoding type
    * @param {Number} [indexOffset=1] The index offset of this URL
