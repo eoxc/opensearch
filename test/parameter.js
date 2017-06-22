@@ -5,6 +5,80 @@ import { OpenSearchParameter } from '../src/parameter';
 import { parseXml } from '../src/utils';
 
 describe('OpenSearchParameter', () => {
+  describe('combined', () => {
+    // TODO: do tests
+  });
+
+  describe('serializeValue', () => {
+    const paramTime = OpenSearchParameter.fromKeyValuePair('start', '{time:start}');
+    const paramBox = OpenSearchParameter.fromKeyValuePair('box', '{geo:box}');
+    const paramGeometry = OpenSearchParameter.fromKeyValuePair('geometry', '{geo:geometry}');
+    const paramEONumeric = OpenSearchParameter.fromKeyValuePair('orbitNumber', '{eo:orbitNumber}');
+    const paramEODate = OpenSearchParameter.fromKeyValuePair('creationDate', '{eo:creationDate}');
+
+    it('shall correctly encode Dates', () => {
+      expect(paramTime.serializeValue(new Date('2000-01-01T01:01:01Z'))).to.equal('2000-01-01T01:01:01.000Z');
+    });
+
+    it('shall correctly encode bounding box values', () => {
+      expect(paramBox.serializeValue([0, 0, 1, 1])).to.equal('0,0,1,1');
+    });
+
+    it('shall correctly encode point geometry values', () => {
+      expect(paramGeometry.serializeValue({ type: 'Point', coordinates: [0, 0] })).to.match(/^POINT/);
+    });
+    it('shall correctly encode linestring geometry values', () => {
+      expect(paramGeometry.serializeValue({ type: 'LineString', coordinates: [[0, 0], [1, 1]] })).to.match(/^LINESTRING/);
+    });
+    it('shall correctly encode polygon geometry values', () => {
+      expect(paramGeometry.serializeValue({ type: 'Polygon', coordinates: [[[0, 0], [1, 0], [0, 1], [0, 0]]] })).to.match(/^POLYGON/);
+    });
+    it('shall correctly encode multipolygon geometry values', () => {
+      expect(paramGeometry.serializeValue({ type: 'MultiPolygon', coordinates: [[[[0, 0], [1, 0], [0, 1], [0, 0]]]] })).to.match(/^MULTIPOLYGON/);
+    });
+
+    it('shall correctly encode simple numeric EO values', () => {
+      expect(paramEONumeric.serializeValue(10.1)).to.equal('10.1');
+    });
+    it('shall correctly encode lists of numeric EO values', () => {
+      expect(paramEONumeric.serializeValue([1, 2, 3])).to.equal('{1,2,3}');
+    });
+    it('shall correctly encode inclusive intervals', () => {
+      expect(paramEONumeric.serializeValue({ min: 1, max: 2 })).to.equal('[1,2]');
+    });
+    it('shall correctly encode exclusive intervals', () => {
+      expect(paramEONumeric.serializeValue({ minExclusive: 1, maxExclusive: 2 })).to.equal(']1,2[');
+    });
+    it('shall correctly encode top open intervals', () => {
+      expect(paramEONumeric.serializeValue({ min: 1 })).to.equal('[1');
+    });
+    it('shall correctly encode bottom open intervals', () => {
+      expect(paramEONumeric.serializeValue({ maxExclusive: 2 })).to.equal('2[');
+    });
+
+    it('shall correctly encode simple numeric EO dates', () => {
+      expect(paramEODate.serializeValue(new Date('2000-01-01T01:01:01Z'))).to.equal('2000-01-01T01:01:01.000Z');
+    });
+    it('shall correctly encode lists of numeric EO date', () => {
+      expect(paramEODate.serializeValue([new Date('2000-01-01T01:01:01Z'), new Date('2000-01-02T01:01:01Z'), new Date('2000-01-03T01:01:01Z')]))
+        .to.equal('{2000-01-01T01:01:01.000Z,2000-01-02T01:01:01.000Z,2000-01-03T01:01:01.000Z}');
+    });
+    it('shall correctly encode inclusive date intervals', () => {
+      expect(paramEODate.serializeValue({ min: new Date('2000-01-01T01:01:01Z'), max: new Date('2000-01-02T01:01:01Z') }))
+        .to.equal('[2000-01-01T01:01:01.000Z,2000-01-02T01:01:01.000Z]');
+    });
+    it('shall correctly encode exclusive date intervals', () => {
+      expect(paramEODate.serializeValue({ minExclusive: new Date('2000-01-01T01:01:01Z'), maxExclusive: new Date('2000-01-02T01:01:01Z') }))
+        .to.equal(']2000-01-01T01:01:01.000Z,2000-01-02T01:01:01.000Z[');
+    });
+    it('shall correctly encode top open date intervals', () => {
+      expect(paramEODate.serializeValue({ min: new Date('2000-01-01T01:01:01Z') })).to.equal('[2000-01-01T01:01:01.000Z');
+    });
+    it('shall correctly encode bottom open date intervals', () => {
+      expect(paramEODate.serializeValue({ maxExclusive: new Date('2000-01-02T01:01:01Z') })).to.equal('2000-01-02T01:01:01.000Z[');
+    });
+  });
+
   describe('fromKeyValuePair', () => {
     const paramMandatory = OpenSearchParameter.fromKeyValuePair('q', '{searchTerms}');
     const paramOptional = OpenSearchParameter.fromKeyValuePair('start', '{startIndex?}');
