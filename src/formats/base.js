@@ -112,10 +112,9 @@ export class BaseFeedFormat {
     const polygon = getText(node, 'georss', 'polygon');
 
     if (where) {
-      if (where.firstElementChild)
-        return parseGml(where.firstElementChild);
-      else {
-        return parseGml(where);
+      const geomNode = getFirstElement(where);
+      if (geomNode) {
+        return parseGml(geomNode);
       }
     } else if (point) {
       return {

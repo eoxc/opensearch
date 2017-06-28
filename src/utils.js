@@ -54,18 +54,25 @@ export function getElements(element, namespace, tagName) {
     return [];
   }
   const namespaceURI = namespaces[namespace] || namespace;
-  if (namespaceURI) {
-    return getChildren(element).filter(
+  const children = getChildren(element);
+  if (tagName && namespaceURI) {
+    return children.filter(
       child => child.localName === tagName && child.namespaceURI === namespaceURI
     );
+  } else if (tagName) {
+    return children.filter(child => child.localName === tagName);
   }
-  return getChildren(element).filter(child => child.localName === tagName);
+  return children;
 }
 
 /*
  * Get the first direct descendant element with the given namespace URI and tag name.
  */
 export function getFirstElement(element, namespace, tagName) {
+  // use shortcut; when available
+  if (!namespace && !tagName && element.firstElementChild) {
+    return element.firstElementChild;
+  }
   const elements = getElements(element, namespace, tagName);
   if (elements.length) {
     return elements[0];
