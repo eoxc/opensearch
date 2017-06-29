@@ -177,7 +177,7 @@ export class OpenSearchPaginator {
         // fetch other pages until we have the required count
         const requests = [firstPage];
         const usedMaxCount =
-          Math.min(maxCount, (firstPage.totalResults - firstPage.startIndex) + 1);
+          Math.min(maxCount, (firstPage.totalResults - firstPage.startIndex) + this._url.indexOffset);
 
         // determine the number of pages and issue a request for each
         const numPages = Math.ceil(usedMaxCount / firstPage.itemsPerPage);
@@ -238,7 +238,7 @@ export class OpenSearchPaginator {
         // collecting results in a uniform fashion)
         const newRequests = [Promise.resolve(firstPage)];
         const usedMaxCount = maxCount
-          ? Math.min(maxCount, (firstPage.totalResults - firstPage.startIndex) + 1)
+          ? Math.min(maxCount, (firstPage.totalResults - firstPage.startIndex) + this._url.indexOffset)
           : firstPage.totalResults;
 
         // determine the number of pages and issue a request for each
