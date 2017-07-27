@@ -68,6 +68,15 @@ function parseGml(node) {
       // TODO:
       break;
     }
+    case 'MultiPolygon': {
+      const polygons = getElements(node, node.namespaceURI, 'polygonMember')
+        .map(surfaceMember => getFirstElement(surfaceMember, surfaceMember.namespaceURI, 'Polygon'));
+      const coordinates = polygons.map(polygon => parseGmlPolygon(polygon, node.namespaceURI));
+      return {
+        type: 'MultiPolygon',
+        coordinates,
+      };
+    }
     case 'MultiSurface': {
       // support both single 'surfaceMembers' or multiple 'surfaceMember' elements
       let polygons = getElements(node, node.namespaceURI, 'surfaceMember')
