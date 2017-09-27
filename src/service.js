@@ -2,7 +2,7 @@ import 'isomorphic-fetch';
 
 import { OpenSearchDescription } from './description';
 import { OpenSearchPaginator } from './paginator';
-import { search } from './search';
+import { search, createBaseRequest } from './search';
 import { getSupportedTypes } from './formats/';
 import { fetchAndCheck, createXHR } from './utils';
 import config from './config';
@@ -40,6 +40,35 @@ export class OpenSearchService {
       throw new Error(`No URL found for type '${type}' and the given parameters.`);
     }
     return url;
+  }
+
+  /**
+   * Returns a base request object for the given parameters. This allows to
+   * inspect the request values before sending them to the server.
+   * @param {object} parameters An object mapping the name or type to the value
+   * @param {string} [type=null] The preferred transfer type.
+   * @param {string} [method=null] The preferred HTTP method type.
+   * @returns {object} The search request
+   */
+  createSearchRequest(parameters, type = null, method = null) {
+    let url = null;
+    if (!type) {
+      // try to find a suitable URL
+      const supportedTypes = getSupportedTypes();
+      for (let i = 0; i < supportedTypes.length; ++i) {
+        url = this.descriptionDocument.getUrl(parameters, supportedTypes[i], method);
+        if (url && url.isCompatible(parameters)) {
+          break;
+        }
+      }
+      if (!url) {
+        throw new Error('No compatible URL found.');
+      }
+    } else {
+      url = this.getUrl(parameters, type, method);
+    }
+
+    return createBaseRequest(url, parameters);
   }
 
   /**

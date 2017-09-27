@@ -12,7 +12,7 @@ import config from './config';
  * Returns an object that can be transformed into a fetch Request or an
  * XMLHttpRequest.
  */
-function createBaseRequest(url, parameterValues) {
+export function createBaseRequest(url, parameterValues) {
   // check parameters
   Object.keys(parameterValues).forEach((key) => {
     if (!Object.prototype.hasOwnProperty.call(url._parametersByType, key)
