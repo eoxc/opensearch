@@ -77,9 +77,11 @@ export class OpenSearchService {
    * @param {string} [type=null] The preferred transfer type.
    * @param {string} [method=null] The preferred HTTP method type.
    * @param {boolean} [raw=false] Whether the response shall be parsed or returned raw.
+   * @param {number} [maxUrlLength=undefined] The maximum URL length. URLs longer than that
+                                              will result in errors.
    * @returns {Promise<array>|Promise<Response>} The search result as a Promise
    */
-  search(parameters, type = null, method = null, raw = false) {
+  search(parameters, type = null, method = null, raw = false, maxUrlLength = undefined) {
     let url = null;
     if (!type) {
       // try to find a suitable URL
@@ -97,7 +99,7 @@ export class OpenSearchService {
       url = this.getUrl(parameters, type, method);
     }
 
-    return search(url, parameters, type, raw);
+    return search(url, parameters, type, raw, maxUrlLength);
   }
 
   /**

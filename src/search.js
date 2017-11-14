@@ -95,13 +95,17 @@ export function createBaseRequest(url, parameterValues) {
  * @param {object} [parameters={}] The search parameters.
  * @param {string} [type=null] The response format.
  * @param {boolean} [raw=false] Whether the response shall be parsed or returned raw.
- * @param {boolean} [useXHR=false] Whether to use `XMLHttpRequest`s or the `fetch` API.
- * @param {object} [PromiseClass=Promise] What Promise class to use to wrap XHR requests.
+ * @param {number} [maxUrlLength=undefined] The maximum URL length. URLs longer than that
+                                            will result in errors.
  * @returns {Promise<SearchResult>|Promise<Response>} The search result as a Promise
  */
-export function search(url, parameters = {}, type = null, raw = false) {
+export function search(url, parameters = {}, type = null, raw = false, maxUrlLength = undefined) {
   const baseRequest = createBaseRequest(url, parameters);
   const { useXHR } = config();
+
+  if (typeof maxUrlLength !== 'undefined' && baseRequest.url.length > maxUrlLength) {
+    return Promise.reject(new Error(`Search URL too long: ${baseRequest.url.length}, maximum: ${maxUrlLength}`));
+  }
 
   let request = null;
 

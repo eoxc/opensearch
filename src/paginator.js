@@ -71,13 +71,15 @@ export class OpenSearchPaginator {
   constructor(url, parameters, { useCache = true,
                                  preferredItemsPerPage = undefined,
                                  preferStartIndex = true,
-                                 baseOffset = 0 } = {}) {
+                                 baseOffset = 0,
+                                 maxUrlLength = undefined } = {}) {
     this._url = url;
     this._parameters = parameters;
     this._cache = useCache ? {} : null;
     this._preferredItemsPerPage = preferredItemsPerPage;
     this._preferStartIndex = preferStartIndex;
     this._baseOffset = baseOffset;
+    this._maxUrlLength = maxUrlLength;
     this._serverItemsPerPage = undefined;
     this._totalResults = undefined;
   }
@@ -114,7 +116,7 @@ export class OpenSearchPaginator {
     } else {
       parameters.startPage = pageIndex + this._url.pageOffset;
     }
-    return search(this._url, parameters)
+    return search(this._url, parameters, null, false, this._maxUrlLength)
       .then((result) => {
         this._totalResults = result.totalResults;
         if (!this._serverItemsPerPage && result.itemsPerPage) {
@@ -177,7 +179,10 @@ export class OpenSearchPaginator {
         // fetch other pages until we have the required count
         const requests = [firstPage];
         const usedMaxCount =
-          Math.min(maxCount, (firstPage.totalResults - firstPage.startIndex) + this._url.indexOffset);
+          Math.min(
+            maxCount,
+            (firstPage.totalResults - firstPage.startIndex) + this._url.indexOffset
+          );
 
         // determine the number of pages and issue a request for each
         const numPages = Math.ceil(usedMaxCount / firstPage.itemsPerPage);
@@ -238,8 +243,10 @@ export class OpenSearchPaginator {
         // collecting results in a uniform fashion)
         const newRequests = [Promise.resolve(firstPage)];
         const usedMaxCount = maxCount
-          ? Math.min(maxCount, (firstPage.totalResults - firstPage.startIndex) + this._url.indexOffset)
-          : firstPage.totalResults;
+          ? Math.min(
+            maxCount,
+            (firstPage.totalResults - firstPage.startIndex) + this._url.indexOffset
+          ) : firstPage.totalResults;
 
         // determine the number of pages and issue a request for each
         const numPages = Math.ceil(usedMaxCount / firstPage.itemsPerPage);
