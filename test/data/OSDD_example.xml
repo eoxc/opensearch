@@ -8,6 +8,8 @@
        template="http://example.com/?q={searchTerms}&amp;pw={startPage?}&amp;format=atom"/>
   <Url type="application/rss+xml"
        template="http://example.com/?q={searchTerms}&amp;pw={startPage?}&amp;format=rss"/>
+  <Url type="application/x-suggestions+json"
+       template="http://example.com/suggestions/?q={searchTerms}"/>
   <Url type="text/html"
        template="http://example.com/?q={searchTerms}&amp;pw={startPage?}"/>
   <LongName>Example.com Web Search</LongName>

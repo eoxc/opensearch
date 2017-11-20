@@ -32,7 +32,7 @@ describe('OpenSearchDescription', () => {
     });
 
     it('should have the correct amount of URLs', () => {
-      expect(description.urls).to.have.lengthOf(3);
+      expect(description.urls).to.have.lengthOf(4);
     });
   });
 
