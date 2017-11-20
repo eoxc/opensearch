@@ -146,6 +146,28 @@ For both cases, the response is a
 [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) object
 from the `fetch` API.
 
+
+### Suggestions
+
+This library also supports the Suggestions extension of OpenSearch. This is
+implemented on the `Service` via the `getSuggestions` method:
+
+```javascript
+service.getSuggestions({ searchTerms: 'someth' })
+  .then(function(suggestions) {
+    for (let i = 0; i < suggestions.length; ++i) {
+      console.log(
+        suggestion.completion,
+        suggestion.description,
+        suggestion.url
+      );
+    }
+  });
+```
+
+For this to work, the server must have a search url with the type
+`application/x-suggestions+json` defined.
+
 ## Testing
 
 To run the unit tests do
@@ -167,7 +189,8 @@ To generate the API documentation run:
 This library aims to provide a broad support of the most common OpenSearch
 functionality and exchange formats. It also supports the
 [Geo](http://www.opensearch.org/Specifications/OpenSearch/Extensions/Geo/1.0/Draft_1),
-[Time](http://www.opensearch.org/Specifications/OpenSearch/Extensions/Time/1.0/Draft_1), and
-[EO Products](https://portal.opengeospatial.org/files/?artifact_id=61006)
+[Time](http://www.opensearch.org/Specifications/OpenSearch/Extensions/Time/1.0/Draft_1),
+[EO Products](https://portal.opengeospatial.org/files/?artifact_id=61006), and
+[Parameters](http://www.opensearch.org/Specifications/OpenSearch/Extensions/Suggestions/1.1)
 extensions and adheres to various points of the
 [CEOS OpenSearch best practice paper](http://ceos.org/document_management/Working_Groups/WGISS/Interest_Groups/OpenSearch/CEOS-OPENSEARCH-BP-V1.1-Final.pdf).
