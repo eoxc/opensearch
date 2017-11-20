@@ -102,6 +102,26 @@ export class OpenSearchService {
     return search(url, parameters, type, raw, maxUrlLength);
   }
 
+
+  /**
+   * Gets the suggestions for the current search parameters.
+   * @param {object} parameters An object mapping the name or type to the value
+   * @param {string} [method=null] The preferred HTTP method type.
+   * @param {number} [maxUrlLength=undefined] The maximum URL length. URLs longer than that
+   *                                          will result in errors.
+   * @returns {Promise<Suggestion[]>} The fetched suggestions.
+   */
+  getSuggestions(parameters, method = null, maxUrlLength = undefined) {
+    const type = 'application/x-suggestions+json';
+    let url;
+    try {
+      url = this.getUrl(parameters, type, method);
+    } catch (error) {
+      return Promise.reject(new Error('No suggestion URL found.'));
+    }
+    return search(url, parameters, type, false, maxUrlLength);
+  }
+
   /**
    * Creates a new Paginator object to enable a simpler search result handling
    * for multi-page results.

@@ -1,6 +1,7 @@
 import { AtomFormat } from './atom';
 import { RSSFormat } from './rss';
 import { GeoJSONFormat } from './geojson';
+import { SuggestionsJSONFormat } from './suggestions-json';
 
 
 /**
@@ -25,6 +26,14 @@ import { GeoJSONFormat } from './geojson';
   * @property {object} [query] The query of this result
   * @property {object[]} [links] Relevant links of this result
   * @property {Record[]} records The parsed records
+  */
+
+ /**
+  * @typedef Suggestion
+  * @type Object
+  * @property {string} completion The completion value
+  * @property {string} [description] A description of the completion
+  * @property {string} [url] The search URL for that completion
   */
 
 const formatRegistry = {};
@@ -61,3 +70,4 @@ registerFormat('application/atom+xml', new AtomFormat());
 registerFormat('application/rss+xml', new RSSFormat());
 registerFormat('application/json', new GeoJSONFormat());
 registerFormat('application/vnd.geo+json', new GeoJSONFormat());
+registerFormat('application/x-suggestions+json', new SuggestionsJSONFormat());
