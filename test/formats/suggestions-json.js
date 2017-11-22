@@ -62,34 +62,33 @@ describe('SuggestionsJSONFormat', () => {
         description: '17,600,000 results',
         url: 'http://example.com?q=seattle+times',
       }]);
-
-      it('should parse the suggestions from the passed JSON with only the complection', () => {
-        expect(format.parse(suggestionsJSON)).to.deep.equal([{
-          completion: 'sears',
-          description: undefined,
-          url: undefined,
-        }, {
-          completion: 'search engines',
-          description: undefined,
-          url: undefined,
-        }, {
-          completion: 'search engine',
-          description: undefined,
-          url: undefined,
-        }, {
-          completion: 'search',
-          description: undefined,
-          url: undefined,
-        }, {
-          completion: 'sears.com',
-          description: undefined,
-          url: undefined,
-        }, {
-          completion: 'seattle times',
-          description: undefined,
-          url: undefined,
-        }]);
-      });
+    });
+    it('should parse the suggestions from the passed JSON with only the completion', () => {
+      expect(format.parse(suggestionsJSONonlyComplection)).to.deep.equal([{
+        completion: 'sears',
+        description: undefined,
+        url: undefined,
+      }, {
+        completion: 'search engines',
+        description: undefined,
+        url: undefined,
+      }, {
+        completion: 'search engine',
+        description: undefined,
+        url: undefined,
+      }, {
+        completion: 'search',
+        description: undefined,
+        url: undefined,
+      }, {
+        completion: 'sears.com',
+        description: undefined,
+        url: undefined,
+      }, {
+        completion: 'seattle times',
+        description: undefined,
+        url: undefined,
+      }]);
     });
   });
 });
