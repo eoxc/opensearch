@@ -14,8 +14,8 @@ export class SuggestionsJSONFormat {
 
     return completions.map((completion, index) => ({
       completion,
-      description: descriptions[index],
-      url: urls[index],
+      description: descriptions && descriptions[index],
+      url: urls && urls[index],
     }));
   }
 }
