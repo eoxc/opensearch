@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: formats/geojson.js</title>
+    <title>JSDoc: Source: error.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: formats/geojson.js</h1>
+    <h1 class="page-title">Source: error.js</h1>
 
     
 
@@ -26,32 +26,28 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { assign } from '../utils';
-/**
- * Class to parse GeoJSON results
- * @constructor GeoJSONFormat
- */
-export class GeoJSONFormat {
-  /**
-   * Parse the given JSON.
-   * @param {string} text The JSON string to parse.
-   * @returns {module:opensearch/formats.SearchResult} The parsed search result
-   */
-  parse(text) {
-    const result = JSON.parse(text);
-    const records = result.features.map((item) => {
-      if (!Object.prototype.hasOwnProperty.call(item, 'id') &amp;&amp; Object.prototype.hasOwnProperty.call(item.properties, 'id')) {
-        return assign({
-          id: item.properties.id,
-        }, item);
-      }
-      return item;
-    });
+            <pre class="prettyprint source linenums"><code>import { parseXml, getFirstElement, getText } from './utils';
 
-    return {
-      // TODO: parse properties of featurecollection
-      records,
-    };
+/**
+ * Try to parse an OWS ExceptionReport and create an Error object from the
+ * parsed values.
+ * @param {string} xmlStr The XML string to parse the exception from.
+ * @returns {Error|null} The parsed error object or null of parsing failed.
+ */
+export function getErrorFromXml(xmlStr) {
+  try {
+    const root = parseXml(xmlStr).documentElement;
+    const exceptionElement = getFirstElement(root, root.namespaceURI, 'Exception');
+
+    if (!exceptionElement) {
+      return null;
+    }
+
+    const message = (getText(exceptionElement, exceptionElement.namespaceURI, 'ExceptionText') || '').trim();
+    const code = exceptionElement.getAttribute('exceptionCode');
+    return new Error(message.length ? message : code);
+  } catch (error) {
+    return null;
   }
 }
 </code></pre>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: formats/geojson.js</title>
+    <title>JSDoc: Source: formats/suggestions-json.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: formats/geojson.js</h1>
+    <h1 class="page-title">Source: formats/suggestions-json.js</h1>
 
     
 
@@ -26,32 +26,25 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { assign } from '../utils';
-/**
- * Class to parse GeoJSON results
- * @constructor GeoJSONFormat
+            <pre class="prettyprint source linenums"><code>/**
+ * Class to parse SuggestionsJSONFormat results
+ * @constructor SuggestionsJSONFormat
  */
-export class GeoJSONFormat {
+export class SuggestionsJSONFormat {
   /**
    * Parse the given JSON.
    * @param {string} text The JSON string to parse.
-   * @returns {module:opensearch/formats.SearchResult} The parsed search result
+   * @returns {Suggestion[]} The parsed suggestions
    */
   parse(text) {
     const result = JSON.parse(text);
-    const records = result.features.map((item) => {
-      if (!Object.prototype.hasOwnProperty.call(item, 'id') &amp;&amp; Object.prototype.hasOwnProperty.call(item.properties, 'id')) {
-        return assign({
-          id: item.properties.id,
-        }, item);
-      }
-      return item;
-    });
+    const [, completions, descriptions, urls] = result;
 
-    return {
-      // TODO: parse properties of featurecollection
-      records,
-    };
+    return completions.map((completion, index) => ({
+      completion,
+      description: descriptions &amp;&amp; descriptions[index],
+      url: urls &amp;&amp; urls[index],
+    }));
   }
 }
 </code></pre>

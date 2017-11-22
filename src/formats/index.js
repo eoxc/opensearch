@@ -9,7 +9,7 @@ import { SuggestionsJSONFormat } from './suggestions-json';
  */
 
  /**
-  * @typedef Record
+  * @typedef module:opensearch/formats.Record
   * @type Object
   * @property {string} id The id of the record
   * @property {object} properties The parsed properties of the record
@@ -18,18 +18,18 @@ import { SuggestionsJSONFormat } from './suggestions-json';
   */
 
  /**
-  * @typedef SearchResult
+  * @typedef module:opensearch/formats.SearchResult
   * @type Object
   * @property {int} [totalResults] The total amount of matched records
   * @property {int} [startIndex] The start index of this response
   * @property {int} [itemsPerPage] The number of items per page of results
   * @property {object} [query] The query of this result
   * @property {object[]} [links] Relevant links of this result
-  * @property {Record[]} records The parsed records
+  * @property {module:opensearch/formats.Record[]} records The parsed records
   */
 
  /**
-  * @typedef Suggestion
+  * @typedef module:opensearch/formats.Suggestion
   * @type Object
   * @property {string} completion The completion value
   * @property {string} [description] A description of the completion

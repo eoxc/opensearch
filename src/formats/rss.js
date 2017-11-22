@@ -9,7 +9,7 @@ export class RSSFormat extends BaseFeedFormat {
   /**
    * Parse the given XML.
    * @param {string} text The XML string to parse.
-   * @returns {SearchResult} The parsed search result
+   * @returns {module:opensearch/formats.SearchResult} The parsed search result
    */
   parse(text) {
     const xmlDoc = parseXml(text).documentElement;
