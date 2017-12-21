@@ -15,6 +15,16 @@ export function discover(url) {
 }
 
 /**
+ * Creates a new {@link OpenSearchService} from the given XML string containing
+ *                                         the OpenSearch description document.
+ * @param {string} xml The XML string containing the OpenSearch description document.
+ * @returns {OpenSearchService} The {@link OpenSearchService}
+ */
+export function fromXml(xml) {
+  return OpenSearchService.fromXml(xml);
+}
+
+/**
  * Deserialize a previously serialized {@link OpenSearchService}.
  * @param {object} values The serialized service description
  * @returns {OpenSearchService} The deserialized service
