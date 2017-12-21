@@ -8,6 +8,7 @@ const atomGmlPoint = require('../data/atom_gml_point.xml');
 const atomGmlLineString = require('../data/atom_gml_linestring.xml');
 const atomGmlPolygon = require('../data/atom_gml_polygon.xml');
 const atomGmlMultiSurface = require('../data/atom_gml_multisurface.xml');
+const atomEOP = require('../data/atom_eop.xml');
 
 describe('AtomFormat', () => {
   const format = new AtomFormat();
@@ -260,5 +261,23 @@ describe('AtomFormat', () => {
         }],
       })
     ));
+
+    it('shall parse the EOP when embedded in the ATOM response', () => {
+      expect(format.parse(atomEOP).records[0].eop).to.deep.equal({
+        cloudCoverPercentage: '100',
+        instrumentShortName: 'MSI',
+        orbitNumber: '13045',
+        platformSerialIdentifier: '2',
+        platformShortName: 'Sentinel',
+        processingLevel: '1C',
+        productType: 'S2MSI1C',
+        resolution: '10m',
+        sensorType: 'OPTICAL',
+      });
+    });
+
+    it('shall parse the s3 bucket path when available', () => {
+      expect(format.parse(atomEOP).records[0].s3Path).to.equal('tiles/38/U/PU/2017/12/21/0');
+    });
   });
 });
