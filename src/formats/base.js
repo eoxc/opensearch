@@ -1,4 +1,4 @@
-import { getElements, getFirstElement, getText } from '../utils';
+import { getElements, getFirstElement, getText, simplePath } from '../utils';
 
 function swapAndPair(values) {
   const out = [];
@@ -225,5 +225,30 @@ export class BaseFeedFormat {
           scheme: category ? category.getAttribute('scheme') : undefined,
         };
       });
+  }
+
+  parseEOP(node) {
+    const eoNode = getFirstElement(node, null, 'EarthObservation');
+    if (eoNode) {
+      const eoEquipment = simplePath(eoNode, 'om:procedure/EarthObservationEquipment', true);
+      return {
+        productType: simplePath(eoNode, 'metaDataProperty/EarthObservationMetaData/productType/text()', true),
+        processingLevel: simplePath(eoNode, 'metaDataProperty/EarthObservationMetaData/processing/ProcessingInformation/processingLevel/text()', true),
+        platformShortName: simplePath(eoEquipment, 'platform/Platform/shortName/text()', true),
+        platformSerialIdentifier: simplePath(eoEquipment, 'platform/Platform/serialIdentifier/text()', true),
+        instrumentShortName: simplePath(eoEquipment, 'instrument/Instrument/shortName/text()', true),
+        sensorType: simplePath(eoEquipment, 'sensor/Sensor/sensorType/text()', true),
+        resolution:
+          simplePath(eoEquipment, 'sensor/Sensor/resolution/text()', true) +
+          simplePath(eoEquipment, 'sensor/Sensor/resolution@uom', true),
+        orbitNumber: simplePath(eoEquipment, 'acquisitionParameters/Acquisition/orbitNumber/text()', true),
+        cloudCoverPercentage: simplePath(eoNode, 'om:result/opt:EarthObservationResult/opt:cloudCoverPercentage/text()', true),
+      };
+    }
+    return null;
+  }
+
+  parseS3Path(node) {
+    return getText(node, null, 's3Path');
   }
 }

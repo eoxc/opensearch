@@ -23,7 +23,6 @@ export class AtomFormat extends BaseFeedFormat {
           summary: getText(node, 'atom', 'summary'),
           links: this.parseLinks(node),
           media: this.parseMedia(node),
-          // TODO: further fields
         },
       };
 
@@ -44,6 +43,16 @@ export class AtomFormat extends BaseFeedFormat {
       const date = this.parseDate(node);
       if (date) {
         entry.properties.time = date;
+      }
+
+      const eop = this.parseEOP(node);
+      if (eop) {
+        entry.eop = eop;
+      }
+
+      const s3Path = this.parseS3Path(node);
+      if (s3Path) {
+        entry.s3Path = s3Path;
       }
 
       return entry;

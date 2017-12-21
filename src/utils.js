@@ -33,6 +33,11 @@ export const namespaces = {
   georss: 'http://www.georss.org/georss',
   dc: 'http://purl.org/dc/elements/1.1/',
   media: 'http://search.yahoo.com/mrss/',
+
+  // EOP and OM related namespaces
+  opt: 'http://www.opengis.net/opt/2.1',
+  om: 'http://www.opengis.net/om/2.0',
+  eop: 'http://www.opengis.net/eop/2.0',
 };
 
 /*
@@ -99,6 +104,73 @@ export function getAttributeNS(node, namespace, name, defaultValue) {
   }
   return defaultValue;
 }
+
+function splitNamespace(name) {
+  return (name.indexOf(':') !== -1) ? name.split(':') : [null, name];
+}
+
+/*
+ * Resolves an xPath like query with the given element as basis. All parts of
+ * the path must be specified, none may be omitted. Allows to select attributes
+ * using the `@attrName` postfix or the text of an element using the `text()`
+ * as the last path part.
+ * @param {object} element The root element to start the query on. Must be a DOM
+ *                         compliant object.
+ * @param {string} path The search path: parts are separated by the `/` character
+ *                      and may contain a supported namespace prefix (separated
+ *                      by the color character).
+ *                      Examples: `os:Url@type`, `atom:entry/atom:title/text()`,
+ *                      `channel/item/georss:box/text()`
+ * @param {boolean} [single=false] Whether multiple elements are expected. When
+ *                                 false, an array is returned, otherwise single
+ *                                 values.
+ * @returns {object|string|object[]|string[]} Depending on the query and the
+ *                                            single parameter, either a DOM Node
+ *                                            or a string, or arrays thereof.
+ */
+export function simplePath(element, path, single = false) {
+  // split path and discard empty parts
+  const parts = path.split('/').filter(part => part.length);
+  let current = single ? element : [element];
+
+  for (let i = 0; i < parts.length; ++i) {
+    const part = parts[i];
+
+    // single values are treated differently
+    if (single) {
+      if (part === 'text()') {
+        return current.textContent;
+      } else if (part.indexOf('@') !== -1) {
+        const [nodePart, attrPart] = part.split('@');
+        const [namespace, tagName] = splitNamespace(nodePart);
+        const [attrNamespace, attrName] = splitNamespace(attrPart);
+        current = getFirstElement(current, namespace, tagName);
+        return getAttributeNS(current, attrNamespace, attrName);
+      }
+      const [namespace, tagName] = splitNamespace(part);
+      current = getFirstElement(current, namespace, tagName);
+      if (!current) {
+        return null;
+      }
+    } else if (part === 'text()') {
+      return current.map(currentElement => currentElement.textContent);
+    } else if (part.indexOf('@') !== -1) {
+      const [nodePart, attrPart] = part.split('@');
+      const [namespace, tagName] = splitNamespace(nodePart);
+      const [attrNamespace, attrName] = splitNamespace(attrPart);
+      return current.map(currentElement => getElements(currentElement, namespace, tagName))
+        .reduce((acc, value) => acc.concat(value), [])
+        .map(finalElement => getAttributeNS(finalElement, attrNamespace, attrName));
+    } else {
+      const [namespace, tagName] = splitNamespace(part);
+      current = current.map(currentElement => getElements(currentElement, namespace, tagName))
+        .reduce((acc, value) => acc.concat(value), []);
+    }
+  }
+
+  return current;
+}
+
 
 // adapted from https://developer.mozilla.org/en-US/Add-ons/Code_snippets/LookupPrefix
 // Private function for lookupPrefix only
