@@ -47,12 +47,12 @@ export class RSSFormat extends BaseFeedFormat {
 
       const eop = this.parseEOP(node);
       if (eop) {
-        item.eop = eop;
+        item.properties.eop = eop;
       }
 
       const s3Path = this.parseS3Path(node);
       if (s3Path) {
-        item.s3Path = s3Path;
+        item.properties.s3Path = s3Path;
       }
 
       return item;

@@ -263,7 +263,7 @@ describe('AtomFormat', () => {
     ));
 
     it('shall parse the EOP when embedded in the ATOM response', () => {
-      expect(format.parse(atomEOP).records[0].eop).to.deep.equal({
+      expect(format.parse(atomEOP).records[0].properties.eop).to.deep.equal({
         cloudCoverPercentage: '100',
         instrumentShortName: 'MSI',
         orbitNumber: '13045',
@@ -277,7 +277,7 @@ describe('AtomFormat', () => {
     });
 
     it('shall parse the s3 bucket path when available', () => {
-      expect(format.parse(atomEOP).records[0].s3Path).to.equal('tiles/38/U/PU/2017/12/21/0');
+      expect(format.parse(atomEOP).records[0].properties.s3Path).to.equal('tiles/38/U/PU/2017/12/21/0');
     });
   });
 });

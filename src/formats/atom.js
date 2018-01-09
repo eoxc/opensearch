@@ -47,12 +47,12 @@ export class AtomFormat extends BaseFeedFormat {
 
       const eop = this.parseEOP(node);
       if (eop) {
-        entry.eop = eop;
+        entry.properties.eop = eop;
       }
 
       const s3Path = this.parseS3Path(node);
       if (s3Path) {
-        entry.s3Path = s3Path;
+        entry.properties.s3Path = s3Path;
       }
 
       return entry;
