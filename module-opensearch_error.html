@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: formats/suggestions-json.js</title>
+    <title>JSDoc: Module: opensearch/error</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,44 +17,217 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: formats/suggestions-json.js</h1>
+    <h1 class="page-title">Module: opensearch/error</h1>
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @module opensearch/formats/suggestions-json
- */
+        
+    
+</header>
 
-/**
- * Class to parse SuggestionsJSONFormat results
- * @constructor SuggestionsJSONFormat
- */
-export class SuggestionsJSONFormat {
+<article>
+    <div class="container-overview">
+    
+        
 
-  /**
-   * Parse the given JSON.
-   * @param {string} text The JSON string to parse.
-   * @returns {module:opensearch/formats.Suggestion[]} The parsed suggestions
-   */
-  parse(text) {
-    const result = JSON.parse(text);
-    const [, completions, descriptions, urls] = result;
+        
+    
+    </div>
 
-    return completions.map((completion, index) => ({
-      completion,
-      description: descriptions &amp;&amp; descriptions[index],
-      url: urls &amp;&amp; urls[index],
-    }));
-  }
-}
-</code></pre>
-        </article>
-    </section>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".getErrorFromXml"><span class="type-signature">(static) </span>getErrorFromXml<span class="signature">(xmlStr)</span><span class="type-signature"> &rarr; {Error|null}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Try to parse an OWS ExceptionReport and create an Error object from the
+parsed values.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>xmlStr</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The XML string to parse the exception from.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="error.js.html">error.js</a>, <a href="error.js.html#line13">line 13</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The parsed error object or null of parsing failed.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Error</span>
+|
+
+<span class="param-type">null</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

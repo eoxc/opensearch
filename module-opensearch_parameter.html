@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: formats/suggestions-json.js</title>
+    <title>JSDoc: Module: opensearch/parameter</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,44 +17,59 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: formats/suggestions-json.js</h1>
+    <h1 class="page-title">Module: opensearch/parameter</h1>
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @module opensearch/formats/suggestions-json
- */
+        
+    
+</header>
 
-/**
- * Class to parse SuggestionsJSONFormat results
- * @constructor SuggestionsJSONFormat
- */
-export class SuggestionsJSONFormat {
+<article>
+    <div class="container-overview">
+    
+        
 
-  /**
-   * Parse the given JSON.
-   * @param {string} text The JSON string to parse.
-   * @returns {module:opensearch/formats.Suggestion[]} The parsed suggestions
-   */
-  parse(text) {
-    const result = JSON.parse(text);
-    const [, completions, descriptions, urls] = result;
+        
+    
+    </div>
 
-    return completions.map((completion, index) => ({
-      completion,
-      description: descriptions &amp;&amp; descriptions[index],
-      url: urls &amp;&amp; urls[index],
-    }));
-  }
-}
-</code></pre>
-        </article>
-    </section>
+    
+
+    
+
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="module-opensearch_parameter.OpenSearchParameter.html">OpenSearchParameter</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
