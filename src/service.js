@@ -5,7 +5,7 @@ import { OpenSearchPaginator } from './paginator';
 import { search, createBaseRequest } from './search';
 import { getSupportedTypes } from './formats/';
 import { fetchAndCheck, createXHR } from './utils';
-import config from './config';
+import { config } from './config';
 
 /**
  * Class to perform searches.

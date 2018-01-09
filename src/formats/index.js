@@ -9,6 +9,19 @@ import { SuggestionsJSONFormat } from './suggestions-json';
  */
 
  /**
+  * The interface built-in and custom format parsers must conform to.
+  * @interface module:opensearch/formats.FormatInterface
+  */
+
+ /**
+  * Main parsing function for the format.
+  * @function
+  * @name module:opensearch/formats.FormatInterface#parse
+  * @param {string} text The text (or binary string) response to parse.
+  * @returns {module:opensearch/formats.SearchResult} The parsed search result
+  */
+
+ /**
   * @typedef module:opensearch/formats.Record
   * @type Object
   * @property {string} id The id of the record

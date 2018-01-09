@@ -2,6 +2,11 @@ import EventEmitter from 'event-emitter';
 import { search } from './search';
 import { assign } from './utils';
 
+
+/**
+ * @module opensearch/paginator
+ */
+
 /**
  * Event emitter to track the progress of paged searches.
  *
@@ -9,28 +14,27 @@ import { assign } from './utils';
  * @fires PagedSearchProgressEmitter#success
  * @fires PagedSearchProgressEmitter#error
  */
-
 class PagedSearchProgressEmitter extends EventEmitter {
 }
 
 /**
  * Search Progress Event
  *
- * @event PagedSearchProgressEmitter#page
+ * @event module:opensearch/paginator~PagedSearchProgressEmitter#page
  * @type {SearchResult}
  */
 
 /**
  * Search Success Event
  *
- * @event PagedSearchProgressEmitter#success
+ * @event module:opensearch/paginator~PagedSearchProgressEmitter#success
  * @type {SearchResult}
  */
 
 /**
  * Search Error Event
  *
- * @event PagedSearchProgressEmitter#error
+ * @event module:opensearch/paginator~PagedSearchProgressEmitter#error
  * @type {Error}
  */
 
@@ -60,13 +64,17 @@ export class OpenSearchPaginator {
    * @param {OpenSearchUrl} url The URL to perform all subsequent requests on.
    * @param {object} parameters Search parameters.
    * @param {object} [options] Additional options for the pagination
-   * @param {boolean} [useCache=true] Whether response pages shall be cached.
-   * @param {int} [preferredItemsPerPage=undefined] The preferred page size. This
-   *                                                defaults to the advertised
-   *                                                default of the URL.
-   * @param {boolean} [preferStartIndex=true] Whether the paging shall be done
-   *                                          using the `startIndex` parameter
-   *                                          (the default) or the `startPage`.
+   * @param {boolean} [options.useCache=true] Whether response pages shall be cached.
+   * @param {int} [options.preferredItemsPerPage=undefined] The preferred page size. This
+   *                                                        defaults to the advertised
+   *                                                        default of the URL.
+   * @param {boolean} [options.preferStartIndex=true] Whether the paging shall be done
+   *                                                  using the `startIndex` parameter
+   *                                                  (the default) or the `startPage`.
+   * @param {int} [options.baseOffset=0] The base index offset to apply. This option
+   *                                     is useful when resuming a consecutive search.
+   * @param {int} [options.maxUrlLength=undefined] The maximum URL length. Forwarded to
+   *                                               [search]{@link module:opensearch/search.search}.
    */
   constructor(url, parameters, { useCache = true,
                                  preferredItemsPerPage = undefined,
@@ -90,6 +98,7 @@ export class OpenSearchPaginator {
    * @param {int} [pageIndex=0] The index of the page to be fetched.
    * @param {int} [maxCount=undefined] The maximum count of objects to be retrieved.
    * @returns {Promise<SearchResult>} The search result.
+   * @fulfill {module:opensearch/formats~SearchResult} The search result
    */
   fetchPage(pageIndex = 0, maxCount = undefined) {
     // TODO: implement caching of whole pages
@@ -131,6 +140,7 @@ export class OpenSearchPaginator {
    * many succeeding requests have to be sent.
    * @returns {Promise<SearchResult[]>} The async result of all the pages in the
    *                                    search.
+   * @fulfill {module:opensearch/formats~SearchResult[]} The search result pages
    */
   fetchAllPages() {
     return this.fetchPage()
@@ -147,6 +157,7 @@ export class OpenSearchPaginator {
   /**
    * Convenience method to get the records of all pages in a single result array
    * @returns {Promise<SearchResult>} The records of all the pages in the search.
+   * @fulfill {module:opensearch/formats~SearchResult} The search result
    */
   fetchAllRecords() {
     return this.fetchAllPages()
@@ -166,6 +177,7 @@ export class OpenSearchPaginator {
    * Fetches the first X records of a search in a single search result.
    * @param {int} maxCount The maximum number of records to fetch.
    * @returns {Promise<SearchResult>} The resulting records as a promise.
+   * @fulfill {module:opensearch/formats~SearchResult} The search result
    */
   fetchFirstRecords(maxCount) {
     // Get the first page
@@ -207,7 +219,8 @@ export class OpenSearchPaginator {
    * @param {boolean} preserveOrder Whether the results must be returned in the
    *                                order received from the server, or the
    *                                originally requested order.
-   * @returns {PagedSearchProgressEmitter} The resulting records as a promise.
+   * @returns {module:opensearch/paginator~PagedSearchProgressEmitter} The resulting
+   *                                                                   records as a promise.
    */
   searchFirstRecords(maxCount = undefined, preserveOrder = true) {
     // Get the first page

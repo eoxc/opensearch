@@ -1,7 +1,14 @@
 import { assign } from '../utils';
+
+
+/**
+ * @module opensearch/formats/geojson
+ */
+
 /**
  * Class to parse GeoJSON results
  * @constructor GeoJSONFormat
+ * @implements {module:opensearch/formats.FormatInterface}
  */
 export class GeoJSONFormat {
   /**

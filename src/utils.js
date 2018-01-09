@@ -1,5 +1,10 @@
 import 'isomorphic-fetch';
 
+
+/**
+ * @module opensearch/utils
+ */
+
 export function parseURLQuery(url) {
   const search = (url.indexOf('?') === -1) ? url : url.substring(url.indexOf('?'));
   const vars = search.split('&');
@@ -109,7 +114,7 @@ function splitNamespace(name) {
   return (name.indexOf(':') !== -1) ? name.split(':') : [null, name];
 }
 
-/*
+/**
  * Resolves an xPath like query with the given element as basis. All parts of
  * the path must be specified, none may be omitted. Allows to select attributes
  * using the `@attrName` postfix or the text of an element using the `text()`
@@ -309,7 +314,8 @@ export function toWKT(gj) {
 /* eslint-enable no-param-reassign, prefer-template */
 
 /**
- * Returns a Request object for the fetch API.
+ * Returns a [Request]{@link https://developer.mozilla.org/en-US/docs/Web/API/Request}
+ * object for the fetch API.
  * @param {string} url The request URL
  * @param {object} [baseRequest] the baseRequest
  * @returns {Request} The constructed request.
@@ -319,7 +325,7 @@ export function createRequest(url, baseRequest) {
 }
 
 /**
- * Creates (and sends) an XMLHttpRequest.
+ * Creates (and sends) an [XMLHttpRequest]{@link https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest}.
  * @param {string} url The request URL
  * @param {object} [baseRequest] the baseRequest
  * @returns {XMLHttpRequest} The constructed request.
@@ -337,7 +343,7 @@ export function createXHR(url, baseRequest = {}) {
 }
 
 /**
- * Sort of polyfill for `Array.prototype.find`
+ * Sort of polyfill for [Array.prototype.find]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find}
  * @param {Array} arr the array to find the entry on.
  * @param {function} predicate the callback to find the value.
  * @param {*} thisArg the `this` for the predicate function.
@@ -357,7 +363,7 @@ export function find(arr, predicate, thisArg) {
 }
 
 /**
- * Sort of polyfill for `Object.assign`
+ * Sort of polyfill for [Object.assign]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign}
  * @param {object} target the target to set the properties on.
  * @param {...object} sources the source objects to copy properties from.
  * @returns {object} the target

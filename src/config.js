@@ -1,4 +1,8 @@
 /**
+ * @module opensearch/config
+ */
+
+/**
  * The global configuration.
  */
 const globalConfig = {
@@ -11,7 +15,7 @@ const globalConfig = {
  *                          current configuration.
  * @returns {object} The current configuration.
  */
-export default function config(values = null) {
+export function config(values = null) {
   if (!values) {
     return globalConfig;
   }

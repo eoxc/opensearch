@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { search } from '../src/search';
-import config from '../src/config';
+import { config } from '../src/config';
 import { OpenSearchService } from '../src/service';
 
 // import fetchMock after isomorphic-fetch was set up to not confuse global `Request`

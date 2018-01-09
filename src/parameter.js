@@ -1,6 +1,10 @@
 import { getElements, isNullOrUndefined, toWKT } from './utils';
 
 
+/**
+ * @module opensearch/parameter
+ */
+
 const typeRE = /{([a-zA-Z:]+)([?]?)}/;
 
 function parseType(value) {

@@ -1,12 +1,17 @@
 /**
+ * @module opensearch/formats/suggestions-json
+ */
+
+/**
  * Class to parse SuggestionsJSONFormat results
  * @constructor SuggestionsJSONFormat
  */
 export class SuggestionsJSONFormat {
+
   /**
    * Parse the given JSON.
    * @param {string} text The JSON string to parse.
-   * @returns {Suggestion[]} The parsed suggestions
+   * @returns {module:opensearch/formats.Suggestion[]} The parsed suggestions
    */
   parse(text) {
     const result = JSON.parse(text);

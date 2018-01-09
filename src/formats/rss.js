@@ -1,9 +1,15 @@
 import { parseXml, getElements, getFirstElement, getText } from '../utils';
 import { BaseFeedFormat } from './base';
 
+
+/**
+ * @module opensearch/formats/rss
+ */
+
 /**
  * Class to parse RSS feeds
  * @constructor RSSFormat
+ * @implements {module:opensearch/formats.FormatInterface}
  */
 export class RSSFormat extends BaseFeedFormat {
   /**

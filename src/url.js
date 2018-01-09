@@ -4,6 +4,10 @@ import { OpenSearchParameter } from './parameter';
 
 
 /**
+ * @module opensearch/url
+ */
+
+/**
  * Class to parse a single URL of an OpenSearchDescription XML document and
  * to create HTTP requests for searches.
  * @property {string} type The mime-type for the content the URL is referring to

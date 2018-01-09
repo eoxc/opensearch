@@ -1,5 +1,5 @@
 import { OpenSearchService } from './service';
-import config from './config';
+import { config } from './config';
 
 /**
  * @module opensearch

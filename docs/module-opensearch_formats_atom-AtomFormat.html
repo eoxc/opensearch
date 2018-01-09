@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: formats/suggestions-json.js</title>
+    <title>JSDoc: Class: AtomFormat</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,44 +17,143 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: formats/suggestions-json.js</h1>
+    <h1 class="page-title">Class: AtomFormat</h1>
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @module opensearch/formats/suggestions-json
- */
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="module-opensearch_formats_atom.html">opensearch/formats/atom</a>~</span>AtomFormat<span class="signature">()</span><span class="type-signature"></span></h2>
+        
+    
+</header>
 
-/**
- * Class to parse SuggestionsJSONFormat results
- * @constructor SuggestionsJSONFormat
- */
-export class SuggestionsJSONFormat {
+<article>
+    <div class="container-overview">
+    
+        
 
-  /**
-   * Parse the given JSON.
-   * @param {string} text The JSON string to parse.
-   * @returns {module:opensearch/formats.Suggestion[]} The parsed suggestions
-   */
-  parse(text) {
-    const result = JSON.parse(text);
-    const [, completions, descriptions, urls] = result;
+    
 
-    return completions.map((completion, index) => ({
-      completion,
-      description: descriptions &amp;&amp; descriptions[index],
-      url: urls &amp;&amp; urls[index],
-    }));
-  }
-}
-</code></pre>
-        </article>
-    </section>
+    
+    <h4 class="name" id="AtomFormat"><span class="type-signature"></span>new AtomFormat<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Class to parse Atom feeds
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="module-opensearch_formats.FormatInterface.html">module:opensearch/formats.FormatInterface</a></li>
+        
+    </ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="formats_atom.js.html">formats/atom.js</a>, <a href="formats_atom.js.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

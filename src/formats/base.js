@@ -1,5 +1,6 @@
 import { getElements, getFirstElement, getText, simplePath } from '../utils';
 
+
 function swapAndPair(values) {
   const out = [];
 

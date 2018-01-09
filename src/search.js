@@ -5,12 +5,29 @@
 import { getFormat } from './formats';
 import { createRequest, createXHR } from './utils';
 import { getErrorFromXml } from './error';
-import config from './config';
+import { config } from './config';
+
+/**
+ * @module opensearch/search
+ */
 
 
-/*
+ /**
+  * @typedef module:opensearch/search.BaseRequest
+  * @type Object
+  * @property {string} url The URL of the search service.
+  * @property {string} method The ussed HTTP method.
+  * @property {object} [headers] Optional HTTP headers.
+  * @property {string|FormData} [body] The body to be sent to the search service.
+  *                                    (For HTTP POST requests)
+  */
+
+/**
  * Returns an object that can be transformed into a fetch Request or an
  * XMLHttpRequest.
+ * @param {string} url The url to send the search request to.
+ * @param {object} parameterValues The search parameter values.
+ * @returns {module:opensearch/search.BaseRequest} The constructed base request object.
  */
 export function createBaseRequest(url, parameterValues) {
   // check parameters

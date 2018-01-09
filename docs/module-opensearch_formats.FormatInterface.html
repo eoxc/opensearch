@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: formats/suggestions-json.js</title>
+    <title>JSDoc: Interface: FormatInterface</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,44 +17,261 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: formats/suggestions-json.js</h1>
+    <h1 class="page-title">Interface: FormatInterface</h1>
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @module opensearch/formats/suggestions-json
- */
+        <h2>
+            <span class="ancestors"><a href="module-opensearch_formats.html">opensearch/formats</a>.</span>FormatInterface</h2>
+        
+    
+</header>
 
-/**
- * Class to parse SuggestionsJSONFormat results
- * @constructor SuggestionsJSONFormat
- */
-export class SuggestionsJSONFormat {
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">The interface built-in and custom format parsers must conform to.</div>
+        
 
-  /**
-   * Parse the given JSON.
-   * @param {string} text The JSON string to parse.
-   * @returns {module:opensearch/formats.Suggestion[]} The parsed suggestions
-   */
-  parse(text) {
-    const result = JSON.parse(text);
-    const [, completions, descriptions, urls] = result;
+        
 
-    return completions.map((completion, index) => ({
-      completion,
-      description: descriptions &amp;&amp; descriptions[index],
-      url: urls &amp;&amp; urls[index],
-    }));
-  }
-}
-</code></pre>
-        </article>
-    </section>
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="formats_index.js.html">formats/index.js</a>, <a href="formats_index.js.html#line11">line 11</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="parse"><span class="type-signature"></span>parse<span class="signature">(text)</span><span class="type-signature"> &rarr; {<a href="module-opensearch_formats.html#.SearchResult">module:opensearch/formats.SearchResult</a>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Main parsing function for the format.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>text</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The text (or binary string) response to parse.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="formats_index.js.html">formats/index.js</a>, <a href="formats_index.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The parsed search result
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="module-opensearch_formats.html#.SearchResult">module:opensearch/formats.SearchResult</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

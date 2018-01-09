@@ -1,9 +1,15 @@
 import { parseXml, getElements, getText } from '../utils';
 import { BaseFeedFormat } from './base';
 
+
+/**
+ * @module opensearch/formats/atom
+ */
+
 /**
  * Class to parse Atom feeds
  * @constructor AtomFormat
+ * @implements {module:opensearch/formats.FormatInterface}
  */
 export class AtomFormat extends BaseFeedFormat {
   /**

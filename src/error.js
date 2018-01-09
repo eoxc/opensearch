@@ -1,6 +1,10 @@
 import { parseXml, getFirstElement, getText } from './utils';
 
 /**
+ * @module opensearch/error
+ */
+
+/**
  * Try to parse an OWS ExceptionReport and create an Error object from the
  * parsed values.
  * @param {string} xmlStr The XML string to parse the exception from.

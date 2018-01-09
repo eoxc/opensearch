@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Module: opensearch/search</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Module: opensearch/search</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".createBaseRequest"><span class="type-signature">(static) </span>createBaseRequest<span class="signature">(url, parameterValues)</span><span class="type-signature"> &rarr; {<a href="module-opensearch_search.html#.BaseRequest">module:opensearch/search.BaseRequest</a>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Returns an object that can be transformed into a fetch Request or an
+XMLHttpRequest.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The url to send the search request to.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>parameterValues</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The search parameter values.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="search.js.html">search.js</a>, <a href="search.js.html#line32">line 32</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The constructed base request object.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="module-opensearch_search.html#.BaseRequest">module:opensearch/search.BaseRequest</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".search"><span class="type-signature">(static) </span>search<span class="signature">(url, parameters<span class="signature-attributes">opt</span>, type<span class="signature-attributes">opt</span>, raw<span class="signature-attributes">opt</span>, maxUrlLength<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;SearchResult>|Promise.&lt;Response>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Performs a search for the given URL and parameters.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">OpenSearchUrl</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The URL to search on.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>parameters</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">The search parameters.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">The response format.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>raw</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Whether the response shall be parsed or returned raw.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>maxUrlLength</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The maximum URL length. URLs longer than that
+                                            will result in errors.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="search.js.html">search.js</a>, <a href="search.js.html#line119">line 119</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The search result as a Promise
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;SearchResult></span>
+|
+
+<span class="param-type">Promise.&lt;Response></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        
+                
+<h4 class="name" id=".BaseRequest">BaseRequest</h4>
+
+
+
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The URL of the search service.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>method</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The ussed HTTP method.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>headers</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Optional HTTP headers.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>body</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">FormData</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The body to be sent to the search service.
+                                   (For HTTP POST requests)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="search.js.html">search.js</a>, <a href="search.js.html#line15">line 15</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-opensearch.html">opensearch</a></li><li><a href="module-opensearch_config.html">opensearch/config</a></li><li><a href="module-opensearch_error.html">opensearch/error</a></li><li><a href="module-opensearch_formats.html">opensearch/formats</a></li><li><a href="module-opensearch_formats_atom.html">opensearch/formats/atom</a></li><li><a href="module-opensearch_formats_geojson.html">opensearch/formats/geojson</a></li><li><a href="module-opensearch_formats_rss.html">opensearch/formats/rss</a></li><li><a href="module-opensearch_formats_suggestions-json.html">opensearch/formats/suggestions-json</a></li><li><a href="module-opensearch_paginator.html">opensearch/paginator</a></li><li><a href="module-opensearch_parameter.html">opensearch/parameter</a></li><li><a href="module-opensearch_search.html">opensearch/search</a></li><li><a href="module-opensearch_url.html">opensearch/url</a></li><li><a href="module-opensearch_utils.html">opensearch/utils</a></li></ul><h3>Classes</h3><ul><li><a href="module-opensearch_formats_atom-AtomFormat.html">AtomFormat</a></li><li><a href="module-opensearch_formats_geojson-GeoJSONFormat.html">GeoJSONFormat</a></li><li><a href="module-opensearch_formats_rss-RSSFormat.html">RSSFormat</a></li><li><a href="module-opensearch_formats_suggestions-json-SuggestionsJSONFormat.html">SuggestionsJSONFormat</a></li><li><a href="module-opensearch_paginator.OpenSearchPaginator.html">OpenSearchPaginator</a></li><li><a href="module-opensearch_paginator-PagedSearchProgressEmitter.html">PagedSearchProgressEmitter</a></li><li><a href="module-opensearch_parameter.OpenSearchParameter.html">OpenSearchParameter</a></li><li><a href="module-opensearch_url.OpenSearchUrl.html">OpenSearchUrl</a></li><li><a href="OpenSearchDescription.html">OpenSearchDescription</a></li><li><a href="OpenSearchService.html">OpenSearchService</a></li></ul><h3>Events</h3><ul><li><a href="module-opensearch_paginator-PagedSearchProgressEmitter.html#event:error">error</a></li><li><a href="module-opensearch_paginator-PagedSearchProgressEmitter.html#event:page">page</a></li><li><a href="module-opensearch_paginator-PagedSearchProgressEmitter.html#event:success">success</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-opensearch_formats.FormatInterface.html">FormatInterface</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jan 09 2018 16:54:06 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
