@@ -1,5 +1,6 @@
 import { OpenSearchService } from './service';
 import { config } from './config';
+import { registerFormat } from './formats';
 
 /**
  * @module opensearch
@@ -33,4 +34,4 @@ export function deserialize(values) {
   return OpenSearchService.deserialize(values);
 }
 
-export { config };
+export { config, registerFormat };
