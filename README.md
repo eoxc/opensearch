@@ -27,6 +27,21 @@ discover('http://example.com/search').then((service) => {
 });
 ```
 
+If you already have the OpenSearch description document locally, you can also
+use the `fromXml` function to create the service class:
+
+```javascript
+import { fromXml } from 'opensearch-browser';
+
+const osddDocumentString = `
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+...
+</OpenSearchDescription>`;
+
+const service = fromXml(osddDocumentString);
+```
+
 This OpenSearch library requires `Promises`. If you are not sure whether you
 have it available use the following polyfill:
 
@@ -112,14 +127,12 @@ It is possible to extend the supported formats by adding additional format
 handlers:
 
 ```javascript
-import { registerFormat } from 'opensearch/formats/index';
+import { registerFormat } from 'opensearch-browser';
 
-var format = {
-  parse: function(response) {
-    return response.text().then(function(text) {
-      // ...
-      return ...;
-    });
+const format = {
+  parse: function(text) {
+    // insert parsing logic here...
+    return ...;
   }
 };
 
@@ -134,8 +147,8 @@ Alternatively, raw responses can be used, and parsing be performed outside of
 this library:
 
 ```javascript
-var mimeType = null;
-var raw = true;
+const mimeType = null;
+const raw = true;
 service.search({ searchTerms: 'Test', startIndex: 1 }, mimeType, raw)
   .then(function(response) {
     // do something with the response
