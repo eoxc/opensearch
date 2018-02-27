@@ -150,7 +150,7 @@ export function simplePath(element, path, single = false) {
         const [namespace, tagName] = splitNamespace(nodePart);
         const [attrNamespace, attrName] = splitNamespace(attrPart);
         current = getFirstElement(current, namespace, tagName);
-        return getAttributeNS(current, attrNamespace, attrName);
+        return current ? getAttributeNS(current, attrNamespace, attrName) : null;
       }
       const [namespace, tagName] = splitNamespace(part);
       current = getFirstElement(current, namespace, tagName);
