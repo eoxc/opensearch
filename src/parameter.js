@@ -22,30 +22,32 @@ function isMandatory(value) {
 function formatDate(value, pattern = undefined) {
   const rePattern = pattern ? new RegExp(pattern) : null;
   if (value instanceof Date) {
-    let formatted = value.toISOString();
+    const isoString = value.toISOString();
+    let formatted = isoString;
     if (!rePattern || rePattern.test(formatted)) {
       return formatted;
     }
 
     // Try without milliseconds
-    formatted = `${value.toISOString().split('.')[0]}Z`;
+    formatted = `${isoString.split('.')[0]}Z`;
     if (!rePattern || rePattern.test(formatted)) {
       return formatted;
     }
 
     // Try without Zulu
-    formatted = value.toISOString().slice(0, -1);
+    formatted = isoString.slice(0, -1);
     if (!rePattern || rePattern.test(formatted)) {
       return formatted;
     }
 
     // Try without Zulu and milliseconds
-    formatted = value.toISOString().split('.')[0];
+    formatted = isoString.split('.')[0];
     if (!rePattern || rePattern.test(formatted)) {
       return formatted;
     }
 
-    throw new Error(`Could not format date ${value.toISOString()} to match the pattern '${pattern}'`);
+    // as fallback return the default ISO format
+    return isoString;
   }
   return value;
 }

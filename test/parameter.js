@@ -114,7 +114,7 @@ describe('OpenSearchParameter', () => {
       expect(paramDateWithPatternNoMSandTZ.serializeValue(new Date('2000-01-02T01:01:01Z'))).to.equal('2000-01-02T01:01:01');
     });
     it('shall throw when no pattern could be decoded', () => {
-      expect(() => paramDateWithUnknownPattern.serializeValue(new Date('2000-01-02T01:01:01Z'))).to.throw();
+      expect(paramDateWithUnknownPattern.serializeValue(new Date('2000-01-02T01:01:01Z'))).to.equal('2000-01-02T01:01:01.000Z');
     });
   });
 
