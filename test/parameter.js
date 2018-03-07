@@ -4,6 +4,8 @@ import { expect } from 'chai';
 import { OpenSearchParameter } from '../src/parameter';
 import { parseXml } from '../src/utils';
 
+const namespace = 'xmlns:parameters="http://a9.com/-/spec/opensearch/extensions/parameters/1.0/"';
+
 describe('OpenSearchParameter', () => {
   describe('combined', () => {
     // TODO: do tests
@@ -15,6 +17,30 @@ describe('OpenSearchParameter', () => {
     const paramGeometry = OpenSearchParameter.fromKeyValuePair('geometry', '{geo:geometry}');
     const paramEONumeric = OpenSearchParameter.fromKeyValuePair('orbitNumber', '{eo:orbitNumber}');
     const paramEODate = OpenSearchParameter.fromKeyValuePair('creationDate', '{eo:creationDate}');
+
+    const paramDateWithPatternNoMS = OpenSearchParameter.fromNode(
+      parseXml(
+        `<parameters:Parameter name="start" value="{time:start}" ${namespace} pattern="^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(Z|[\+\-][0-9]{2}:([0-9]{2})?)$" />`
+      ).documentElement
+    );
+
+    const paramDateWithPatternNoTZ = OpenSearchParameter.fromNode(
+      parseXml(
+        `<parameters:Parameter name="start" value="{time:start}" ${namespace} pattern="^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}$" />`
+      ).documentElement
+    );
+
+    const paramDateWithPatternNoMSandTZ = OpenSearchParameter.fromNode(
+      parseXml(
+        `<parameters:Parameter name="start" value="{time:start}" ${namespace} pattern="^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}$" />`
+      ).documentElement
+    );
+
+    const paramDateWithUnknownPattern = OpenSearchParameter.fromNode(
+      parseXml(
+        `<parameters:Parameter name="start" value="{time:start}" ${namespace} pattern="^unknown$" />`
+      ).documentElement
+    );
 
     it('shall correctly encode Dates', () => {
       expect(paramTime.serializeValue(new Date('2000-01-01T01:01:01Z'))).to.equal('2000-01-01T01:01:01.000Z');
@@ -77,6 +103,19 @@ describe('OpenSearchParameter', () => {
     it('shall correctly encode bottom open date intervals', () => {
       expect(paramEODate.serializeValue({ maxExclusive: new Date('2000-01-02T01:01:01Z') })).to.equal('2000-01-02T01:01:01.000Z[');
     });
+
+    it('shall correctly serialize dates when a pattern is specified', () => {
+      expect(paramDateWithPatternNoMS.serializeValue(new Date('2000-01-02T01:01:01Z'))).to.equal('2000-01-02T01:01:01Z');
+    });
+    it('shall correctly serialize dates when a pattern is specified', () => {
+      expect(paramDateWithPatternNoTZ.serializeValue(new Date('2000-01-02T01:01:01Z'))).to.equal('2000-01-02T01:01:01.000');
+    });
+    it('shall correctly serialize dates when a pattern is specified', () => {
+      expect(paramDateWithPatternNoMSandTZ.serializeValue(new Date('2000-01-02T01:01:01Z'))).to.equal('2000-01-02T01:01:01');
+    });
+    it('shall throw when no pattern could be decoded', () => {
+      expect(() => paramDateWithUnknownPattern.serializeValue(new Date('2000-01-02T01:01:01Z'))).to.throw();
+    });
   });
 
   describe('fromKeyValuePair', () => {
@@ -102,7 +141,6 @@ describe('OpenSearchParameter', () => {
   });
 
   describe('fromNode', () => {
-    const namespace = 'xmlns:parameters="http://a9.com/-/spec/opensearch/extensions/parameters/1.0/"';
     const paramMandatory = OpenSearchParameter.fromNode(
       parseXml(`<parameters:Parameter name="q" value="{searchTerms}" ${namespace}/>`).documentElement
     );

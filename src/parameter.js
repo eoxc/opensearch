@@ -19,13 +19,39 @@ function isMandatory(value) {
   return typeRE.exec(value)[2] !== '?';
 }
 
-function eoValueToString(value, isDate = false) {
-  const convertDate = (dateValue) => {
-    if (dateValue instanceof Date) {
-      return dateValue.toISOString();
+function formatDate(value, pattern = undefined) {
+  const rePattern = pattern ? new RegExp(pattern) : null;
+  if (value instanceof Date) {
+    let formatted = value.toISOString();
+    if (!rePattern || rePattern.test(formatted)) {
+      return formatted;
     }
-    return value;
-  };
+
+    // Try without milliseconds
+    formatted = `${value.toISOString().split('.')[0]}Z`;
+    if (!rePattern || rePattern.test(formatted)) {
+      return formatted;
+    }
+
+    // Try without Zulu
+    formatted = value.toISOString().slice(0, -1);
+    if (!rePattern || rePattern.test(formatted)) {
+      return formatted;
+    }
+
+    // Try without Zulu and milliseconds
+    formatted = value.toISOString().split('.')[0];
+    if (!rePattern || rePattern.test(formatted)) {
+      return formatted;
+    }
+
+    throw new Error(`Could not format date ${value.toISOString()} to match the pattern '${pattern}'`);
+  }
+  return value;
+}
+
+function eoValueToString(value, isDate = false, pattern = undefined) {
+  const convertDate = dateValue => formatDate(dateValue, pattern);
 
   if (typeof value === 'string') {
     return value;
@@ -85,7 +111,8 @@ export class OpenSearchParameter {
    */
   constructor(type, name, mandatory, options = null,
     minExclusive = undefined, maxExclusive = undefined,
-    minInclusive = undefined, maxInclusive = undefined) {
+    minInclusive = undefined, maxInclusive = undefined,
+    pattern = undefined) {
     this._type = type;
     this._name = name;
     this._mandatory = mandatory;
@@ -94,6 +121,7 @@ export class OpenSearchParameter {
     this._maxExclusive = maxExclusive;
     this._minInclusive = minInclusive;
     this._maxInclusive = maxInclusive;
+    this._pattern = pattern;
   }
 
   /**
@@ -161,6 +189,14 @@ export class OpenSearchParameter {
   }
 
   /**
+   * The pattern, serialized values have to conform to.
+   * @readonly
+   */
+  get pattern() {
+    return this._pattern;
+  }
+
+  /**
    * Combines this parameter with the values of another parameter.
    * @param {OpenSearchParameter} other the other parameter
    * @returns {OpenSearchParameter} the combined parameter
@@ -173,7 +209,8 @@ export class OpenSearchParameter {
       isNullOrUndefined(this.minExclusive) ? other.minExclusive : this.minExclusive,
       isNullOrUndefined(this.maxExclusive) ? other.maxExclusive : this.maxExclusive,
       isNullOrUndefined(this.minInclusive) ? other.minInclusive : this.minInclusive,
-      isNullOrUndefined(this.maxInclusive) ? other.maxInclusive : this.maxInclusive
+      isNullOrUndefined(this.maxInclusive) ? other.maxInclusive : this.maxInclusive,
+      isNullOrUndefined(this.pattern) ? other.pattern : this.pattern
     );
   }
 
@@ -189,10 +226,7 @@ export class OpenSearchParameter {
     switch (this.type) {
       case 'time:start':
       case 'time:end':
-        if (value instanceof Date) {
-          return value.toISOString();
-        }
-        break;
+        return formatDate(value, this.pattern);
       case 'geo:box':
         if (Array.isArray(value)) {
           return value.join(',');
@@ -214,12 +248,12 @@ export class OpenSearchParameter {
       case 'eo:maximumIncidenceAngle':
       case 'eo:dopplerFrequency':
       case 'eo:incidenceAngleVariation':
-        return eoValueToString(value);
+        return eoValueToString(value, false, this.pattern);
       case 'eo:availabilityTime':
       case 'eo:creationDate':
       case 'eo:modificationDate':
       case 'eo:processingDate':
-        return eoValueToString(value, true);
+        return eoValueToString(value, true, this.pattern);
       default:
         break;
     }
@@ -248,6 +282,9 @@ export class OpenSearchParameter {
     const maxInclusive = node.hasAttribute('maxInclusive')
                           ? parseInt(node.getAttribute('maxInclusive'), 10)
                           : undefined;
+    const pattern = node.hasAttribute('pattern')
+                          ? node.getAttribute('pattern')
+                          : undefined;
     const optionNodes = getElements(node, 'parameters', 'Option');
     let options;
     if (optionNodes.length) {
@@ -257,7 +294,8 @@ export class OpenSearchParameter {
       }));
     }
     return new OpenSearchParameter(
-      type, name, mandatory, options, minExclusive, maxExclusive, minInclusive, maxInclusive
+      type, name, mandatory, options,
+      minExclusive, maxExclusive, minInclusive, maxInclusive, pattern
     );
   }
 
@@ -288,6 +326,7 @@ export class OpenSearchParameter {
       name: this._name,
       mandatory: this._mandatory,
       options: this._options,
+      pattern: this._pattern,
     };
 
     if (typeof this._minExclusive !== 'undefined') {
@@ -313,7 +352,8 @@ export class OpenSearchParameter {
   static deserialize(values) {
     return new OpenSearchParameter(
       values.type, values.name, values.mandatory, values.options,
-      values.minExclusive, values.maxExclusive, values.minInclusive, values.maxInclusive
+      values.minExclusive, values.maxExclusive, values.minInclusive, values.maxInclusive,
+      values.pattern,
     );
   }
 }
