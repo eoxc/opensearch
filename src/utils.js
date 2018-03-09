@@ -59,11 +59,11 @@ function getChildren(element) {
  * Get an array of all *direct* descendants (in contrast to getElementsByTagName)
  * of an element with a certain namespace URI and tag name.
  */
-export function getElements(element, namespace, tagName) {
+export function getElements(element, namespace, tagName, usedNamespaces = namespaces) {
   if (!element) {
     return [];
   }
-  const namespaceURI = namespaces[namespace] || namespace;
+  const namespaceURI = usedNamespaces[namespace] || namespace;
   const children = getChildren(element);
   if (tagName && namespaceURI) {
     return children.filter(
@@ -78,12 +78,12 @@ export function getElements(element, namespace, tagName) {
 /*
  * Get the first direct descendant element with the given namespace URI and tag name.
  */
-export function getFirstElement(element, namespace, tagName) {
+export function getFirstElement(element, namespace, tagName, usedNamespaces) {
   // use shortcut; when available
   if (!namespace && !tagName && element.firstElementChild) {
     return element.firstElementChild;
   }
-  const elements = getElements(element, namespace, tagName);
+  const elements = getElements(element, namespace, tagName, usedNamespaces);
   if (elements.length) {
     return elements[0];
   }
@@ -94,16 +94,16 @@ export function getFirstElement(element, namespace, tagName) {
  * Get the text of the first direct descendant element with the given namespace
  * URI and tag name.
  */
-export function getText(element, namespace, tagName) {
-  const first = getFirstElement(element, namespace, tagName);
+export function getText(element, namespace, tagName, usedNamespaces) {
+  const first = getFirstElement(element, namespace, tagName, usedNamespaces);
   return first ? first.textContent : null;
 }
 
 /*
  * Get the value of the namespaced attribute or return a default.
  */
-export function getAttributeNS(node, namespace, name, defaultValue) {
-  const namespaceURI = namespaces[namespace] || namespace;
+export function getAttributeNS(node, namespace, name, defaultValue, usedNamespaces = namespaces) {
+  const namespaceURI = usedNamespaces[namespace] || namespace;
   if (node.hasAttributeNS(namespaceURI, name)) {
     return node.getAttributeNS(namespaceURI, name);
   }
@@ -133,7 +133,7 @@ function splitNamespace(name) {
  *                                            single parameter, either a DOM Node
  *                                            or a string, or arrays thereof.
  */
-export function simplePath(element, path, single = false) {
+export function simplePath(element, path, single = false, usedNamespaces = undefined) {
   // split path and discard empty parts
   const parts = path.split('/').filter(part => part.length);
   let current = single ? element : [element];
@@ -149,11 +149,11 @@ export function simplePath(element, path, single = false) {
         const [nodePart, attrPart] = part.split('@');
         const [namespace, tagName] = splitNamespace(nodePart);
         const [attrNamespace, attrName] = splitNamespace(attrPart);
-        current = getFirstElement(current, namespace, tagName);
-        return current ? getAttributeNS(current, attrNamespace, attrName) : null;
+        current = getFirstElement(current, namespace, tagName, usedNamespaces);
+        return current ? getAttributeNS(current, attrNamespace, attrName, undefined, usedNamespaces) : null;
       }
       const [namespace, tagName] = splitNamespace(part);
-      current = getFirstElement(current, namespace, tagName);
+      current = getFirstElement(current, namespace, tagName, usedNamespaces);
       if (!current) {
         return null;
       }
@@ -163,12 +163,16 @@ export function simplePath(element, path, single = false) {
       const [nodePart, attrPart] = part.split('@');
       const [namespace, tagName] = splitNamespace(nodePart);
       const [attrNamespace, attrName] = splitNamespace(attrPart);
-      return current.map(currentElement => getElements(currentElement, namespace, tagName))
+      return current.map(
+          currentElement => getElements(currentElement, namespace, tagName, usedNamespaces)
+        )
         .reduce((acc, value) => acc.concat(value), [])
-        .map(finalElement => getAttributeNS(finalElement, attrNamespace, attrName));
+        .map(finalElement => getAttributeNS(finalElement, attrNamespace, attrName, undefined, usedNamespaces));
     } else {
       const [namespace, tagName] = splitNamespace(part);
-      current = current.map(currentElement => getElements(currentElement, namespace, tagName))
+      current = current.map(
+          currentElement => getElements(currentElement, namespace, tagName, usedNamespaces)
+        )
         .reduce((acc, value) => acc.concat(value), []);
     }
   }
