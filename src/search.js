@@ -116,7 +116,7 @@ export function createBaseRequest(url, parameterValues) {
                                             will result in errors.
  * @returns {Promise<SearchResult>|Promise<Response>} The search result as a Promise
  */
-export function search(url, parameters = {}, type = null, raw = false, maxUrlLength = undefined) {
+export function search(url, parameters = {}, type = null, raw = false, maxUrlLength = undefined, parseOptions = undefined) {
   const baseRequest = createBaseRequest(url, parameters);
   const { useXHR } = config();
 
@@ -168,6 +168,6 @@ export function search(url, parameters = {}, type = null, raw = false, maxUrlLen
       if (!format) {
         throw new Error(`Could not parse response of type '${type}'.`);
       }
-      return format.parse(text);
+      return format.parse(text, parseOptions);
     });
 }

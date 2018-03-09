@@ -80,7 +80,8 @@ export class OpenSearchPaginator {
                                  preferredItemsPerPage = undefined,
                                  preferStartIndex = true,
                                  baseOffset = 0,
-                                 maxUrlLength = undefined } = {}) {
+                                 maxUrlLength = undefined,
+                                 parseOptions = undefined } = {}) {
     this._url = url;
     this._parameters = parameters;
     this._cache = useCache ? {} : null;
@@ -90,6 +91,7 @@ export class OpenSearchPaginator {
     this._maxUrlLength = maxUrlLength;
     this._serverItemsPerPage = undefined;
     this._totalResults = undefined;
+    this._parseOptions = parseOptions;
   }
 
   /**
@@ -125,7 +127,7 @@ export class OpenSearchPaginator {
     } else {
       parameters.startPage = pageIndex + this._url.pageOffset;
     }
-    return search(this._url, parameters, null, false, this._maxUrlLength)
+    return search(this._url, parameters, null, false, this._maxUrlLength, this._parseOptions)
       .then((result) => {
         this._totalResults = result.totalResults;
         if (!this._serverItemsPerPage && result.itemsPerPage) {
