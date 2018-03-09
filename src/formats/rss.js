@@ -17,7 +17,7 @@ export class RSSFormat extends BaseFeedFormat {
    * @param {string} text The XML string to parse.
    * @returns {module:opensearch/formats.SearchResult} The parsed search result
    */
-  parse(text) {
+  parse(text, { extraFields = undefined, namespaces = undefined } = {}) {
     const xmlDoc = parseXml(text).documentElement;
     const channel = getFirstElement(xmlDoc, null, 'channel');
     const records = getElements(channel, null, 'item').map((node) => {
@@ -59,6 +59,10 @@ export class RSSFormat extends BaseFeedFormat {
       const s3Path = this.parseS3Path(node);
       if (s3Path) {
         item.properties.s3Path = s3Path;
+      }
+
+      if (extraFields) {
+        this.parseExtraFields(node, extraFields, namespaces, item);
       }
 
       return item;

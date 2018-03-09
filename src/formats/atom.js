@@ -17,7 +17,7 @@ export class AtomFormat extends BaseFeedFormat {
    * @param {string} text The XML string to parse.
    * @returns {module:opensearch/formats.SearchResult} The parsed search result
    */
-  parse(text) {
+  parse(text, { extraFields = undefined, namespaces = undefined } = {}) {
     const xmlDoc = parseXml(text).documentElement;
     const records = getElements(xmlDoc, 'atom', 'entry').map((node) => {
       const entry = {
@@ -59,6 +59,10 @@ export class AtomFormat extends BaseFeedFormat {
       const s3Path = this.parseS3Path(node);
       if (s3Path) {
         entry.properties.s3Path = s3Path;
+      }
+
+      if (extraFields) {
+        this.parseExtraFields(node, extraFields, namespaces, entry);
       }
 
       return entry;
