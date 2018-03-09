@@ -9,6 +9,7 @@ const atomGmlLineString = require('../data/atom_gml_linestring.xml');
 const atomGmlPolygon = require('../data/atom_gml_polygon.xml');
 const atomGmlMultiSurface = require('../data/atom_gml_multisurface.xml');
 const atomEOP = require('../data/atom_eop.xml');
+const atomCustom = require('../data/atom_custom.xml');
 
 describe('AtomFormat', () => {
   const format = new AtomFormat();
@@ -278,6 +279,39 @@ describe('AtomFormat', () => {
 
     it('shall parse the s3 bucket path when available', () => {
       expect(format.parse(atomEOP).records[0].properties.s3Path).to.equal('tiles/38/U/PU/2017/12/21/0');
+    });
+
+    it('shall parse custom fields when provided in the parsing method', () => {
+      const extraFields = {
+        'properties.example': 'custom:example/text()',
+        'properties.multiExamples': ['custom:multiExample/text()', false],
+        'properties.withAttribute': 'custom:withAttribute@attr',
+        'properties.withNsAttribute': 'custom:withAttribute@custom:attr2',
+        'properties.withAttributes': ['custom:withAttribute@attr', false],
+        'properties.withNsAttributes': ['custom:withAttribute@custom:attr2', false],
+      };
+      const namespaces = {
+        custom: 'http://example.com/custom',
+      };
+      expect(format.parse(atomCustom, { extraFields, namespaces }).records[0]).to.deep.equal({
+        id: 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a',
+        properties: {
+          title: 'New York History',
+          updated: new Date('2003-12-13T18:30:02Z'),
+          links: [{
+            href: 'http://www.columbia.edu/cu/lweb/eguids/amerihist/nyc.html',
+          }],
+          media: [],
+          summary: null,
+          content: 'content',
+          example: 'This is a test.',
+          multiExamples: ['a', 'b'],
+          withAttribute: 'test',
+          withNsAttribute: 'test2',
+          withAttributes: ['test', 'test3'],
+          withNsAttributes: ['test2', 'test4'],
+        },
+      });
     });
   });
 });
