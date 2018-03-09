@@ -216,16 +216,21 @@ export class BaseFeedFormat {
   }
 
   parseMedia(node) {
-    return getElements(node, 'media', 'content')
-      .concat(getElements(getFirstElement(node, 'media', 'group'), 'media', 'content'))
-      .map((mediaNode) => {
-        const category = getFirstElement(mediaNode, 'media', 'category');
-        return {
-          url: mediaNode.getAttribute('url'),
-          category: category ? category.textContent : undefined,
-          scheme: category ? category.getAttribute('scheme') : undefined,
-        };
-      });
+    const directMedias = getElements(node, 'media', 'content');
+    const groups = getElements(node, 'media', 'group');
+    const groupedMedias = groups
+      .map(group => getElements(group, 'media', 'content'))
+      .reduce((oldElems, newElems) => oldElems.concat(newElems), []);
+    const allMedias = directMedias.concat(groupedMedias);
+
+    return allMedias.map((mediaNode) => {
+      const category = getFirstElement(mediaNode, 'media', 'category');
+      return {
+        url: mediaNode.getAttribute('url'),
+        category: category ? category.textContent : undefined,
+        scheme: category ? category.getAttribute('scheme') : undefined,
+      };
+    });
   }
 
   parseEOP(node) {
