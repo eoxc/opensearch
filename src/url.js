@@ -246,7 +246,14 @@ export class OpenSearchUrl {
           serialized.push([parameter.name, type, value]);
         }
       } else {
-        const value = parameter.serializeValue(values[parameter.name] || values[parameter.type] || '');
+        let value;
+        if (Object.prototype.hasOwnProperty.call(values, parameter.name)) {
+          value = parameter.serializeValue(values[parameter.name]);
+        } else if (Object.prototype.hasOwnProperty.call(values, parameter.type)) {
+          value = parameter.serializeValue(values[parameter.type]);
+        } else {
+          value = '';
+        }
         serialized.push([parameter.name, parameter.type, value]);
       }
     }
