@@ -37,6 +37,27 @@ export class OpenSearchService {
   getUrl(parameters, type, method) {
     const url = this.descriptionDocument.getUrl(parameters, type, method);
     if (!url) {
+      // try to give better feedback, when just one URL is possible
+      const alternativeUrls = this.descriptionDocument.getUrls(null, type, method);
+      if (alternativeUrls.length === 1) {
+        const missingParamNames = alternativeUrls[0]
+          .getMissingMandatoryParameters(parameters)
+          .map(p => `"${p.type}"`);
+        const unsupportedParameterKeys = alternativeUrls[0]
+          .getUnsupportedParameterKeys(parameters)
+          .map(k => `"${k}"`);
+
+        const terms = [];
+        if (missingParamNames.length) {
+          terms.push(`missing parameters: ${missingParamNames.join(', ')}`);
+        }
+        if (unsupportedParameterKeys) {
+          terms.push(`unsupported parameters keys: ${unsupportedParameterKeys.join(', ')}`);
+        }
+        throw new Error(`No matching URL found, ${terms.join(' and ')}`);
+      }
+
+      // standard error, when multiple/no URLs with that type/method are specified
       throw new Error(`No URL found for type '${type}' and the given parameters.`);
     }
     return url;
