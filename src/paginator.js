@@ -81,7 +81,8 @@ export class OpenSearchPaginator {
                                  preferStartIndex = true,
                                  baseOffset = 0,
                                  maxUrlLength = undefined,
-                                 parseOptions = undefined } = {}) {
+                                 parseOptions = undefined,
+                                 headers = undefined } = {}) {
     this._url = url;
     this._parameters = parameters;
     this._cache = useCache ? {} : null;
@@ -92,6 +93,7 @@ export class OpenSearchPaginator {
     this._serverItemsPerPage = undefined;
     this._totalResults = undefined;
     this._parseOptions = parseOptions;
+    this._headers = headers;
   }
 
   /**
@@ -127,14 +129,15 @@ export class OpenSearchPaginator {
     } else {
       parameters.startPage = pageIndex + this._url.pageOffset;
     }
-    return search(this._url, parameters, null, false, this._maxUrlLength, this._parseOptions)
-      .then((result) => {
-        this._totalResults = result.totalResults;
-        if (!this._serverItemsPerPage && result.itemsPerPage) {
-          this._serverItemsPerPage = result.itemsPerPage;
-        }
-        return result;
-      });
+    return search(
+      this._url, parameters, null, false, this._maxUrlLength, this._parseOptions, this._headers
+    ).then((result) => {
+      this._totalResults = result.totalResults;
+      if (!this._serverItemsPerPage && result.itemsPerPage) {
+        this._serverItemsPerPage = result.itemsPerPage;
+      }
+      return result;
+    });
   }
 
   /**
@@ -199,7 +202,8 @@ export class OpenSearchPaginator {
           );
 
         // determine the number of pages and issue a request for each
-        const numPages = firstPage.itemsPerPage ? Math.ceil(usedMaxCount / firstPage.itemsPerPage) : 1;
+        const numPages = firstPage.itemsPerPage ?
+          Math.ceil(usedMaxCount / firstPage.itemsPerPage) : 1;
         for (let i = 1; i < numPages; ++i) {
           let count = firstPage.itemsPerPage;
           if (firstPage.itemsPerPage * (i + 1) > usedMaxCount) {
@@ -264,7 +268,8 @@ export class OpenSearchPaginator {
           ) : firstPage.totalResults;
 
         // determine the number of pages and issue a request for each
-        const numPages = firstPage.itemsPerPage ? Math.ceil(usedMaxCount / firstPage.itemsPerPage) : 1;
+        const numPages = firstPage.itemsPerPage ?
+          Math.ceil(usedMaxCount / firstPage.itemsPerPage) : 1;
         for (let i = 1; i < numPages; ++i) {
           let count = firstPage.itemsPerPage;
           if (firstPage.itemsPerPage * (i + 1) > usedMaxCount) {

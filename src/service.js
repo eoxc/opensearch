@@ -99,10 +99,12 @@ export class OpenSearchService {
    * @param {string} [method=null] The preferred HTTP method type.
    * @param {boolean} [raw=false] Whether the response shall be parsed or returned raw.
    * @param {number} [maxUrlLength=undefined] The maximum URL length. URLs longer than that
-                                              will result in errors.
+   *                                          will result in errors.
+   * @param {object} [parseOptions=undefined] Additional options for the format.
+   * @param {object} [headers=undefined] Specific headers to send to the service.
    * @returns {Promise<array>|Promise<Response>} The search result as a Promise
    */
-  search(parameters, type = null, method = null, raw = false, maxUrlLength = undefined) {
+  search(parameters, type = null, method = null, raw = false, maxUrlLength, parseOptions, headers) {
     let url = null;
     if (!type) {
       // try to find a suitable URL
@@ -120,9 +122,8 @@ export class OpenSearchService {
       url = this.getUrl(parameters, type, method);
     }
 
-    return search(url, parameters, type, raw, maxUrlLength);
+    return search(url, parameters, type, raw, maxUrlLength, parseOptions, headers);
   }
-
 
   /**
    * Gets the suggestions for the current search parameters.
