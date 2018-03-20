@@ -51,7 +51,7 @@ export class OpenSearchService {
         if (missingParamNames.length) {
           terms.push(`missing parameters: ${missingParamNames.join(', ')}`);
         }
-        if (unsupportedParameterKeys) {
+        if (unsupportedParameterKeys.length) {
           terms.push(`unsupported parameters keys: ${unsupportedParameterKeys.join(', ')}`);
         }
         throw new Error(`No matching URL found, ${terms.join(' and ')}`);
