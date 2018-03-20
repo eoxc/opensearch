@@ -11,7 +11,6 @@ import { config } from './config';
  * @module opensearch/search
  */
 
-
  /**
   * @typedef module:opensearch/search.BaseRequest
   * @type Object
@@ -38,37 +37,25 @@ export function createBaseRequest(url, parameterValues) {
     }
   });
 
-  const missingMandatoryParameters = url.parameters.filter(
-    parameter => parameter.mandatory
-      && !Object.prototype.hasOwnProperty.call(parameterValues, parameter.name)
-      && !Object.prototype.hasOwnProperty.call(parameterValues, parameter.type)
-  ).map(parameter => parameter.type);
-
-  const missingOptionalParameters = url.parameters.filter(
-    parameter => !parameter.mandatory
-      && !Object.prototype.hasOwnProperty.call(parameterValues, parameter.name)
-      && !Object.prototype.hasOwnProperty.call(parameterValues, parameter.type)
-  ).map(parameter => parameter.type);
+  const missingMandatoryParameters = url.getMissingMandatoryParameters(parameterValues)
+    .map(parameter => parameter.type);
 
   if (missingMandatoryParameters.length) {
     throw new Error(`Missing mandatory parameters: ${missingMandatoryParameters.join(', ')}`);
   }
 
+  // serialize the parameters
+  const serialized = url.serializeValues(parameterValues);
+
+  // depending on the request method, create the request 'body' or query string
   if (url.method === 'GET') {
     // insert parameters into URL template
     let urlString = url.url;
 
-    Object.keys(parameterValues).forEach((key) => {
-      const parameter = url._parametersByType[key] || url._parametersByName[key];
-      urlString = urlString.replace(
-        new RegExp(`{${parameter.type}[?]?}`),
-        parameter.serializeValue(parameterValues[key])
-      );
-    });
-
-    missingOptionalParameters.forEach((type) => {
-      urlString = urlString.replace(new RegExp(`{${type}[?]?}`), '');
-    });
+    for (let i = 0; i < serialized.length; ++i) {
+      const [, type, value] = serialized[i];
+      urlString = urlString.replace(new RegExp(`{${type}[?]?}`), value);
+    }
 
     return {
       method: url.method,
@@ -80,18 +67,12 @@ export function createBaseRequest(url, parameterValues) {
   const enctype = url.enctype || 'application/x-www-form-urlencoded';
   let body = null;
   if (enctype === 'application/x-www-form-urlencoded') {
-    body = Object.keys(parameterValues).map((key) => {
-      const param = (url._parametersByType[key] || url._parametersByName[key]);
-      const k = encodeURIComponent(param.name);
-      const v = encodeURIComponent(param.serializeValue(parameterValues[key]));
-      return `${k}=${v}`;
-    }).join('&');
+    body = serialized
+      .map(([name, , value]) => `${encodeURIComponent(name)}=${encodeURIComponent(value)}`)
+      .join('&');
   } else if (enctype === 'multipart/form-data') {
     body = new FormData();
-    Object.keys(parameterValues).forEach((key) => {
-      const param = (url._parametersByType[key] || url._parametersByName[key]);
-      body.append(param.name, param.serializeValue(parameterValues[key]));
-    });
+    serialized.forEach(([name, , value]) => body.append(name, value));
   } else {
     throw new Error(`Unsupported enctype '${enctype}'.`);
   }

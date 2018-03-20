@@ -7,6 +7,24 @@ import { OpenSearchParameter } from './parameter';
  * @module opensearch/url
  */
 
+
+function isParameterMissing(parameterValues, parameter) {
+  if (Object.prototype.hasOwnProperty.call(parameterValues, parameter.name)) {
+    return false;
+  } else if (parameter.isMulti) {
+    const types = parameter.type;
+    for (let i = 0; i < types.length; ++i) {
+      const type = types[i];
+      if (Object.prototype.hasOwnProperty.call(parameterValues, type)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return !Object.prototype.hasOwnProperty.call(parameterValues, parameter.type);
+}
+
+
 /**
  * Class to parse a single URL of an OpenSearchDescription XML document and
  * to create HTTP requests for searches.
@@ -44,8 +62,16 @@ export class OpenSearchUrl {
     this._parameters = parameters;
     this._parametersByName = {};
     this._parametersByType = {};
+    this._multiParameters = {};
     parameters.forEach((param) => {
-      this._parametersByType[param.type] = param;
+      const paramType = param.type;
+      if (Array.isArray(paramType)) {
+        for (let i = 0; i < paramType.length; ++i) {
+          this._parametersByType[paramType[i]] = param;
+        }
+      } else {
+        this._parametersByType[paramType] = param;
+      }
       this._parametersByName[param.name] = param;
     });
   }
@@ -149,15 +175,82 @@ export class OpenSearchUrl {
       return false;
     }
 
-    const missingMandatoryParameters = this.parameters.filter(
-      parameter => parameter.mandatory
-        && !Object.prototype.hasOwnProperty.call(parameters, parameter.name)
-        && !Object.prototype.hasOwnProperty.call(parameters, parameter.type)
-    );
-    if (missingMandatoryParameters.length) {
+    if (this.getMissingMandatoryParameters(parameters).length) {
       return false;
     }
     return true;
+  }
+
+  /**
+   *
+   */
+  getMissingMandatoryParameters(parameterValues) {
+    return this.parameters
+      .filter(parameter => parameter.mandatory)
+      .filter(parameter => isParameterMissing(parameterValues, parameter));
+  }
+
+  /**
+   *
+   */
+  getMissingOptionalParameters(parameterValues) {
+    return this.parameters
+      .filter(parameter => !parameter.mandatory)
+      .filter(parameter => isParameterMissing(parameterValues, parameter));
+  }
+
+  /**
+   *
+   */
+  getUnsupportedParameterKeys(parameters) {
+    return Object.keys(parameters).filter(key => (
+        !Object.prototype.hasOwnProperty.call(this._parametersByType, key)
+        && !Object.prototype.hasOwnProperty.call(this._parametersByName, key)
+      ));
+  }
+
+  /**
+   * Checks and Serializes the given parameter values to an intermediate form:
+   * a list of triplets: parameter name, parameter type, serialized value.
+   * @param {object} values The parameter values to serialize
+   * @returns {array[]} An array of triplets
+   */
+  serializeValues(values) {
+    Object.keys(values).forEach((key) => {
+      if (!Object.prototype.hasOwnProperty.call(this._parametersByType, key)
+          && !Object.prototype.hasOwnProperty.call(this._parametersByName, key)) {
+        throw new Error(`Invalid parameter '${key}'.`);
+      }
+    });
+
+    const missingMandatoryParameters = this.getMissingMandatoryParameters(values)
+      .map(parameter => parameter.type);
+
+    if (missingMandatoryParameters.length) {
+      throw new Error(`Missing mandatory parameters: ${missingMandatoryParameters.join(', ')}`);
+    }
+    const serialized = [];
+    const parameters = this.parameters;
+    for (let i = 0; i < parameters.length; ++i) {
+      const parameter = parameters[i];
+      if (parameter.isMulti) {
+        const types = parameter.type;
+        for (let j = 0; j < types.length; ++j) {
+          const type = types[j];
+          let value;
+          if (Array.isArray(values[parameter.name]) || typeof values[parameter.name] === 'object') {
+            value = parameter.serializeValue(values[parameter.name], type);
+          } else {
+            value = parameter.serializeValue(values, type);
+          }
+          serialized.push([parameter.name, type, value]);
+        }
+      } else {
+        const value = parameter.serializeValue(values[parameter.name] || values[parameter.type] || '');
+        serialized.push([parameter.name, parameter.type, value]);
+      }
+    }
+    return serialized;
   }
 
   /**
