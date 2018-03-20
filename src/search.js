@@ -28,7 +28,7 @@ import { config } from './config';
  * @param {object} parameterValues The search parameter values.
  * @returns {module:opensearch/search.BaseRequest} The constructed base request object.
  */
-export function createBaseRequest(url, parameterValues) {
+export function createBaseRequest(url, parameterValues, headers) {
   // check parameters
   Object.keys(parameterValues).forEach((key) => {
     if (!Object.prototype.hasOwnProperty.call(url._parametersByType, key)
@@ -60,6 +60,7 @@ export function createBaseRequest(url, parameterValues) {
     return {
       method: url.method,
       url: urlString,
+      headers,
     };
   }
 
@@ -94,11 +95,13 @@ export function createBaseRequest(url, parameterValues) {
  * @param {string} [type=null] The response format.
  * @param {boolean} [raw=false] Whether the response shall be parsed or returned raw.
  * @param {number} [maxUrlLength=undefined] The maximum URL length. URLs longer than that
-                                            will result in errors.
+ *                                          will result in errors.
+ * @param {object} [parseOptions=undefined] Additional options for the format.
+ * @param {object} [headers=undefined] Specific headers to send to the service.
  * @returns {Promise<SearchResult>|Promise<Response>} The search result as a Promise
  */
-export function search(url, parameters = {}, type = null, raw = false, maxUrlLength = undefined, parseOptions = undefined) {
-  const baseRequest = createBaseRequest(url, parameters);
+export function search(url, parameters = {}, type, raw, maxUrlLength, parseOptions, headers) {
+  const baseRequest = createBaseRequest(url, parameters, headers);
   const { useXHR } = config();
 
   if (typeof maxUrlLength !== 'undefined' && baseRequest.url.length > maxUrlLength) {
