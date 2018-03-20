@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-expressions */
+/* eslint-disable no-useless-escape */
 
 import { expect } from 'chai';
 import { OpenSearchParameter } from '../src/parameter';
@@ -17,6 +18,7 @@ describe('OpenSearchParameter', () => {
     const paramGeometry = OpenSearchParameter.fromKeyValuePair('geometry', '{geo:geometry}');
     const paramEONumeric = OpenSearchParameter.fromKeyValuePair('orbitNumber', '{eo:orbitNumber}');
     const paramEODate = OpenSearchParameter.fromKeyValuePair('creationDate', '{eo:creationDate}');
+    const paramMultiTemplateOptional = OpenSearchParameter.fromKeyValuePair('timespan', '{time:start?}/{time:end?}');
 
     const paramDateWithPatternNoMS = OpenSearchParameter.fromNode(
       parseXml(
@@ -116,12 +118,18 @@ describe('OpenSearchParameter', () => {
     it('shall throw when no pattern could be decoded', () => {
       expect(paramDateWithUnknownPattern.serializeValue(new Date('2000-01-02T01:01:01Z'))).to.equal('2000-01-02T01:01:01.000Z');
     });
+
+    it('shall work with multi params and templates', () => {
+      expect(paramMultiTemplateOptional.serializeValue(new Date('2000-01-02T01:01:01Z'), 'time:start')).to.equal('2000-01-02T01:01:01.000Z');
+      expect(paramMultiTemplateOptional.serializeValue(new Date('2000-01-03T01:01:01Z'), 'time:end')).to.equal('2000-01-03T01:01:01.000Z');
+    });
   });
 
   describe('fromKeyValuePair', () => {
     const paramMandatory = OpenSearchParameter.fromKeyValuePair('q', '{searchTerms}');
     const paramOptional = OpenSearchParameter.fromKeyValuePair('start', '{startIndex?}');
     const paramIgnored = OpenSearchParameter.fromKeyValuePair('format', 'rss');
+    const paramMultiTemplateOptional = OpenSearchParameter.fromKeyValuePair('timespan', '{time:start?}/{time:end?}');
 
     it('should work for mandatory parameters', () => {
       expect(paramMandatory.name).to.equal('q');
@@ -137,6 +145,12 @@ describe('OpenSearchParameter', () => {
 
     it('should ignore parameters when the value is not right', () => {
       expect(paramIgnored).to.be.null;
+    });
+
+    it('should work with templates and multiple values at once', () => {
+      expect(paramMultiTemplateOptional.name).to.equal('timespan');
+      expect(paramMultiTemplateOptional.type).to.deep.equal(['time:start', 'time:end']);
+      expect(paramMultiTemplateOptional.mandatory).to.be.false;
     });
   });
 
