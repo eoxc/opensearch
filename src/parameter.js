@@ -5,7 +5,9 @@ import { getElements, isNullOrUndefined, toWKT } from './utils';
  * @module opensearch/parameter
  */
 
+
 const typeRE = /{([a-zA-Z:]+)([?]?)}/;
+const typeREglobal = /{([a-zA-Z:]+)([?]?)}/g;
 
 function parseType(value) {
   const match = typeRE.exec(value);
@@ -90,13 +92,52 @@ function eoValueToString(value, isDate = false, pattern = undefined) {
   return right;
 }
 
+
+function serializeValue(value, type, pattern) {
+  switch (type) {
+    case 'time:start':
+    case 'time:end':
+      return formatDate(value, pattern);
+    case 'geo:box':
+      if (Array.isArray(value)) {
+        return value.join(',');
+      }
+      break;
+    case 'geo:geometry':
+      return toWKT(value);
+    case 'eo:orbitNumber':
+    case 'eo:track':
+    case 'eo:frame':
+    case 'eo:cloudCover':
+    case 'eo:snowCover':
+    case 'eo:startTimeFromAscendingNode':
+    case 'eo:completionTimeFromAscendingNode':
+    case 'eo:illuminationAzimuthAngle':
+    case 'eo:illuminationZenithAngle':
+    case 'eo:illuminationElevationAngle':
+    case 'eo:minimumIncidenceAngle':
+    case 'eo:maximumIncidenceAngle':
+    case 'eo:dopplerFrequency':
+    case 'eo:incidenceAngleVariation':
+      return eoValueToString(value, false, pattern);
+    case 'eo:availabilityTime':
+    case 'eo:creationDate':
+    case 'eo:modificationDate':
+    case 'eo:processingDate':
+      return eoValueToString(value, true, pattern);
+    default:
+      break;
+  }
+  return value;
+}
+
 /**
  * Class to describe a single OpenSearch URL parameter.
  */
 export class OpenSearchParameter {
   /**
    * Class to describe a single OpenSearch URL parameter.
-   * @param {string} type The type of the parameter
+   * @param {string|string[]} type The type(s) of the parameter
    * @param {string} name The name of the parameter
    * @param {boolean} mandatory Whether the parameter is mandatory
    * @param {object[]} [options=null] The possible values for this parameter
@@ -199,6 +240,15 @@ export class OpenSearchParameter {
   }
 
   /**
+   * Checks whether this parameter handles multiple sub-parameters.
+   * e.g: time={time:start}/{time:end}
+   * @readonly
+   */
+  get isMulti() {
+    return Array.isArray(this.type);
+  }
+
+  /**
    * Combines this parameter with the values of another parameter.
    * @param {OpenSearchParameter} other the other parameter
    * @returns {OpenSearchParameter} the combined parameter
@@ -212,7 +262,7 @@ export class OpenSearchParameter {
       isNullOrUndefined(this.maxExclusive) ? other.maxExclusive : this.maxExclusive,
       isNullOrUndefined(this.minInclusive) ? other.minInclusive : this.minInclusive,
       isNullOrUndefined(this.maxInclusive) ? other.maxInclusive : this.maxInclusive,
-      isNullOrUndefined(this.pattern) ? other.pattern : this.pattern
+      isNullOrUndefined(this.pattern) ? other.pattern : this.pattern,
     );
   }
 
@@ -222,44 +272,22 @@ export class OpenSearchParameter {
    * @param {Number|string|Date|array|object} value The value to serialize. The
    *                                                allowed types depend on the
    *                                                internal type.
+   * @param {string} [type] For multi-parameters, this parameter indicates what
+   *                        of the multiple values to serialize.
    * @returns {string} the serialized value.
    */
-  serializeValue(value) {
-    switch (this.type) {
-      case 'time:start':
-      case 'time:end':
-        return formatDate(value, this.pattern);
-      case 'geo:box':
-        if (Array.isArray(value)) {
-          return value.join(',');
-        }
-        break;
-      case 'geo:geometry':
-        return toWKT(value);
-      case 'eo:orbitNumber':
-      case 'eo:track':
-      case 'eo:frame':
-      case 'eo:cloudCover':
-      case 'eo:snowCover':
-      case 'eo:startTimeFromAscendingNode':
-      case 'eo:completionTimeFromAscendingNode':
-      case 'eo:illuminationAzimuthAngle':
-      case 'eo:illuminationZenithAngle':
-      case 'eo:illuminationElevationAngle':
-      case 'eo:minimumIncidenceAngle':
-      case 'eo:maximumIncidenceAngle':
-      case 'eo:dopplerFrequency':
-      case 'eo:incidenceAngleVariation':
-        return eoValueToString(value, false, this.pattern);
-      case 'eo:availabilityTime':
-      case 'eo:creationDate':
-      case 'eo:modificationDate':
-      case 'eo:processingDate':
-        return eoValueToString(value, true, this.pattern);
-      default:
-        break;
+  serializeValue(value, type = undefined) {
+    const types = this.type;
+
+    if (this.isMulti && type) {
+      if (Array.isArray(value)) {
+        return serializeValue(value[this.types.indexOf(type)], type, this.pattern);
+      } else if (Object.prototype.hasOwnProperty.call(value, type)) {
+        return serializeValue(value[type], type, this.pattern);
+      }
+      return serializeValue(value, type, this.pattern);
     }
-    return value;
+    return serializeValue(value, types, this.pattern);
   }
 
   /**
@@ -311,6 +339,12 @@ export class OpenSearchParameter {
   static fromKeyValuePair(key, value) {
     const type = parseType(value);
     if (type) {
+      const multi = value.match(typeREglobal);
+      if (multi.length > 1) {
+        const types = multi.map(parseType);
+        const mandatory = multi.map(isMandatory).reduce((acc, v) => acc || v, false);
+        return new OpenSearchParameter(types, key, mandatory);
+      }
       return new OpenSearchParameter(
         type, key, isMandatory(value)
       );
