@@ -57,6 +57,35 @@ describe('OpenSearchUrl', () => {
     });
   });
 
+
+  describe('serializeValues', () => {
+    const xml = `<os:Url
+      type="application/atom+xml"
+      template="http://demo.pycsw.org/cite/csw?mode=opensearch&amp;service=CSW&amp;version=3.0.0&amp;request=GetRecords&amp;elementsetname=full&amp;typenames=csw:Record&amp;resulttype=results&amp;q={searchTerms?}&amp;bbox={geo:box?}&amp;time={time:start?}/{time:end?}&amp;outputformat=application/atom+xml&amp;&amp;startposition={startIndex?}&amp;maxrecords={count?}&amp;recordids={geo:uid}"/>`;
+    const url = OpenSearchUrl.fromNode(parseXml(xml).documentElement);
+
+    it('shall serialize values', () => {
+      const serialized = url.serializeValues({
+        searchTerms: 'terms',
+        'geo:box': [0, 0, 1, 1],
+        'time:start': new Date('2001-01-01T00:00:00Z'),
+        'time:end': new Date('2002-01-01T00:00:00Z'),
+        'geo:uid': 'someuid',
+        // startIndex and count are intentionally left empty
+      });
+
+      expect(serialized).to.deep.equal([
+        ['q', 'searchTerms', 'terms'],
+        ['bbox', 'geo:box', '0,0,1,1'],
+        ['time', 'time:start', '2001-01-01T00:00:00.000Z'],
+        ['time', 'time:end', '2002-01-01T00:00:00.000Z'],
+        ['startposition', 'startIndex', ''],
+        ['maxrecords', 'count', ''],
+        ['recordids', 'geo:uid', 'someuid'],
+      ]);
+    });
+  });
+
   /* TODO: this was moved to a separate file
   describe('#createRequest', () => {
     const urlGet = OpenSearchUrl.fromTemplateUrl(
