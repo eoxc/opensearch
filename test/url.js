@@ -60,6 +60,7 @@ describe('OpenSearchUrl', () => {
 
   describe('serializeValues', () => {
     const xml = `<os:Url
+      xmlns:os="http://a9.com/-/spec/opensearch/1.1/"
       type="application/atom+xml"
       template="http://demo.pycsw.org/cite/csw?mode=opensearch&amp;service=CSW&amp;version=3.0.0&amp;request=GetRecords&amp;elementsetname=full&amp;typenames=csw:Record&amp;resulttype=results&amp;q={searchTerms?}&amp;bbox={geo:box?}&amp;time={time:start?}/{time:end?}&amp;outputformat=application/atom+xml&amp;&amp;startposition={startIndex?}&amp;maxrecords={count?}&amp;recordids={geo:uid}"/>`;
     const url = OpenSearchUrl.fromNode(parseXml(xml).documentElement);
