@@ -259,25 +259,28 @@ export class BaseFeedFormat {
   }
 
   parseExtraFields(node, extraFields, namespaces, item) {
-    for (const [outPath, maybePath] of Object.entries(extraFields)) {
-      let xmlPath;
-      let single = true;
-      if (Array.isArray(maybePath)) {
-        [xmlPath, single] = maybePath;
-      } else {
-        xmlPath = maybePath;
-      }
-
-      const parts = outPath.split('.');
-      let ref = item;
-      for (let i = 0; i < (parts.length - 1); ++i) {
-        const part = parts[i];
-        if (!ref[part]) {
-          ref[part] = {};
+    for (const outPath in extraFields) {
+      if (Object.prototype.hasOwnProperty.call(extraFields, outPath)) {
+        const maybePath = extraFields[outPath];
+        let xmlPath;
+        let single = true;
+        if (Array.isArray(maybePath)) {
+          [xmlPath, single] = maybePath;
+        } else {
+          xmlPath = maybePath;
         }
-        ref = ref[part];
+
+        const parts = outPath.split('.');
+        let ref = item;
+        for (let i = 0; i < (parts.length - 1); ++i) {
+          const part = parts[i];
+          if (!ref[part]) {
+            ref[part] = {};
+          }
+          ref = ref[part];
+        }
+        ref[parts[parts.length - 1]] = simplePath(node, xmlPath, single, namespaces);
       }
-      ref[parts[parts.length - 1]] = simplePath(node, xmlPath, single, namespaces);
     }
   }
 }
