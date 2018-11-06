@@ -75,12 +75,15 @@ export class OpenSearchPaginator {
    *                                     is useful when resuming a consecutive search.
    * @param {int} [options.maxUrlLength=undefined] The maximum URL length. Forwarded to
    *                                               [search]{@link module:opensearch/search.search}.
+   * @param {boolean} [options.dropEmptyParameters=false] Whether unused parameter keys shall
+   *                                                      be dropped from the request.
    */
   constructor(url, parameters, { useCache = true,
                                  preferredItemsPerPage = undefined,
                                  preferStartIndex = true,
                                  baseOffset = 0,
                                  maxUrlLength = undefined,
+                                 dropEmptyParameters = false,
                                  parseOptions = undefined,
                                  headers = undefined } = {}) {
     this._url = url;
@@ -90,6 +93,7 @@ export class OpenSearchPaginator {
     this._preferStartIndex = preferStartIndex;
     this._baseOffset = baseOffset;
     this._maxUrlLength = maxUrlLength;
+    this._dropEmptyParameters = dropEmptyParameters;
     this._serverItemsPerPage = undefined;
     this._totalResults = undefined;
     this._parseOptions = parseOptions;
@@ -130,7 +134,8 @@ export class OpenSearchPaginator {
       parameters.startPage = pageIndex + this._url.pageOffset;
     }
     return search(
-      this._url, parameters, null, false, this._maxUrlLength, this._parseOptions, this._headers
+      this._url, parameters, null, false, this._maxUrlLength,
+      this._dropEmptyParameters, this._parseOptions, this._headers
     ).then((result) => {
       this._totalResults = result.totalResults;
       if (!this._serverItemsPerPage && result.itemsPerPage) {

@@ -2,6 +2,8 @@
   ["error", { "allow": ["_parametersByName", "_parametersByType"] }]
 */
 
+import parse from 'url-parse';
+
 import { getFormat } from './formats';
 import { createRequest, createXHR } from './utils';
 import { getErrorFromXml } from './error';
@@ -26,9 +28,12 @@ import { config } from './config';
  * XMLHttpRequest.
  * @param {string} url The url to send the search request to.
  * @param {object} parameterValues The search parameter values.
+ * @param {boolean} [options.dropEmptyParameters=false] Whether unused parameter keys shall
+ *                                                      be dropped from the request.
+ * @param {object} headers Additional headers to set on the request.
  * @returns {module:opensearch/search.BaseRequest} The constructed base request object.
  */
-export function createBaseRequest(url, parameterValues, headers) {
+export function createBaseRequest(url, parameterValues, dropEmptyParameters, headers) {
   // check parameters
   Object.keys(parameterValues).forEach((key) => {
     if (!Object.prototype.hasOwnProperty.call(url._parametersByType, key)
@@ -55,6 +60,18 @@ export function createBaseRequest(url, parameterValues, headers) {
     for (let i = 0; i < serialized.length; ++i) {
       const [, type, value] = serialized[i];
       urlString = urlString.replace(new RegExp(`{${type}[?]?}`), value);
+    }
+
+    if (dropEmptyParameters) {
+      const parsed = parse(urlString, false);
+      const query = parsed.query.split('&')
+        .map(param => param.split('='))
+        .filter(paramParts => paramParts[1] !== '')
+        .map(paramParts => paramParts.join('='))
+        .join('&');
+
+      parsed.set('query', query);
+      urlString = parsed.toString();
     }
 
     return {
@@ -96,12 +113,14 @@ export function createBaseRequest(url, parameterValues, headers) {
  * @param {boolean} [raw=false] Whether the response shall be parsed or returned raw.
  * @param {number} [maxUrlLength=undefined] The maximum URL length. URLs longer than that
  *                                          will result in errors.
+ * @param {boolean} [options.dropEmptyParameters=false] Whether unused parameter keys shall
+ *                                                      be dropped from the request.
  * @param {object} [parseOptions=undefined] Additional options for the format.
  * @param {object} [headers=undefined] Specific headers to send to the service.
  * @returns {Promise<SearchResult>|Promise<Response>} The search result as a Promise
  */
-export function search(url, parameters = {}, type, raw, maxUrlLength, parseOptions, headers) {
-  const baseRequest = createBaseRequest(url, parameters, headers);
+export function search(url, parameters = {}, type, raw, maxUrlLength, dropEmptyParameters, parseOptions, headers) {
+  const baseRequest = createBaseRequest(url, parameters, dropEmptyParameters, headers);
   const { useXHR } = config();
 
   if (typeof maxUrlLength !== 'undefined' && baseRequest.url.length > maxUrlLength) {

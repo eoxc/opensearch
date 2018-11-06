@@ -104,7 +104,7 @@ export class OpenSearchService {
    * @param {object} [headers=undefined] Specific headers to send to the service.
    * @returns {Promise<array>|Promise<Response>} The search result as a Promise
    */
-  search(parameters, type = null, method = null, raw = false, maxUrlLength, parseOptions, headers) {
+  search(parameters, type = null, method = null, raw = false, maxUrlLength, dropEmptyParameters, parseOptions, headers) {
     let url = null;
     if (!type) {
       // try to find a suitable URL
@@ -122,7 +122,7 @@ export class OpenSearchService {
       url = this.getUrl(parameters, type, method);
     }
 
-    return search(url, parameters, type, raw, maxUrlLength, parseOptions, headers);
+    return search(url, parameters, type, raw, maxUrlLength, dropEmptyParameters, parseOptions, headers);
   }
 
   /**
