@@ -150,7 +150,8 @@ export function simplePath(element, path, single = false, usedNamespaces = undef
         const [namespace, tagName] = splitNamespace(nodePart);
         const [attrNamespace, attrName] = splitNamespace(attrPart);
         current = getFirstElement(current, namespace, tagName, usedNamespaces);
-        return current ? getAttributeNS(current, attrNamespace, attrName, undefined, usedNamespaces) : null;
+        return current ?
+          getAttributeNS(current, attrNamespace, attrName, undefined, usedNamespaces) : null;
       }
       const [namespace, tagName] = splitNamespace(part);
       current = getFirstElement(current, namespace, tagName, usedNamespaces);
@@ -167,7 +168,9 @@ export function simplePath(element, path, single = false, usedNamespaces = undef
           currentElement => getElements(currentElement, namespace, tagName, usedNamespaces)
         )
         .reduce((acc, value) => acc.concat(value), [])
-        .map(finalElement => getAttributeNS(finalElement, attrNamespace, attrName, undefined, usedNamespaces));
+        .map(finalElement =>
+          getAttributeNS(finalElement, attrNamespace, attrName, undefined, usedNamespaces)
+        );
     } else {
       const [namespace, tagName] = splitNamespace(part);
       current = current.map(

@@ -1,4 +1,5 @@
 {
   "presets": ["es2015"],
-  "sourceType": "module"
+  "sourceType": "module",
+  "plugins": ["transform-es2015-destructuring", "transform-object-rest-spread"]
 }

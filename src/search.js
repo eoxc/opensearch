@@ -109,17 +109,21 @@ export function createBaseRequest(url, parameterValues, dropEmptyParameters, hea
  * Performs a search for the given URL and parameters.
  * @param {OpenSearchUrl} url The URL to search on.
  * @param {object} [parameters={}] The search parameters.
- * @param {string} [type=null] The response format.
- * @param {boolean} [raw=false] Whether the response shall be parsed or returned raw.
- * @param {number} [maxUrlLength=undefined] The maximum URL length. URLs longer than that
- *                                          will result in errors.
+ * @param {object} [options={}] Additional options.
+ * @param {string} [options.type=null] The response format.
+ * @param {boolean} [options.raw=false] Whether the response shall be parsed or returned raw.
+ * @param {number} [options.maxUrlLength=undefined] The maximum URL length.
+ *                                                  URLs longer than that
+ *                                                  will result in errors.
  * @param {boolean} [options.dropEmptyParameters=false] Whether unused parameter keys shall
  *                                                      be dropped from the request.
- * @param {object} [parseOptions=undefined] Additional options for the format.
- * @param {object} [headers=undefined] Specific headers to send to the service.
+ * @param {object} [options.parseOptions=undefined] Additional options for the format.
+ * @param {object} [options.headers=undefined] Specific headers to send to the service.
  * @returns {Promise<SearchResult>|Promise<Response>} The search result as a Promise
  */
-export function search(url, parameters = {}, type, raw, maxUrlLength, dropEmptyParameters, parseOptions, headers) {
+export function search(url, parameters = {}, options = {}) {
+  const { type, raw, maxUrlLength, dropEmptyParameters, parseOptions, headers } = options;
+
   const baseRequest = createBaseRequest(url, parameters, dropEmptyParameters, headers);
   const { useXHR } = config();
 

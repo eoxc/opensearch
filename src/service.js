@@ -95,16 +95,19 @@ export class OpenSearchService {
   /**
    * Checks whether this URL is compatible with the given parameters
    * @param {object} parameters An object mapping the name or type to the value
-   * @param {string} [type=null] The preferred transfer type.
-   * @param {string} [method=null] The preferred HTTP method type.
-   * @param {boolean} [raw=false] Whether the response shall be parsed or returned raw.
-   * @param {number} [maxUrlLength=undefined] The maximum URL length. URLs longer than that
-   *                                          will result in errors.
-   * @param {object} [parseOptions=undefined] Additional options for the format.
-   * @param {object} [headers=undefined] Specific headers to send to the service.
+   * @param {string} [options.type=null] The preferred transfer type.
+   * @param {string} [options.method=null] The preferred HTTP method type.
+   * @param {boolean} [options.raw=false] Whether the response shall be parsed or returned raw.
+   * @param {number} [options.maxUrlLength=undefined] The maximum URL length. URLs longer than that
+   *                                                  will result in errors.
+   * @param {boolean} [options.dropEmptyParameters=false] Whether unused parameter keys shall
+   *                                                      be dropped from the request.
+   * @param {object} [options.parseOptions=undefined] Additional options for the format.
+   * @param {object} [options.headers=undefined] Specific headers to send to the service.
    * @returns {Promise<array>|Promise<Response>} The search result as a Promise
    */
-  search(parameters, type = null, method = null, raw = false, maxUrlLength, dropEmptyParameters, parseOptions, headers) {
+  search(parameters, options = {}) {
+    const { type = null, method = null } = options;
     let url = null;
     if (!type) {
       // try to find a suitable URL
@@ -122,7 +125,7 @@ export class OpenSearchService {
       url = this.getUrl(parameters, type, method);
     }
 
-    return search(url, parameters, type, raw, maxUrlLength, dropEmptyParameters, parseOptions, headers);
+    return search(url, parameters, options);
   }
 
   /**
@@ -148,12 +151,13 @@ export class OpenSearchService {
    * Creates a new Paginator object to enable a simpler search result handling
    * for multi-page results.
    * @param {object} parameters An object mapping the name or type to the value
-   * @param {string} [type=null] The preferred transfer type.
-   * @param {string} [method=null] The preferred HTTP method type.
-   * @param {object} [options] Additional options for the paginator
+   * @param {object} [options={}] Additional options for the paginator
+   * @param {string} [options.type=null] The preferred transfer type.
+   * @param {string} [options.method=null] The preferred HTTP method type.
    * @returns {OpenSearchPaginator} The created Paginator object.
    */
-  getPaginator(parameters, type = null, method = null, options = undefined) {
+  getPaginator(parameters, options = {}) {
+    const { type = null, method = null } = options;
     return new OpenSearchPaginator(
       this.getUrl(parameters, type, method), parameters, options
     );

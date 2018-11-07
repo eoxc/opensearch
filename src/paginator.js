@@ -78,26 +78,23 @@ export class OpenSearchPaginator {
    * @param {boolean} [options.dropEmptyParameters=false] Whether unused parameter keys shall
    *                                                      be dropped from the request.
    */
-  constructor(url, parameters, { useCache = true,
-                                 preferredItemsPerPage = undefined,
-                                 preferStartIndex = true,
-                                 baseOffset = 0,
-                                 maxUrlLength = undefined,
-                                 dropEmptyParameters = false,
-                                 parseOptions = undefined,
-                                 headers = undefined } = {}) {
+  constructor(url, parameters, options = {}) {
+    const {
+      useCache = true,
+      preferredItemsPerPage = undefined,
+      preferStartIndex = true,
+      baseOffset = 0,
+      ...searchOptions
+    } = options;
     this._url = url;
     this._parameters = parameters;
     this._cache = useCache ? {} : null;
     this._preferredItemsPerPage = preferredItemsPerPage;
     this._preferStartIndex = preferStartIndex;
     this._baseOffset = baseOffset;
-    this._maxUrlLength = maxUrlLength;
-    this._dropEmptyParameters = dropEmptyParameters;
     this._serverItemsPerPage = undefined;
     this._totalResults = undefined;
-    this._parseOptions = parseOptions;
-    this._headers = headers;
+    this._searchOptions = searchOptions;
   }
 
   /**
@@ -133,16 +130,14 @@ export class OpenSearchPaginator {
     } else {
       parameters.startPage = pageIndex + this._url.pageOffset;
     }
-    return search(
-      this._url, parameters, null, false, this._maxUrlLength,
-      this._dropEmptyParameters, this._parseOptions, this._headers
-    ).then((result) => {
-      this._totalResults = result.totalResults;
-      if (!this._serverItemsPerPage && result.itemsPerPage) {
-        this._serverItemsPerPage = result.itemsPerPage;
-      }
-      return result;
-    });
+    return search(this._url, parameters, this._searchOptions)
+      .then((result) => {
+        this._totalResults = result.totalResults;
+        if (!this._serverItemsPerPage && result.itemsPerPage) {
+          this._serverItemsPerPage = result.itemsPerPage;
+        }
+        return result;
+      });
   }
 
   /**
