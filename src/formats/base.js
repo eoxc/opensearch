@@ -92,6 +92,10 @@ function parseGml(node) {
         coordinates,
       };
     }
+    case 'geometryMember': {
+      // go one level deeper to the first referenced geometry
+      return parseGml(getFirstElement(node));
+    }
     default:
       break;
   }
