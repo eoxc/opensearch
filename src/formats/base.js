@@ -50,11 +50,13 @@ function parseGmlEnvelope(node, namespaceURI) {
     .map(parseFloat);
 
   const bbox = [
-    [lowerLeftCorner[1], lowerLeftCorner[0]],
-    [lowerLeftCorner[1], upperRightCorner[0]],
-    [upperRightCorner[1], upperRightCorner[0]],
-    [upperRightCorner[1], lowerLeftCorner[0]],
-    [lowerLeftCorner[1], lowerLeftCorner[0]],
+    [
+      [lowerLeftCorner[1], lowerLeftCorner[0]],
+      [upperRightCorner[1], lowerLeftCorner[0]],
+      [upperRightCorner[1], upperRightCorner[0]],
+      [lowerLeftCorner[1], upperRightCorner[0]],
+      [lowerLeftCorner[1], lowerLeftCorner[0]],
+    ],
   ];
   return bbox;
 }

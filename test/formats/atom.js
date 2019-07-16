@@ -8,6 +8,8 @@ const atomGmlPoint = require('../data/atom_gml_point.xml');
 const atomGmlLineString = require('../data/atom_gml_linestring.xml');
 const atomGmlPolygon = require('../data/atom_gml_polygon.xml');
 const atomGmlMultiSurface = require('../data/atom_gml_multisurface.xml');
+const atomGmlgeometrymember = require('../data/atom_gml_geometrymember.xml');
+const atomGmlEnvelope = require('../data/atom_gml_envelope.xml');
 const atomEOP = require('../data/atom_eop.xml');
 const atomCustom = require('../data/atom_custom.xml');
 
@@ -225,8 +227,83 @@ describe('AtomFormat', () => {
       })
     ));
 
+    it('should parse the entries of a gml envelope example', () => (
+      expect(format.parse(atomGmlEnvelope)).to.deep.equal({
+        totalResults: NaN,
+        startIndex: NaN,
+        itemsPerPage: NaN,
+        links: [{
+          href: 'http://example.org/',
+        }],
+        query: {},
+        records: [{
+          id: 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a',
+          properties: {
+            title: 'M 3.2, Mona Passage',
+            updated: new Date('2005-08-17T07:02:32Z'),
+            content: null,
+            links: [{
+              href: 'http://example.org/2005/09/09/atom01',
+            }],
+            media: [],
+            summary: 'We just had a big one.',
+          },
+          bbox: [
+            -71.03,
+            42.94,
+            -69.86,
+            43.04,
+          ],
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
+              [[-71.03, 42.94], [-69.86, 42.94], [-69.86, 43.04], [-71.03, 43.04], [-71.03, 42.94]],
+            ],
+          },
+        }],
+      })
+    ));
+
     it('should parse the entries of a gml multisurface example', () => (
       expect(format.parse(atomGmlMultiSurface)).to.deep.equal({
+        totalResults: NaN,
+        startIndex: NaN,
+        itemsPerPage: NaN,
+        links: [{
+          href: 'http://example.org/',
+        }],
+        query: {},
+        records: [{
+          id: 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a',
+          properties: {
+            title: 'M 3.2, Mona Passage',
+            updated: new Date('2005-08-17T07:02:32Z'),
+            content: null,
+            links: [{
+              href: 'http://example.org/2005/09/09/atom01',
+            }],
+            media: [],
+            summary: 'We just had a big one.',
+          },
+          bbox: [
+            -110.45,
+            43.84,
+            -109.48,
+            46.46,
+          ],
+          geometry: {
+            type: 'MultiPolygon',
+            coordinates: [
+              [[[-110.45, 45.256], [-109.48, 46.46], [-109.86, 43.84], [-110.45, 45.256]]],
+              [[[-110.45, 45.256], [-109.48, 46.46], [-109.86, 43.84], [-110.45, 45.256]]],
+            ],
+          },
+        }],
+      })
+    ));
+
+    it('should parse the entries of a gml multisurface nested inside a geometrymember example', () => (
+      expect(format.parse(atomGmlgeometrymember)).to.deep.equal({
         totalResults: NaN,
         startIndex: NaN,
         itemsPerPage: NaN,
