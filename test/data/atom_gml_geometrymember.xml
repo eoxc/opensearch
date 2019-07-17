@@ -18,30 +18,31 @@
       <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
       <updated>2005-08-17T07:02:32Z</updated>
       <summary>We just had a big one.</summary>
-
       <georss:where>
-        <gml:MultiSurface gml:id="MULSF01" srsName="EPSG:4326">
-          <gml:surfaceMembers>
-            <gml:Polygon>
-               <gml:exterior>
-                  <gml:LinearRing>
-                     <gml:posList>
-                  45.256 -110.45 46.46 -109.48 43.84 -109.86 45.256 -110.45
-                     </gml:posList>
-                  </gml:LinearRing>
-               </gml:exterior>
-            </gml:Polygon>
-            <gml:Polygon>
-               <gml:exterior>
-                  <gml:LinearRing>
-                     <gml:posList>
-                  45.256 -110.45 46.46 -109.48 43.84 -109.86 45.256 -110.45
-                     </gml:posList>
-                  </gml:LinearRing>
-               </gml:exterior>
-            </gml:Polygon>
-          </gml:surfaceMembers>
-        </gml:MultiSurface>
+        <gml:geometryMember>
+          <gml:MultiSurface gml:id="MULSF01" srsName="EPSG:4326">
+            <gml:surfaceMembers>
+              <gml:Polygon>
+                 <gml:exterior>
+                    <gml:LinearRing>
+                       <gml:posList>
+                    45.256 -110.45 46.46 -109.48 43.84 -109.86 45.256 -110.45
+                       </gml:posList>
+                    </gml:LinearRing>
+                 </gml:exterior>
+              </gml:Polygon>
+              <gml:Polygon>
+                 <gml:exterior>
+                    <gml:LinearRing>
+                       <gml:posList>
+                    45.256 -110.45 46.46 -109.48 43.84 -109.86 45.256 -110.45
+                       </gml:posList>
+                    </gml:LinearRing>
+                 </gml:exterior>
+              </gml:Polygon>
+            </gml:surfaceMembers>
+          </gml:MultiSurface>
+       </gml:geometryMember>
      </georss:where>
    </entry>
 </feed>
