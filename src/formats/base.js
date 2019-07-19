@@ -39,6 +39,28 @@ function parseGmlPolygon(node, namespaceURI) {
   return [exterior, ...interiors];
 }
 
+function parseGmlEnvelope(node, namespaceURI) {
+  const lowerLeftCorner = getText(node, namespaceURI, 'lowerCorner')
+    .trim()
+    .split(/\s+/)
+    .map(parseFloat);
+  const upperRightCorner = getText(node, namespaceURI, 'upperCorner')
+    .trim()
+    .split(/\s+/)
+    .map(parseFloat);
+
+  const bbox = [
+    [
+      [lowerLeftCorner[1], lowerLeftCorner[0]],
+      [upperRightCorner[1], lowerLeftCorner[0]],
+      [upperRightCorner[1], upperRightCorner[0]],
+      [lowerLeftCorner[1], upperRightCorner[0]],
+      [lowerLeftCorner[1], lowerLeftCorner[0]],
+    ],
+  ];
+  return bbox;
+}
+
 function parseGml(node) {
   switch (node.localName) {
     case 'Point': {
@@ -66,8 +88,11 @@ function parseGml(node) {
       };
     }
     case 'Envelope': {
-      // TODO:
-      break;
+      const coordinates = parseGmlEnvelope(node, node.namespaceURI);
+      return {
+        type: 'Polygon',
+        coordinates,
+      };
     }
     case 'MultiPolygon': {
       const polygons = getElements(node, node.namespaceURI, 'polygonMember')
@@ -91,6 +116,10 @@ function parseGml(node) {
         type: 'MultiPolygon',
         coordinates,
       };
+    }
+    case 'geometryMember': {
+      // go one level deeper to the first referenced geometry
+      return parseGml(getFirstElement(node));
     }
     default:
       break;
