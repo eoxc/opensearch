@@ -71,6 +71,10 @@ export class OpenSearchPaginator {
    * @param {boolean} [options.preferStartIndex=true] Whether the paging shall be done
    *                                                  using the `startIndex` parameter
    *                                                  (the default) or the `startPage`.
+   * @param {int} [options.totalResults=undefined] Total results on all pages. Can be set from
+   *                                            previous searches for optimized `searchFirstRecords`
+   * @param {int} [options.serverItemsPerPage=undefined] Server allowed page size. Can be set from
+   *                                            previous searches for optimized `searchFirstRecords`
    * @param {int} [options.baseOffset=0] The base index offset to apply. This option
    *                                     is useful when resuming a consecutive search.
    * @param {int} [options.maxUrlLength=undefined] The maximum URL length. Forwarded to
@@ -84,6 +88,8 @@ export class OpenSearchPaginator {
       preferredItemsPerPage = undefined,
       preferStartIndex = true,
       baseOffset = 0,
+      totalResults = undefined,
+      serverItemsPerPage = undefined,
       ...searchOptions
     } = options;
     this._url = url;
@@ -92,8 +98,8 @@ export class OpenSearchPaginator {
     this._preferredItemsPerPage = preferredItemsPerPage;
     this._preferStartIndex = preferStartIndex;
     this._baseOffset = baseOffset;
-    this._serverItemsPerPage = undefined;
-    this._totalResults = undefined;
+    this._totalResults = totalResults;
+    this._serverItemsPerPage = serverItemsPerPage;
     this._searchOptions = searchOptions;
   }
 
@@ -231,9 +237,23 @@ export class OpenSearchPaginator {
   searchFirstRecords(maxCount = undefined, preserveOrder = true) {
     // Get the first page
     const emitter = new PagedSearchProgressEmitter();
-
-    // start requesting the first page
-    const request = this.fetchPage(0, maxCount);
+    let request = null;
+    let startPageIndex = null;
+    if (this._serverItemsPerPage && this._totalResults && typeof maxCount !== 'undefined' && maxCount !== 0) {
+      // if paginator created based on known values - continue search
+      // do not request first page to get values
+      request = Promise.resolve({
+        itemsPerPage: this._serverItemsPerPage,
+        records: [],
+        totalResults: this._totalResults,
+        startIndex: this._baseOffset,
+      });
+      startPageIndex = 0;
+    } else {
+      // start requesting the first page
+      request = this.fetchPage(0, maxCount);
+      startPageIndex = 1;
+    }
     let requests = [request];
 
     // cancel requests when issued a cancel event
@@ -270,7 +290,7 @@ export class OpenSearchPaginator {
         // determine the number of pages and issue a request for each
         const numPages = firstPage.itemsPerPage ?
           Math.ceil(usedMaxCount / firstPage.itemsPerPage) : 1;
-        for (let i = 1; i < numPages; ++i) {
+        for (let i = startPageIndex; i < numPages; ++i) {
           let count = firstPage.itemsPerPage;
           if (firstPage.itemsPerPage * (i + 1) > usedMaxCount) {
             count = usedMaxCount - (firstPage.itemsPerPage * i);
