@@ -260,4 +260,29 @@ describe('OpenSearchPaginator', () => {
       emitter.on('error', done);
     });
   });
+
+  it('shall correctly emit "page" and "success" events when paginator is given catalog information from previous run to continue', (done) => {
+    const paginatorSettings = {
+      serverItemsPerPage: 25,
+      totalResults: 51,
+      baseOffset: 25,
+    };
+    const maxCount = 200;
+    const paginator = new OpenSearchPaginator(simpleUrl, {}, paginatorSettings);
+    const emitter = paginator.searchFirstRecords(maxCount);
+    const onPageSpy = sinon.spy();
+
+    emitter.on('page', onPageSpy);
+    emitter.on('success', (results) => {
+      expect(onPageSpy.calledTwice).to.be.ok;
+      expect(results).to.deep.equal({
+        totalResults: 51,
+        startIndex: 26,
+        itemsPerPage: 25,
+        records: (new Array(26)).fill({}),
+      });
+      done();
+    });
+    emitter.on('error', done);
+  });
 });

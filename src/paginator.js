@@ -279,8 +279,11 @@ export class OpenSearchPaginator {
           throw firstPage;
         }
         // save the first page as a resolved promise (for later use when
-        // collecting results in a uniform fashion)
-        const newRequests = [Promise.resolve(firstPage)];
+        // collecting results in a uniform fashion) in case it was fetched
+        const newRequests = [];
+        if (startPageIndex === 1) {
+          newRequests.push(Promise.resolve(firstPage));
+        }
         const usedMaxCount = maxCount
           ? Math.min(
             maxCount,
