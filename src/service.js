@@ -169,7 +169,7 @@ export class OpenSearchService {
    * @returns {Promise<OpenSearchService>} The {@link OpenSearchService} as a Promise
    */
   static discover(url) {
-    const { useXHR } = config();
+    const { useXHR, Promise } = config();
     if (useXHR) {
       return new Promise((resolve, reject, onCancel) => {
         const xhr = createXHR(url);

@@ -125,7 +125,7 @@ export function search(url, parameters = {}, options = {}) {
   const { type, raw, maxUrlLength, dropEmptyParameters, parseOptions, headers } = options;
 
   const baseRequest = createBaseRequest(url, parameters, dropEmptyParameters, headers);
-  const { useXHR } = config();
+  const { useXHR, Promise } = config();
 
   if (typeof maxUrlLength !== 'undefined' && baseRequest.url.length > maxUrlLength) {
     return Promise.reject(new Error(`Search URL too long: ${baseRequest.url.length}, maximum: ${maxUrlLength}`));
