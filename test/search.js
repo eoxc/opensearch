@@ -6,10 +6,12 @@ import { OpenSearchService } from '../src/service';
 // import fetchMock after isomorphic-fetch was set up to not confuse global `Request`
 // eslint-disable-next-line import/first
 import fetchMock from 'fetch-mock';
-
+// eslint-disable-next-line import/first
+import BluebirdPromise from 'bluebird';
 // eslint-disable-next-line import/first
 import xhrMock from 'xhr-mock';
 
+BluebirdPromise.config({ cancellation: true, warnings: false });
 const osddExample = require('./data/OSDD_example.xml');
 const atomExample = require('./data/atom_example.xml');
 
@@ -117,5 +119,13 @@ describe('search errors', () => {
         expect(error.message).to.equal('MIME type {xapplication/atom+xml} is not supported for dataset series {EOP:CODE-DE:S1_SAR_L1_GRD}.');
         done();
       });
+  });
+
+  it('shall use cancellable BluebirdPromise if configured', () => {
+    config({ useXHR: true, Promise: BluebirdPromise });
+    const searchPromise = search(service.getDescription().getUrl(), { searchTerms: 'terms' });
+    searchPromise.cancel();
+    /*eslint no-unused-expressions: ["error", { "ignore": ['expect'] }]*/
+    expect(searchPromise.isCancelled()).to.be.true;
   });
 });

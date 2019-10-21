@@ -58,11 +58,12 @@ function, which is used for getting and setting configuration values:
 import { config } from 'opensearch-browser';
 
 // getting the config
-const { useXHR } = config();
+const { useXHR, Promise } = config();
 
 // setting the config
 config({
   useXHR: true,
+  Promise: Promise,
 });
 ```
 
@@ -73,6 +74,8 @@ Currently supported are the following config values:
     aborted. This is exposed when a `Promise` type is used that supports
     cancelling, like the great
     [bluebird](http://bluebirdjs.com/docs/getting-started.html) library.
+  * `Promise`: If set, overrides default ES6 Promise with a custom implementation, for example `bluebird`.
+     However bluebird is not set as a dependency to avoid bloating the library.
 
 ### Request parameters
 

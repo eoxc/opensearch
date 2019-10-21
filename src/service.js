@@ -142,6 +142,7 @@ export class OpenSearchService {
     try {
       url = this.getUrl(parameters, type, method);
     } catch (error) {
+      const { Promise } = config();
       return Promise.reject(new Error('No suggestion URL found.'));
     }
     return search(url, parameters, type, false, maxUrlLength);
