@@ -125,7 +125,7 @@ describe('search errors', () => {
     config({ useXHR: true, Promise: BluebirdPromise });
     const searchPromise = search(service.getDescription().getUrl(), { searchTerms: 'terms' });
     searchPromise.cancel();
-    /*eslint no-unused-expressions: ["error", { "ignore": ['expect'] }]*/
+    // eslint-disable-next-line no-unused-expressions
     expect(searchPromise.isCancelled()).to.be.true;
   });
 });
