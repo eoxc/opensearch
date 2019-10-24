@@ -142,6 +142,7 @@ export class OpenSearchService {
     try {
       url = this.getUrl(parameters, type, method);
     } catch (error) {
+      const { Promise } = config();
       return Promise.reject(new Error('No suggestion URL found.'));
     }
     return search(url, parameters, type, false, maxUrlLength);
@@ -169,7 +170,7 @@ export class OpenSearchService {
    * @returns {Promise<OpenSearchService>} The {@link OpenSearchService} as a Promise
    */
   static discover(url) {
-    const { useXHR } = config();
+    const { useXHR, Promise } = config();
     if (useXHR) {
       return new Promise((resolve, reject, onCancel) => {
         const xhr = createXHR(url);

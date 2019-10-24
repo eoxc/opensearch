@@ -1,6 +1,7 @@
 import EventEmitter from 'event-emitter';
 import { search } from './search';
 import { assign } from './utils';
+import { config } from './config';
 
 
 /**
@@ -161,6 +162,7 @@ export class OpenSearchPaginator {
         for (let i = 1; i < pageCount; ++i) {
           requests.push(this.fetchPage(i));
         }
+        const { Promise } = config();
         return Promise.all(requests);
       });
   }
