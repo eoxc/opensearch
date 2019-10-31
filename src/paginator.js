@@ -74,8 +74,6 @@ export class OpenSearchPaginator {
    *                                                  (the default) or the `startPage`.
    * @param {int} [options.totalResults=undefined] Total results on all pages. Can be set from
    *                                            previous searches for optimized `searchFirstRecords`
-   * @param {int} [options.serverItemsPerPage=undefined] Server allowed page size. Can be set from
-   *                                            previous searches for optimized `searchFirstRecords`
    * @param {int} [options.baseOffset=0] The base index offset to apply. This option
    *                                     is useful when resuming a consecutive search.
    * @param {int} [options.maxUrlLength=undefined] The maximum URL length. Forwarded to
@@ -90,7 +88,6 @@ export class OpenSearchPaginator {
       preferStartIndex = true,
       baseOffset = 0,
       totalResults = undefined,
-      serverItemsPerPage = undefined,
       ...searchOptions
     } = options;
     this._url = url;
@@ -100,7 +97,6 @@ export class OpenSearchPaginator {
     this._preferStartIndex = preferStartIndex;
     this._baseOffset = baseOffset;
     this._totalResults = totalResults;
-    this._serverItemsPerPage = serverItemsPerPage;
     this._searchOptions = searchOptions;
   }
 
@@ -241,11 +237,11 @@ export class OpenSearchPaginator {
     const emitter = new PagedSearchProgressEmitter();
     let request = null;
     let startPageIndex = null;
-    if (this._serverItemsPerPage && this._totalResults && typeof maxCount !== 'undefined' && maxCount !== 0) {
+    if (this._preferredItemsPerPage && this._totalResults && typeof maxCount !== 'undefined' && maxCount !== 0) {
       // if paginator created based on known values - continue search
       // do not request first page to get values
       request = Promise.resolve({
-        itemsPerPage: this._serverItemsPerPage,
+        itemsPerPage: this._preferredItemsPerPage,
         records: [],
         totalResults: this._totalResults,
         startIndex: this._baseOffset,
