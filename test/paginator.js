@@ -263,7 +263,7 @@ describe('OpenSearchPaginator', () => {
 
   it('shall correctly emit "page" and "success" events when paginator is given catalog information from previous run to continue', (done) => {
     const paginatorSettings = {
-      serverItemsPerPage: 25,
+      preferredItemsPerPage: 25,
       totalResults: 51,
       baseOffset: 25,
     };
