@@ -117,6 +117,8 @@ function serializeValue(value, type, pattern) {
     case 'eo:illuminationElevationAngle':
     case 'eo:minimumIncidenceAngle':
     case 'eo:maximumIncidenceAngle':
+    case 'eo:acrossTrackIncidenceAngle':
+    case 'eo:alongTrackIncidenceAngle':
     case 'eo:dopplerFrequency':
     case 'eo:incidenceAngleVariation':
       return eoValueToString(value, false, pattern);
