@@ -1,6 +1,6 @@
 # OpenSearch JavaScript client
 
-[![Build Status](https://travis-ci.org/eoxc/opensearch.svg?branch=master)](https://travis-ci.org/eoxc/opensearch) [![NPM](https://nodei.co/npm/opensearch-browser.png?mini=true)](https://nodei.co/npm/opensearch-browser/)
+[![NPM](https://nodei.co/npm/opensearch-browser.png?mini=true)](https://nodei.co/npm/opensearch-browser/)
 [![Coverage Status](https://coveralls.io/repos/github/eoxc/opensearch/badge.svg?branch=master)](https://coveralls.io/github/eoxc/opensearch?branch=master)
 
 The full documentation is available [here](http://eoxc.github.io/opensearch/).
