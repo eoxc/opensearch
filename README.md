@@ -204,10 +204,10 @@ To generate the API documentation run:
 
 This library aims to provide a broad support of the most common OpenSearch
 functionality and exchange formats. It also supports the
-[Geo](http://www.opensearch.org/Specifications/OpenSearch/Extensions/Geo/1.0/Draft_1),
-[Time](http://www.opensearch.org/Specifications/OpenSearch/Extensions/Time/1.0/Draft_1),
-[EO Products](https://portal.opengeospatial.org/files/?artifact_id=61006),
-[Parameters](http://www.opensearch.org/Specifications/OpenSearch/Extensions/Parameter/1.0), and
-[Suggestions](http://www.opensearch.org/Specifications/OpenSearch/Extensions/Suggestions/1.1)
+[Geo](https://web.archive.org/web/20180427065533/http://www.opensearch.org/Specifications/OpenSearch/Extensions/Geo/1.0/Draft_2),
+[Time](https://web.archive.org/web/20180406022122/http://www.opensearch.org/Specifications/OpenSearch/Extensions/Time/1.0/Draft_1),
+[EO Products](https://www.opengis.net/doc/is/opensearch-eo/1.0),
+[Parameters](https://web.archive.org/web/20180408193434/http://www.opensearch.org/Specifications/OpenSearch/Extensions/Parameter/1.0), and
+[Suggestions](https://web.archive.org/web/20180406023110/http://www.opensearch.org/Specifications/OpenSearch/Extensions/Suggestions/1.1)
 extensions and adheres to various points of the
-[CEOS OpenSearch best practice paper](http://ceos.org/document_management/Working_Groups/WGISS/Interest_Groups/OpenSearch/CEOS-OPENSEARCH-BP-V1.1-Final.pdf).
+[CEOS OpenSearch best practice paper](https://ceos.org/document_management/Working_Groups/WGISS/Interest_Groups/OpenSearch/CEOS-OPENSEARCH-BP-V1.2.pdf).
