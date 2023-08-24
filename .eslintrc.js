@@ -1,9 +1,12 @@
 module.exports = {
   "extends": "airbnb",
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "parserOptions": {
     "sourceType": "module",
-    "allowImportExportEverywhere": false
+    "allowImportExportEverywhere": false,
+    "babelOptions": {
+      "presets": ["@babel/preset-env"],
+    }
   },
   "rules": {
     "comma-dangle": ["error", {
