@@ -57,6 +57,7 @@
     "istanbul": "^0.4.5",
     "jsdoc": "^3.5.5",
     "mochify": "^9.2.0",
+    "mochify-istanbul": "^2.4.2",
     "sinon": "^1.17.7",
     "sinon-chai": "^2.8.0",
     "stringify": "^5.2.0",
