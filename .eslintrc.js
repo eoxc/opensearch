@@ -1,5 +1,5 @@
 module.exports = {
-  "extends": "airbnb",
+  "extends": "airbnb-base",
   "parser": "@babel/eslint-parser",
   "parserOptions": {
     "sourceType": "module",
@@ -8,6 +8,9 @@ module.exports = {
       "presets": ["@babel/preset-env"],
     }
   },
+  "plugins": [
+    "import"
+  ],
   "rules": {
     "comma-dangle": ["error", {
         "arrays": "always-multiline",
