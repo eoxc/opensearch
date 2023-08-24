@@ -103,22 +103,20 @@ describe('search errors', () => {
 
   const service = OpenSearchService.fromXml(osddExample);
 
-  it('should correctly report errors with XHR based searches', (done) => {
+  it('should correctly report errors with XHR based searches', () => {
     config({ useXHR: true });
     return search(service.getDescription().getUrl(), { searchTerms: 'terms' })
       .catch((error) => {
         expect(error.message).to.equal('MIME type {xapplication/atom+xml} is not supported for dataset series {EOP:CODE-DE:S1_SAR_L1_GRD}.');
-        done();
-      });
+      }).then();
   });
 
-  it('should correctly report errors with fetch based searches', (done) => {
+  it('should correctly report errors with fetch based searches', () => {
     config({ useXHR: false });
     return search(service.getDescription().getUrl(), { searchTerms: 'terms' })
       .catch((error) => {
         expect(error.message).to.equal('MIME type {xapplication/atom+xml} is not supported for dataset series {EOP:CODE-DE:S1_SAR_L1_GRD}.');
-        done();
-      });
+      }).then();
   });
 
   it('shall use cancellable BluebirdPromise if configured', () => {
