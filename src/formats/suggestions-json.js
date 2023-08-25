@@ -7,7 +7,6 @@
  * @constructor SuggestionsJSONFormat
  */
 export class SuggestionsJSONFormat {
-
   /**
    * Parse the given JSON.
    * @param {string} text The JSON string to parse.

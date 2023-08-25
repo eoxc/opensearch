@@ -4,7 +4,6 @@ import { OpenSearchDescription } from '../src/description';
 
 const xml = require('./data/OSDD_example.xml');
 
-
 describe('OpenSearchDescription', () => {
   describe('constructor', () => {
     const description = OpenSearchDescription.fromXml(xml);
@@ -15,8 +14,12 @@ describe('OpenSearchDescription', () => {
       expect(description.contact).to.equal('admin@example.com');
       expect(description.longName).to.equal('Example.com Web Search');
       expect(description.images).to.deep.equal([
-        { width: 64, height: 64, type: 'image/png', url: 'http://example.com/websearch.png' },
-        { width: 16, height: 16, type: 'image/vnd.microsoft.icon', url: 'http://example.com/websearch.ico' },
+        {
+          width: 64, height: 64, type: 'image/png', url: 'http://example.com/websearch.png',
+        },
+        {
+          width: 16, height: 16, type: 'image/vnd.microsoft.icon', url: 'http://example.com/websearch.ico',
+        },
       ]);
       expect(description.queries).to.deep.equal([
         { role: 'example', searchTerms: 'cat' },
