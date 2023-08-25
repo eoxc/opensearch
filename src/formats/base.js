@@ -1,5 +1,6 @@
-import { getElements, getFirstElement, getText, simplePath } from '../utils';
-
+import {
+  getElements, getFirstElement, getText, simplePath,
+} from '../utils';
 
 function swapAndPair(values) {
   const out = [];
@@ -28,14 +29,10 @@ function parseGmlPolygon(node, namespaceURI) {
   const exteriorElement = getFirstElement(node, namespaceURI, 'exterior');
   const interiorElements = getElements(node, namespaceURI, 'interior');
 
-  const exterior = parseGmlLine(
-    getFirstElement(exteriorElement, namespaceURI, 'LinearRing'), namespaceURI
-  );
+  const exterior = parseGmlLine(getFirstElement(exteriorElement, namespaceURI, 'LinearRing'), namespaceURI);
 
   const interiors = interiorElements
-    .map(interiorElement => parseGmlLine(
-      getFirstElement(interiorElement, namespaceURI, 'LinearRing'), namespaceURI
-    ));
+    .map((interiorElement) => parseGmlLine(getFirstElement(interiorElement, namespaceURI, 'LinearRing'), namespaceURI));
   return [exterior, ...interiors];
 }
 
@@ -96,8 +93,8 @@ function parseGml(node) {
     }
     case 'MultiPolygon': {
       const polygons = getElements(node, node.namespaceURI, 'polygonMember')
-        .map(surfaceMember => getFirstElement(surfaceMember, surfaceMember.namespaceURI, 'Polygon'));
-      const coordinates = polygons.map(polygon => parseGmlPolygon(polygon, node.namespaceURI));
+        .map((surfaceMember) => getFirstElement(surfaceMember, surfaceMember.namespaceURI, 'Polygon'));
+      const coordinates = polygons.map((polygon) => parseGmlPolygon(polygon, node.namespaceURI));
       return {
         type: 'MultiPolygon',
         coordinates,
@@ -106,12 +103,12 @@ function parseGml(node) {
     case 'MultiSurface': {
       // support both single 'surfaceMembers' or multiple 'surfaceMember' elements
       let polygons = getElements(node, node.namespaceURI, 'surfaceMember')
-        .map(surfaceMember => getFirstElement(surfaceMember, surfaceMember.namespaceURI, 'Polygon'));
+        .map((surfaceMember) => getFirstElement(surfaceMember, surfaceMember.namespaceURI, 'Polygon'));
       const surfaceMembers = getFirstElement(node, node.namespaceURI, 'surfaceMembers');
       if (surfaceMembers) {
         polygons = polygons.concat(getElements(surfaceMembers, surfaceMembers.namespaceURI, 'Polygon'));
       }
-      const coordinates = polygons.map(polygon => parseGmlPolygon(polygon, node.namespaceURI));
+      const coordinates = polygons.map((polygon) => parseGmlPolygon(polygon, node.namespaceURI));
       return {
         type: 'MultiPolygon',
         coordinates,
@@ -193,7 +190,7 @@ export class BaseFeedFormat {
       case 'Polygon':
         return boxFromLineString(coords[0]);
       case 'MultiPolygon': {
-        const bboxes = coords.map(polygon => boxFromLineString(polygon[0]));
+        const bboxes = coords.map((polygon) => boxFromLineString(polygon[0]));
         const outBox = bboxes[0];
         for (let i = 1; i < bboxes.length; ++i) {
           const box = bboxes[i];
@@ -215,7 +212,7 @@ export class BaseFeedFormat {
       const values = date.split('/');
       if (values.length === 1) {
         return new Date(date);
-      } else if (values.length >= 1) {
+      } if (values.length >= 1) {
         return [new Date(values[0]), new Date(values[1])];
       }
     }
@@ -248,7 +245,7 @@ export class BaseFeedFormat {
     const directMedias = getElements(node, 'media', 'content');
     const groups = getElements(node, 'media', 'group');
     const groupedMedias = groups
-      .map(group => getElements(group, 'media', 'content'))
+      .map((group) => getElements(group, 'media', 'content'))
       .reduce((oldElems, newElems) => oldElems.concat(newElems), []);
     const allMedias = directMedias.concat(groupedMedias);
 
@@ -274,8 +271,8 @@ export class BaseFeedFormat {
         instrumentShortName: simplePath(eoEquipment, 'instrument/Instrument/shortName/text()', true),
         sensorType: simplePath(eoEquipment, 'sensor/Sensor/sensorType/text()', true),
         resolution:
-          simplePath(eoEquipment, 'sensor/Sensor/resolution/text()', true) +
-          simplePath(eoEquipment, 'sensor/Sensor/resolution@uom', true),
+          simplePath(eoEquipment, 'sensor/Sensor/resolution/text()', true)
+          + simplePath(eoEquipment, 'sensor/Sensor/resolution@uom', true),
         orbitNumber: simplePath(eoEquipment, 'acquisitionParameters/Acquisition/orbitNumber/text()', true),
         cloudCoverPercentage: simplePath(eoNode, 'om:result/opt:EarthObservationResult/opt:cloudCoverPercentage/text()', true),
       };

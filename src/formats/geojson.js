@@ -1,6 +1,5 @@
 import { assign } from '../utils';
 
-
 /**
  * @module opensearch/formats/geojson
  */

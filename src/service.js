@@ -3,7 +3,7 @@ import 'isomorphic-fetch';
 import { OpenSearchDescription } from './description';
 import { OpenSearchPaginator } from './paginator';
 import { search, createBaseRequest } from './search';
-import { getSupportedTypes } from './formats/';
+import { getSupportedTypes } from './formats';
 import { fetchAndCheck, createXHR } from './utils';
 import { config } from './config';
 
@@ -42,10 +42,10 @@ export class OpenSearchService {
       if (alternativeUrls.length === 1) {
         const missingParamNames = alternativeUrls[0]
           .getMissingMandatoryParameters(parameters)
-          .map(p => `"${p.type}"`);
+          .map((p) => `"${p.type}"`);
         const unsupportedParameterKeys = alternativeUrls[0]
           .getUnsupportedParameterKeys(parameters)
-          .map(k => `"${k}"`);
+          .map((k) => `"${k}"`);
 
         const terms = [];
         if (missingParamNames.length) {
@@ -159,9 +159,7 @@ export class OpenSearchService {
    */
   getPaginator(parameters, options = {}) {
     const { type = null, method = null } = options;
-    return new OpenSearchPaginator(
-      this.getUrl(parameters, type, method), parameters, options
-    );
+    return new OpenSearchPaginator(this.getUrl(parameters, type, method), parameters, options);
   }
 
   /**
@@ -192,8 +190,8 @@ export class OpenSearchService {
       });
     }
     return fetchAndCheck(url)
-      .then(response => response.text())
-      .then(response => OpenSearchService.fromXml(response));
+      .then((response) => response.text())
+      .then((response) => OpenSearchService.fromXml(response));
   }
 
   /**

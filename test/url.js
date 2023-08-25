@@ -57,7 +57,6 @@ describe('OpenSearchUrl', () => {
     });
   });
 
-
   describe('serializeValues', () => {
     const xml = `<os:Url
       xmlns:os="http://a9.com/-/spec/opensearch/1.1/"
@@ -87,6 +86,7 @@ describe('OpenSearchUrl', () => {
     });
   });
 
+  /* eslint-disable */
   /* TODO: this was moved to a separate file
   describe('#createRequest', () => {
     const urlGet = OpenSearchUrl.fromTemplateUrl(
@@ -197,4 +197,5 @@ describe('OpenSearchUrl', () => {
   });
 
   */
+  /* eslint-enable */
 });

@@ -1,8 +1,8 @@
+// eslint-disable-next-line max-classes-per-file
 import EventEmitter from 'event-emitter';
 import { search } from './search';
 import { assign } from './utils';
 import { config } from './config';
-
 
 /**
  * @module opensearch/paginator
@@ -40,7 +40,6 @@ class PagedSearchProgressEmitter extends EventEmitter {
  */
 
 export { PagedSearchProgressEmitter };
-
 
 function isCancellable(promise) {
   return promise && typeof promise.cancel === 'function' && !promise.isCancelled();
@@ -199,15 +198,14 @@ export class OpenSearchPaginator {
         }
         // fetch other pages until we have the required count
         const requests = [firstPage];
-        const usedMaxCount =
-          Math.min(
-            maxCount,
-            (firstPage.totalResults - firstPage.startIndex) + this._url.indexOffset
-          );
+        const usedMaxCount = Math.min(
+          maxCount,
+          (firstPage.totalResults - firstPage.startIndex) + this._url.indexOffset
+        );
 
         // determine the number of pages and issue a request for each
-        const numPages = firstPage.itemsPerPage ?
-          Math.ceil(usedMaxCount / firstPage.itemsPerPage) : 1;
+        const numPages = firstPage.itemsPerPage
+          ? Math.ceil(usedMaxCount / firstPage.itemsPerPage) : 1;
         for (let i = 1; i < numPages; ++i) {
           let count = firstPage.itemsPerPage;
           if (firstPage.itemsPerPage * (i + 1) > usedMaxCount) {
@@ -217,7 +215,7 @@ export class OpenSearchPaginator {
         }
 
         return Promise.all(requests)
-          .then(pages => combinePages(pages));
+          .then((pages) => combinePages(pages));
       });
   }
 
@@ -289,8 +287,8 @@ export class OpenSearchPaginator {
           ) : firstPage.totalResults;
 
         // determine the number of pages and issue a request for each
-        const numPages = firstPage.itemsPerPage ?
-          Math.ceil(usedMaxCount / firstPage.itemsPerPage) : 1;
+        const numPages = firstPage.itemsPerPage
+          ? Math.ceil(usedMaxCount / firstPage.itemsPerPage) : 1;
         for (let i = startPageIndex; i < numPages; ++i) {
           let count = firstPage.itemsPerPage;
           if (firstPage.itemsPerPage * (i + 1) > usedMaxCount) {
@@ -350,16 +348,16 @@ export class OpenSearchPaginator {
   getActualPageSize() {
     if (this._preferredItemsPerPage && this._serverItemsPerPage) {
       return Math.min(this._preferredItemsPerPage, this._serverItemsPerPage);
-    } else if (this._serverItemsPerPage) {
+    } if (this._serverItemsPerPage) {
       return this._serverItemsPerPage;
-    } else if (this._preferredItemsPerPage) {
+    } if (this._preferredItemsPerPage) {
       return this._preferredItemsPerPage;
     }
     const countParam = this._url.getParameter('count');
     if (countParam) {
       if (typeof countParam.maxExclusive !== 'undefined') {
         return countParam.maxExclusive - 1;
-      } else if (countParam.maxInclusive) {
+      } if (countParam.maxInclusive) {
         return countParam.maxInclusive;
       }
     }
@@ -375,7 +373,7 @@ export class OpenSearchPaginator {
     const pageSize = this.getActualPageSize();
     if (!this._totalResults) {
       return this._totalResults;
-    } else if (!pageSize) {
+    } if (!pageSize) {
       return undefined;
     }
     return Math.ceil(this._totalResults / pageSize);

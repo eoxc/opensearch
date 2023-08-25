@@ -13,7 +13,7 @@ import { config } from './config';
  * @module opensearch/search
  */
 
- /**
+/**
   * @typedef module:opensearch/search.BaseRequest
   * @type Object
   * @property {string} url The URL of the search service.
@@ -43,7 +43,7 @@ export function createBaseRequest(url, parameterValues, dropEmptyParameters, hea
   });
 
   const missingMandatoryParameters = url.getMissingMandatoryParameters(parameterValues)
-    .map(parameter => parameter.type);
+    .map((parameter) => parameter.type);
 
   if (missingMandatoryParameters.length) {
     throw new Error(`Missing mandatory parameters: ${missingMandatoryParameters.join(', ')}`);
@@ -65,9 +65,9 @@ export function createBaseRequest(url, parameterValues, dropEmptyParameters, hea
     if (dropEmptyParameters) {
       const parsed = parse(urlString, false);
       const query = parsed.query.split('&')
-        .map(param => param.split('='))
-        .filter(paramParts => paramParts[1] !== '')
-        .map(paramParts => paramParts.join('='))
+        .map((param) => param.split('='))
+        .filter((paramParts) => paramParts[1] !== '')
+        .map((paramParts) => paramParts.join('='))
         .join('&');
 
       parsed.set('query', query);
@@ -122,7 +122,9 @@ export function createBaseRequest(url, parameterValues, dropEmptyParameters, hea
  * @returns {Promise<SearchResult>|Promise<Response>} The search result as a Promise
  */
 export function search(url, parameters = {}, options = {}) {
-  const { type, raw, maxUrlLength, dropEmptyParameters, parseOptions, headers } = options;
+  const {
+    type, raw, maxUrlLength, dropEmptyParameters, parseOptions, headers,
+  } = options;
 
   const baseRequest = createBaseRequest(url, parameters, dropEmptyParameters, headers);
   const { useXHR, Promise } = config();
@@ -161,7 +163,7 @@ export function search(url, parameters = {}, options = {}) {
     if (raw) {
       return request;
     }
-    request = request.then(response => response.text().then(text => [text, response.status]));
+    request = request.then((response) => response.text().then((text) => [text, response.status]));
   }
 
   // postprocess, check for error and parse result

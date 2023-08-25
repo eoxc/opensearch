@@ -3,17 +3,16 @@ import { RSSFormat } from './rss';
 import { GeoJSONFormat } from './geojson';
 import { SuggestionsJSONFormat } from './suggestions-json';
 
-
 /**
  * @module opensearch/formats
  */
 
- /**
+/**
   * The interface built-in and custom format parsers must conform to.
   * @interface module:opensearch/formats.FormatInterface
   */
 
- /**
+/**
   * Main parsing function for the format.
   * @function
   * @name module:opensearch/formats.FormatInterface#parse
@@ -21,7 +20,7 @@ import { SuggestionsJSONFormat } from './suggestions-json';
   * @returns {module:opensearch/formats.SearchResult} The parsed search result
   */
 
- /**
+/**
   * @typedef module:opensearch/formats.Record
   * @type Object
   * @property {string} id The id of the record
@@ -30,7 +29,7 @@ import { SuggestionsJSONFormat } from './suggestions-json';
   * @property {float[]} [bbox] The parsed record geometry
   */
 
- /**
+/**
   * @typedef module:opensearch/formats.SearchResult
   * @type Object
   * @property {int} [totalResults] The total amount of matched records
@@ -41,7 +40,7 @@ import { SuggestionsJSONFormat } from './suggestions-json';
   * @property {module:opensearch/formats.Record[]} records The parsed records
   */
 
- /**
+/**
   * @typedef module:opensearch/formats.Suggestion
   * @type Object
   * @property {string} completion The completion value
