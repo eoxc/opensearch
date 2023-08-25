@@ -1,5 +1,7 @@
 import { OpenSearchUrl } from './url';
-import { parseXml, getElements, getText, find, assign } from './utils';
+import {
+  parseXml, getElements, getText, find, assign,
+} from './utils';
 
 /**
  * Class to parse the OpenSearchDescription XML document and get the saerch URLs
@@ -67,22 +69,22 @@ export class OpenSearchDescription {
    * @returns {OpenSearchUrl[]}
    */
   getUrls(parameters = null, type = null, method = null) {
-    let urls = this.urls.filter(url => find(url.relations, rel => rel === 'results'));
+    let urls = this.urls.filter((url) => find(url.relations, (rel) => rel === 'results'));
 
     if (type) {
       urls = urls.filter(
-        url => (Array.isArray(type) ? type.indexOf(url.type) > -1 : url.type === type)
+        (url) => (Array.isArray(type) ? type.indexOf(url.type) > -1 : url.type === type)
       );
     }
     if (method) {
       urls = urls.filter(
-        url => (Array.isArray(method) ? method.indexOf(url.method) > -1 : url.method === method)
+        (url) => (Array.isArray(method) ? method.indexOf(url.method) > -1 : url.method === method)
       );
     }
 
     if (parameters) {
       return urls.filter(
-        url => url.isCompatible(parameters)
+        (url) => url.isCompatible(parameters)
       );
     }
     return urls;
@@ -102,10 +104,10 @@ export class OpenSearchDescription {
       tags: getText(xmlDoc, 'os', 'Tags'),
       contact: getText(xmlDoc, 'os', 'Contact'),
       urls: getElements(xmlDoc, 'os', 'Url').map(
-        node => OpenSearchUrl.fromNode(node)
+        (node) => OpenSearchUrl.fromNode(node)
       ),
       longName: getText(xmlDoc, 'os', 'LongName'),
-      images: getElements(xmlDoc, 'os', 'Image').map(node => ({
+      images: getElements(xmlDoc, 'os', 'Image').map((node) => ({
         height: parseInt(node.getAttribute('height'), 10),
         width: parseInt(node.getAttribute('width'), 10),
         type: node.getAttribute('type'),
@@ -140,7 +142,7 @@ export class OpenSearchDescription {
       description: this.description,
       tags: this.tags,
       contact: this.contact,
-      urls: this.urls.map(url => url.serialize()),
+      urls: this.urls.map((url) => url.serialize()),
       longName: this.longName,
       images: this.images,
       queries: this.queries,
@@ -161,7 +163,7 @@ export class OpenSearchDescription {
    */
   static deserialize(values) {
     return new OpenSearchDescription(assign({}, values, {
-      urls: values.urls.map(urlDesc => OpenSearchUrl.deserialize(urlDesc)),
+      urls: values.urls.map((urlDesc) => OpenSearchUrl.deserialize(urlDesc)),
     }));
   }
 }

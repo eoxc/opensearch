@@ -1,6 +1,7 @@
-import { parseXml, getElements, getFirstElement, getText } from '../utils';
+import {
+  parseXml, getElements, getFirstElement, getText,
+} from '../utils';
 import { BaseFeedFormat } from './base';
-
 
 /**
  * @module opensearch/formats/rss

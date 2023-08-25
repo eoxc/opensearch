@@ -2,16 +2,14 @@ import parse from 'url-parse';
 import { getElements, getAttributeNS, find } from './utils';
 import { OpenSearchParameter } from './parameter';
 
-
 /**
  * @module opensearch/url
  */
 
-
 function isParameterMissing(parameterValues, parameter) {
   if (Object.prototype.hasOwnProperty.call(parameterValues, parameter.name)) {
     return false;
-  } else if (parameter.isMulti) {
+  } if (parameter.isMulti) {
     const types = parameter.type;
     for (let i = 0; i < types.length; ++i) {
       const type = types[i];
@@ -23,7 +21,6 @@ function isParameterMissing(parameterValues, parameter) {
   }
   return !Object.prototype.hasOwnProperty.call(parameterValues, parameter.type);
 }
-
 
 /**
  * Class to parse a single URL of an OpenSearchDescription XML document and
@@ -48,9 +45,16 @@ export class OpenSearchUrl {
    * @param {Number} [pageOffset=1] The page offset of this URL
    * @param {string[]} [relations=['results']] The relations of this URL.
    */
-  constructor(type, url, parameters = [], method = 'GET',
+  constructor(
+    type,
+    url,
+    parameters = [],
+    method = 'GET',
     enctype = 'application/x-www-form-urlencoded',
-    indexOffset = 1, pageOffset = 1, relations = ['results']) {
+    indexOffset = 1,
+    pageOffset = 1,
+    relations = ['results']
+  ) {
     this._type = type;
     this._url = url;
     this._method = method;
@@ -186,8 +190,8 @@ export class OpenSearchUrl {
    */
   getMissingMandatoryParameters(parameterValues) {
     return this.parameters
-      .filter(parameter => parameter.mandatory)
-      .filter(parameter => isParameterMissing(parameterValues, parameter));
+      .filter((parameter) => parameter.mandatory)
+      .filter((parameter) => isParameterMissing(parameterValues, parameter));
   }
 
   /**
@@ -195,18 +199,18 @@ export class OpenSearchUrl {
    */
   getMissingOptionalParameters(parameterValues) {
     return this.parameters
-      .filter(parameter => !parameter.mandatory)
-      .filter(parameter => isParameterMissing(parameterValues, parameter));
+      .filter((parameter) => !parameter.mandatory)
+      .filter((parameter) => isParameterMissing(parameterValues, parameter));
   }
 
   /**
    *
    */
   getUnsupportedParameterKeys(parameters) {
-    return Object.keys(parameters).filter(key => (
-        !Object.prototype.hasOwnProperty.call(this._parametersByType, key)
+    return Object.keys(parameters).filter((key) => (
+      !Object.prototype.hasOwnProperty.call(this._parametersByType, key)
         && !Object.prototype.hasOwnProperty.call(this._parametersByName, key)
-      ));
+    ));
   }
 
   /**
@@ -224,13 +228,13 @@ export class OpenSearchUrl {
     });
 
     const missingMandatoryParameters = this.getMissingMandatoryParameters(values)
-      .map(parameter => parameter.type);
+      .map((parameter) => parameter.type);
 
     if (missingMandatoryParameters.length) {
       throw new Error(`Missing mandatory parameters: ${missingMandatoryParameters.join(', ')}`);
     }
     const serialized = [];
-    const parameters = this.parameters;
+    const { parameters } = this;
     for (let i = 0; i < parameters.length; ++i) {
       const parameter = parameters[i];
       if (parameter.isMulti) {
@@ -269,21 +273,21 @@ export class OpenSearchUrl {
     const parameterNodes = getElements(node, 'parameters', 'Parameter');
     const method = getAttributeNS(node, 'parameters', 'method');
     const enctype = getAttributeNS(node, 'parameters', 'enctype');
-    const indexOffset = node.hasAttribute('indexOffset') ?
-      parseInt(node.getAttribute('indexOffset'), 10) : 1;
-    const pageOffset = node.hasAttribute('pageOffset') ?
-      parseInt(node.getAttribute('pageOffset'), 10) : 1;
+    const indexOffset = node.hasAttribute('indexOffset')
+      ? parseInt(node.getAttribute('indexOffset'), 10) : 1;
+    const pageOffset = node.hasAttribute('pageOffset')
+      ? parseInt(node.getAttribute('pageOffset'), 10) : 1;
     const rel = node.getAttribute('rel');
     const relations = (!rel || rel === '') ? undefined : rel.split(' ');
 
     const parsed = parse(node.getAttribute('template'), true);
     const parametersFromTemplate = Object.keys(parsed.query)
-      .map(name => OpenSearchParameter.fromKeyValuePair(name, parsed.query[name]))
-      .filter(parameter => parameter);
+      .map((name) => OpenSearchParameter.fromKeyValuePair(name, parsed.query[name]))
+      .filter((parameter) => parameter);
     const parametersFromNode = parameterNodes.map(OpenSearchParameter.fromNode);
 
     const parametersNotInTemplate = parametersFromNode.filter(
-      p1 => !find(parametersFromTemplate, p2 => p1.name === p2.name)
+      (p1) => !find(parametersFromTemplate, (p2) => p1.name === p2.name)
     ).map((param) => {
       // eslint-disable-next-line no-underscore-dangle, no-param-reassign
       param._mandatory = (typeof param.mandatory === 'undefined') ? true : param.mandatory;
@@ -292,7 +296,7 @@ export class OpenSearchUrl {
 
     // merge parameters from node and template
     const parameters = parametersFromTemplate.map((p1) => {
-      const p2 = find(parametersFromNode, p => p1.name === p.name);
+      const p2 = find(parametersFromNode, (p) => p1.name === p.name);
       if (p2) {
         return p1.combined(p2);
       }
@@ -300,8 +304,14 @@ export class OpenSearchUrl {
     }).concat(parametersNotInTemplate);
 
     return new OpenSearchUrl(
-      node.getAttribute('type'), node.getAttribute('template'),
-      parameters, method, enctype, indexOffset, pageOffset, relations
+      node.getAttribute('type'),
+      node.getAttribute('template'),
+      parameters,
+      method,
+      enctype,
+      indexOffset,
+      pageOffset,
+      relations
     );
   }
 
@@ -313,12 +323,16 @@ export class OpenSearchUrl {
    * @param {string} [enctype='application/x-www-form-urlencoded'] The encoding type
    * @returns {OpenSearchUrl} The constructed OpenSearchUrl object
    */
-  static fromTemplateUrl(type, templateUrl, method = 'GET',
-    enctype = 'application/x-www-form-urlencoded') {
+  static fromTemplateUrl(
+    type,
+    templateUrl,
+    method = 'GET',
+    enctype = 'application/x-www-form-urlencoded'
+  ) {
     const parsed = parse(templateUrl, true);
     const parameters = Object.keys(parsed.query)
-      .map(name => OpenSearchParameter.fromKeyValuePair(name, parsed.query[name]))
-      .filter(parameter => parameter);
+      .map((name) => OpenSearchParameter.fromKeyValuePair(name, parsed.query[name]))
+      .filter((parameter) => parameter);
     return new OpenSearchUrl(type, templateUrl, parameters, method, enctype);
   }
 
@@ -335,7 +349,7 @@ export class OpenSearchUrl {
       indexOffset: this._indexOffset,
       pageOffset: this._pageOffset,
       relations: this._relations,
-      parameters: this._parameters.map(parameter => parameter.serialize()),
+      parameters: this._parameters.map((parameter) => parameter.serialize()),
     };
   }
 
@@ -346,9 +360,14 @@ export class OpenSearchUrl {
    */
   static deserialize(values) {
     return new OpenSearchUrl(
-      values.type, values.url,
-      values.parameters.map(parameterDesc => OpenSearchParameter.deserialize(parameterDesc)),
-      values.method, values.enctype, values.indexOffset, values.pageOffset, values.relations
+      values.type,
+      values.url,
+      values.parameters.map((parameterDesc) => OpenSearchParameter.deserialize(parameterDesc)),
+      values.method,
+      values.enctype,
+      values.indexOffset,
+      values.pageOffset,
+      values.relations
     );
   }
 }

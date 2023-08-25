@@ -4,11 +4,11 @@ import { config } from '../src/config';
 import { OpenSearchService } from '../src/service';
 
 // import fetchMock after isomorphic-fetch was set up to not confuse global `Request`
-// eslint-disable-next-line import/first
+// eslint-disable-next-line import/order
 import fetchMock from 'fetch-mock';
-// eslint-disable-next-line import/first
+// eslint-disable-next-line import/order
 import BluebirdPromise from 'bluebird';
-// eslint-disable-next-line import/first
+// eslint-disable-next-line import/order
 import xhrMock from 'xhr-mock';
 
 BluebirdPromise.config({ cancellation: true, warnings: false });
@@ -23,13 +23,12 @@ describe('search', () => {
       .mock('begin:http://example.com/?q=', atomExample);
 
     xhrMock.setup();
-    xhrMock.get(new RegExp('.*'), (req, res) =>
-      res
-        .status(200)
-        .body(atomExample)
-    );
+    // eslint-disable-next-line
+    xhrMock.get(new RegExp('.*'), (req, res) => res
+      .status(200)
+      .body(atomExample));
 
-    savedConfig = Object.assign({}, config());
+    savedConfig = { ...config() };
   });
   after(() => {
     fetchMock.restore();
@@ -70,7 +69,6 @@ describe('search', () => {
   });
 });
 
-
 const errorXml = `<?xml version="1.0" encoding="UTF-8"?><ows:ExceptionReport xmlns:ows="http://www.opengis.net/ows/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0.0" xml:lang="en" xsi:schemaLocation="http://www.opengis.net/ows/2.0 http://schemas.opengis.net/ows/2.0/owsExceptionReport.xsd">
 <ows:Exception exceptionCode="InvalidParameterValue" locator="httpAccept">
 <ows:ExceptionText>MIME type {xapplication/atom+xml} is not supported for dataset series {EOP:CODE-DE:S1_SAR_L1_GRD}.</ows:ExceptionText>
@@ -86,13 +84,12 @@ describe('search errors', () => {
       });
 
     xhrMock.setup();
-    xhrMock.get(new RegExp('.*'), (req, res) =>
-      res
-        .status(400)
-        .body(errorXml)
-    );
+    // eslint-disable-next-line
+    xhrMock.get(new RegExp('.*'), (req, res) => res
+      .status(400)
+      .body(errorXml));
 
-    savedConfig = Object.assign({}, config());
+    savedConfig = { ...config() };
   });
   after(() => {
     fetchMock.restore();

@@ -9,15 +9,11 @@ import { OpenSearchUrl } from '../src/url';
 const searchModule = require('../src/search');
 
 describe('OpenSearchPaginator', () => {
-  const simpleUrl = OpenSearchUrl.fromTemplateUrl(
-    'application/atom+xml', 'http://example.com/?start={startIndex?}&count={count?}'
-  );
-  const urlWithCountMax = new OpenSearchUrl(
-    'application/atom+xml', 'http://example.com/', [
-      new OpenSearchParameter('count', 'count', false, null, undefined, undefined, 1, 25),
-      new OpenSearchParameter('start', 'startIndex'),
-    ], 'application/x-www-form-urlencoded', 0, 0
-  );
+  const simpleUrl = OpenSearchUrl.fromTemplateUrl('application/atom+xml', 'http://example.com/?start={startIndex?}&count={count?}');
+  const urlWithCountMax = new OpenSearchUrl('application/atom+xml', 'http://example.com/', [
+    new OpenSearchParameter('count', 'count', false, null, undefined, undefined, 1, 25),
+    new OpenSearchParameter('start', 'startIndex'),
+  ], 'application/x-www-form-urlencoded', 0, 0);
 
   let searchStub;
 
