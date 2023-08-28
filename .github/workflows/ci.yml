@@ -20,7 +20,7 @@ jobs:
       run: npm install
       
     - name: Run tests with coverage export
-      run: npm run test:coverageci
+      run: npm run coverage
 
     - name: Coveralls export
       uses: coverallsapp/github-action@master

@@ -6,8 +6,7 @@
   "scripts": {
     "test": "mochify --transform babelify --transform [ stringify --extensions [.xml] ] test/setup.js test/*js test/formats/*js",
     "test:watch": "npm run test -- -w",
-    "coverage": "nyc --instrument false mochify --transform [ stringify --extensions [.xml] ] --transform [ babelify --ignore [ /.*/test/.* ] --plugins [ babel-plugin-istanbul] ]",
-    "test:coverageci": "nyc --reporter lcovonly --instrument false mochify --transform [ stringify --extensions [.xml] ] --transform [ babelify --ignore [ /.*/test/.* ] --plugins [ babel-plugin-istanbul] ]",
+    "coverage": "nyc --reporter text --reporter lcovonly --instrument false mochify --transform [ stringify --extensions [.xml] ] --transform [ babelify --ignore [ /.*/test/.* ] --plugins [ babel-plugin-istanbul] ]",
     "build": "babel src/ -d dist/ && browserify -d -t babelify src/index.js -o dist/opensearch-browserify.js",
     "watch": "babel src/ -d dist/  -w",
     "lint": "eslint src test",
