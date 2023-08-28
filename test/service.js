@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { OpenSearchService } from '../src/service';
 
 // import fetchMock after isomorphic-fetch was set up to not confuse global `Request`
-// eslint-disable-next-line import/first
+// eslint-disable-next-line import/order
 import fetchMock from 'fetch-mock';
 
 const osddExample = require('./data/OSDD_example.xml');
@@ -59,7 +59,6 @@ const suggestionsJSON = `
   "http://example.com?q=sears.com",
   "http://example.com?q=seattle+times"]]
 `;
-
 
 describe('OpenSearchService', () => {
   before(() => {

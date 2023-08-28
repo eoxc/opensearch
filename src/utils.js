@@ -1,6 +1,5 @@
 import 'isomorphic-fetch';
 
-
 /**
  * @module opensearch/utils
  */
@@ -19,7 +18,7 @@ export function parseURLQuery(url) {
 export function parseXml(xmlStr) {
   if (typeof DOMParser !== 'undefined') {
     return (new DOMParser()).parseFromString(xmlStr, 'text/xml');
-  } else if (typeof ActiveXObject !== 'undefined') {
+  } if (typeof ActiveXObject !== 'undefined') {
     const xmlDoc = new ActiveXObject('Microsoft.XMLDOM'); // eslint-disable-line no-undef
     xmlDoc.async = 'false';
     xmlDoc.loadXML(xmlStr);
@@ -52,7 +51,7 @@ function getChildren(element) {
   if (element.children) {
     return Array.from(element.children);
   }
-  return Array.from(element.childNodes).filter(node => node.nodeType === 1); // Node.ELEMENT_NODE
+  return Array.from(element.childNodes).filter((node) => node.nodeType === 1); // Node.ELEMENT_NODE
 }
 
 /*
@@ -67,10 +66,10 @@ export function getElements(element, namespace, tagName, usedNamespaces = namesp
   const children = getChildren(element);
   if (tagName && namespaceURI) {
     return children.filter(
-      child => child.localName === tagName && child.namespaceURI === namespaceURI
+      (child) => child.localName === tagName && child.namespaceURI === namespaceURI
     );
-  } else if (tagName) {
-    return children.filter(child => child.localName === tagName);
+  } if (tagName) {
+    return children.filter((child) => child.localName === tagName);
   }
   return children;
 }
@@ -135,7 +134,7 @@ function splitNamespace(name) {
  */
 export function simplePath(element, path, single = false, usedNamespaces = undefined) {
   // split path and discard empty parts
-  const parts = path.split('/').filter(part => part.length);
+  const parts = path.split('/').filter((part) => part.length);
   let current = single ? element : [element];
 
   for (let i = 0; i < parts.length; ++i) {
@@ -145,13 +144,13 @@ export function simplePath(element, path, single = false, usedNamespaces = undef
     if (single) {
       if (part === 'text()') {
         return current.textContent;
-      } else if (part.indexOf('@') !== -1) {
+      } if (part.indexOf('@') !== -1) {
         const [nodePart, attrPart] = part.split('@');
         const [namespace, tagName] = splitNamespace(nodePart);
         const [attrNamespace, attrName] = splitNamespace(attrPart);
         current = getFirstElement(current, namespace, tagName, usedNamespaces);
-        return current ?
-          getAttributeNS(current, attrNamespace, attrName, undefined, usedNamespaces) : null;
+        return current
+          ? getAttributeNS(current, attrNamespace, attrName, undefined, usedNamespaces) : null;
       }
       const [namespace, tagName] = splitNamespace(part);
       current = getFirstElement(current, namespace, tagName, usedNamespaces);
@@ -159,30 +158,28 @@ export function simplePath(element, path, single = false, usedNamespaces = undef
         return null;
       }
     } else if (part === 'text()') {
-      return current.map(currentElement => currentElement.textContent);
+      return current.map((currentElement) => currentElement.textContent);
     } else if (part.indexOf('@') !== -1) {
       const [nodePart, attrPart] = part.split('@');
       const [namespace, tagName] = splitNamespace(nodePart);
       const [attrNamespace, attrName] = splitNamespace(attrPart);
       return current.map(
-          currentElement => getElements(currentElement, namespace, tagName, usedNamespaces)
-        )
+        (currentElement) => getElements(currentElement, namespace, tagName, usedNamespaces)
+      )
         .reduce((acc, value) => acc.concat(value), [])
-        .map(finalElement =>
-          getAttributeNS(finalElement, attrNamespace, attrName, undefined, usedNamespaces)
-        );
+      // eslint-disable-next-line max-len
+        .map((finalElement) => getAttributeNS(finalElement, attrNamespace, attrName, undefined, usedNamespaces));
     } else {
       const [namespace, tagName] = splitNamespace(part);
       current = current.map(
-          currentElement => getElements(currentElement, namespace, tagName, usedNamespaces)
-        )
+        (currentElement) => getElements(currentElement, namespace, tagName, usedNamespaces)
+      )
         .reduce((acc, value) => acc.concat(value), []);
     }
   }
 
   return current;
 }
-
 
 // adapted from https://developer.mozilla.org/en-US/Add-ons/Code_snippets/LookupPrefix
 // Private function for lookupPrefix only

@@ -1,10 +1,16 @@
 module.exports = {
-  "extends": "airbnb",
-  "parser": "babel-eslint",
+  "extends": "airbnb-base",
+  "parser": "@babel/eslint-parser",
   "parserOptions": {
     "sourceType": "module",
-    "allowImportExportEverywhere": false
+    "allowImportExportEverywhere": false,
+    "babelOptions": {
+      "presets": ["@babel/preset-env"],
+    }
   },
+  "plugins": [
+    "import"
+  ],
   "rules": {
     "comma-dangle": ["error", {
         "arrays": "always-multiline",

@@ -1,10 +1,8 @@
 import { getElements, isNullOrUndefined, toWKT } from './utils';
 
-
 /**
  * @module opensearch/parameter
  */
-
 
 const typeRE = /{([a-zA-Z:]+)([?]?)}/;
 const typeREglobal = /{([a-zA-Z:]+)([?]?)}/g;
@@ -43,6 +41,7 @@ function formatDate(value, pattern = undefined) {
     }
 
     // Try without Zulu and milliseconds
+    // eslint-disable-next-line prefer-destructuring
     formatted = isoString.split('.')[0];
     if (!rePattern || rePattern.test(formatted)) {
       return formatted;
@@ -55,15 +54,15 @@ function formatDate(value, pattern = undefined) {
 }
 
 function eoValueToString(value, isDate = false, pattern = undefined) {
-  const convertDate = dateValue => formatDate(dateValue, pattern);
+  const convertDate = (dateValue) => formatDate(dateValue, pattern);
 
   if (typeof value === 'string') {
     return value;
-  } else if (typeof value === 'number') {
+  } if (typeof value === 'number') {
     return value.toString();
-  } else if (isDate && value instanceof Date) {
+  } if (isDate && value instanceof Date) {
     return convertDate(value);
-  } else if (Array.isArray(value)) {
+  } if (Array.isArray(value)) {
     if (isDate) {
       return `{${value.map(convertDate).join(',')}}`;
     }
@@ -86,12 +85,11 @@ function eoValueToString(value, isDate = false, pattern = undefined) {
 
   if (left !== null && right !== null) {
     return `${left},${right}`;
-  } else if (left !== null) {
+  } if (left !== null) {
     return left;
   }
   return right;
 }
-
 
 function serializeValue(value, type, pattern) {
   switch (type) {
@@ -154,10 +152,17 @@ export class OpenSearchParameter {
    * @param {Number} [maxInclusive=undefined] The maximum value allowed for this
                                               parameter (inclusive)
    */
-  constructor(type, name, mandatory, options = null,
-    minExclusive = undefined, maxExclusive = undefined,
-    minInclusive = undefined, maxInclusive = undefined,
-    pattern = undefined) {
+  constructor(
+    type,
+    name,
+    mandatory,
+    options = null,
+    minExclusive = undefined,
+    maxExclusive = undefined,
+    minInclusive = undefined,
+    maxInclusive = undefined,
+    pattern = undefined
+  ) {
     this._type = type;
     this._name = name;
     this._mandatory = mandatory;
@@ -257,7 +262,8 @@ export class OpenSearchParameter {
    */
   combined(other) {
     return new OpenSearchParameter(
-      this.type, this.name,
+      this.type,
+      this.name,
       isNullOrUndefined(this.mandatory) ? other.mandatory : this.mandatory,
       isNullOrUndefined(this.options) ? other.options : this.options,
       isNullOrUndefined(this.minExclusive) ? other.minExclusive : this.minExclusive,
@@ -284,7 +290,7 @@ export class OpenSearchParameter {
     if (this.isMulti && type) {
       if (Array.isArray(value)) {
         return serializeValue(value[this.types.indexOf(type)], type, this.pattern);
-      } else if (Object.prototype.hasOwnProperty.call(value, type)) {
+      } if (Object.prototype.hasOwnProperty.call(value, type)) {
         return serializeValue(value[type], type, this.pattern);
       }
       return serializeValue(value, type, this.pattern);
@@ -301,33 +307,40 @@ export class OpenSearchParameter {
     const type = parseType(node.getAttribute('value'));
     const name = node.getAttribute('name');
     const mandatory = node.hasAttribute('minimum')
-                        ? node.getAttribute('minimum') !== '0' : undefined;
+      ? node.getAttribute('minimum') !== '0' : undefined;
     const minExclusive = node.hasAttribute('minExclusive')
-                          ? parseInt(node.getAttribute('minExclusive'), 10)
-                          : undefined;
+      ? parseInt(node.getAttribute('minExclusive'), 10)
+      : undefined;
     const maxExclusive = node.hasAttribute('maxExclusive')
-                          ? parseInt(node.getAttribute('maxExclusive'), 10)
-                          : undefined;
+      ? parseInt(node.getAttribute('maxExclusive'), 10)
+      : undefined;
     const minInclusive = node.hasAttribute('minInclusive')
-                          ? parseInt(node.getAttribute('minInclusive'), 10)
-                          : undefined;
+      ? parseInt(node.getAttribute('minInclusive'), 10)
+      : undefined;
     const maxInclusive = node.hasAttribute('maxInclusive')
-                          ? parseInt(node.getAttribute('maxInclusive'), 10)
-                          : undefined;
+      ? parseInt(node.getAttribute('maxInclusive'), 10)
+      : undefined;
     const pattern = node.hasAttribute('pattern')
-                          ? node.getAttribute('pattern')
-                          : undefined;
+      ? node.getAttribute('pattern')
+      : undefined;
     const optionNodes = getElements(node, 'parameters', 'Option');
     let options;
     if (optionNodes.length) {
-      options = optionNodes.map(optionNode => ({
+      options = optionNodes.map((optionNode) => ({
         label: optionNode.getAttribute('label'),
         value: optionNode.getAttribute('value'),
       }));
     }
     return new OpenSearchParameter(
-      type, name, mandatory, options,
-      minExclusive, maxExclusive, minInclusive, maxInclusive, pattern
+      type,
+      name,
+      mandatory,
+      options,
+      minExclusive,
+      maxExclusive,
+      minInclusive,
+      maxInclusive,
+      pattern
     );
   }
 
@@ -347,9 +360,7 @@ export class OpenSearchParameter {
         const mandatory = multi.map(isMandatory).reduce((acc, v) => acc || v, false);
         return new OpenSearchParameter(types, key, mandatory);
       }
-      return new OpenSearchParameter(
-        type, key, isMandatory(value)
-      );
+      return new OpenSearchParameter(type, key, isMandatory(value));
     }
     return null;
   }
@@ -389,8 +400,14 @@ export class OpenSearchParameter {
    */
   static deserialize(values) {
     return new OpenSearchParameter(
-      values.type, values.name, values.mandatory, values.options,
-      values.minExclusive, values.maxExclusive, values.minInclusive, values.maxInclusive,
+      values.type,
+      values.name,
+      values.mandatory,
+      values.options,
+      values.minExclusive,
+      values.maxExclusive,
+      values.minInclusive,
+      values.maxInclusive,
       values.pattern,
     );
   }

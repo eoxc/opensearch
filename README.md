@@ -89,7 +89,7 @@ service provides a URL like the following example:
 />
 ```
 
-then the the following request parameters are possible:
+then the following request parameters are possible:
 
 ```javascript
 // Using the types
