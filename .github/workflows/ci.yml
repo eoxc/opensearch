@@ -26,7 +26,7 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: "lcov.info"
+        path-to-lcov: "coverage/lcov.info"
 
     - name: Publish release to npm
       uses: JS-DevTools/npm-publish@v1
